@@ -20,3 +20,10 @@ export type Dish = Schemas["Dish"];
 export type DishDetail = Schemas["DishDetail"];
 export type OptionGroup = Schemas["OptionGroup"];
 export type Option = Schemas["Option"];
+
+export type Formula = Schemas["PublicFormula"];
+export type QuoteCreated = Schemas["QuoteCreated"];
+
+export type Availability = Schemas["Availability"];
+export type Slot = Schemas["Slot"];
+export type ReservationPublic = Schemas["ReservationPublic"];

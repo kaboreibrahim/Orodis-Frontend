@@ -3,9 +3,10 @@ import { GlassWater, UtensilsCrossed } from "lucide-react";
 import Link from "next/link";
 import { FadeUp } from "@/components/motion/FadeUp";
 import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
+import { EVENT_TYPES } from "@/lib/schemas";
 import { whatsappLink } from "@/lib/whatsapp";
 
-export const EVENTS = ["Mariage", "Anniversaire", "Cocktail", "Séminaire", "Baptême", "Buffet", "Soirée dînatoire", "Dîner de gala"];
+const EVENTS = EVENT_TYPES.map((event) => event.label);
 
 export function CateringTeaser({ whatsapp }: { whatsapp?: string }) {
   return (

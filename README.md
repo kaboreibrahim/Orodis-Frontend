@@ -19,7 +19,21 @@ npm run dev
 ```bash
 docker build --build-arg API_URL=https://api.delicesdorodis.ci/api/v1 \
   --build-arg NEXT_PUBLIC_SITE_URL=https://delicesdorodis.ci -t orodis-web .
-docker run -p 3000:3000 -e API_URL=https://api.delicesdorodis.ci/api/v1 orodis-web
+docker run -p 3000:3000 -e API_URL=https://api.delicesdorodis.ci/api/v1 \
+  -e REVALIDATE_SECRET=… -e FRONTEND_API_KEY=… orodis-web
 ```
 
-Le déploiement Coolify sera décrit à l'étape 8.
+## Mise en ligne (Coolify)
+
+1. Application « orodis-web » depuis ce dépôt, build par le `Dockerfile`, port 3000, domaine principal + `www` redirigé.
+2. Variables de build : `API_URL`, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_WHATSAPP`, `NEXT_PUBLIC_GOOGLE_MAPS_EMBED` (les pages statiques lisent l'API au build).
+3. Variables d'exécution, secrètes : `API_URL`, `REVALIDATE_SECRET`, `FRONTEND_API_KEY`.
+4. Côté Django, mêmes valeurs : `REVALIDATE_SECRET`, `FRONTEND_API_KEY`, et `FRONTEND_REVALIDATE_URL=https://<site>/api/revalidate`.
+
+Vérifier la revalidation après déploiement :
+
+```bash
+curl -X POST https://<site>/api/revalidate -H "x-revalidate-secret: …" \
+  -H "Content-Type: application/json" -d '{"tags": ["menu", "settings", "catering"]}'
+# → {"revalidated":["menu","settings","catering"]}
+```

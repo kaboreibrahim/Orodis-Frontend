@@ -13,6 +13,11 @@ export function formatPrice(amount: number | string): string {
   return `${value < 0 ? "-" : ""}${digits}${NBSP}F`;
 }
 
+/** Date du jour à Abidjan (UTC+0) au format des champs date, décalée de offsetDays : "2026-10-29". */
+export function todayIso(offsetDays = 0, now = Date.now()): string {
+  return new Date(now + offsetDays * 864e5).toISOString().slice(0, 10);
+}
+
 /** Accepte une Date ou une chaîne ISO ; "2026-10-29" est lu comme ce jour-là à Abidjan (UTC+0). */
 function toDate(value: Date | string): Date {
   if (value instanceof Date) return value;

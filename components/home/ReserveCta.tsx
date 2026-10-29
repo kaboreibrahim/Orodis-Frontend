@@ -2,13 +2,10 @@
 // (formulaire GET : fonctionne sans JavaScript, la page de réservation reçoit ?party=&date=).
 import Link from "next/link";
 import { FadeUp } from "@/components/motion/FadeUp";
+import { todayIso } from "@/lib/format";
+import { BOOKING_WINDOW_DAYS } from "@/lib/schemas";
 
 const PARTY_SIZES = [1, 2, 3, 4, 6, 8];
-
-/** Date du jour à Abidjan (UTC+0), au format des champs date : "2026-10-29". */
-function todayIso(offsetDays = 0): string {
-  return new Date(Date.now() + offsetDays * 864e5).toISOString().slice(0, 10);
-}
 
 export function ReserveCta({ maxParty = 12 }: { maxParty?: number }) {
   return (
@@ -52,7 +49,7 @@ export function ReserveCta({ maxParty = 12 }: { maxParty?: number }) {
               required
               defaultValue={todayIso()}
               min={todayIso()}
-              max={todayIso(60)}
+              max={todayIso(BOOKING_WINDOW_DAYS)}
               className="h-12 rounded-xl border-[1.5px] border-bordure bg-white px-3 font-normal text-encre"
             />
           </label>

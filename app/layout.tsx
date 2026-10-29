@@ -5,6 +5,7 @@ import { Header } from "@/components/layout/Header";
 import { getSettings } from "@/lib/api/settings";
 import { summarizeHours } from "@/lib/format";
 import { INTRO_SCRIPT } from "@/lib/intro";
+import { jsonLdScript, restaurantJsonLd, siteUrl } from "@/lib/seo";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -27,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSettings();
   const hours = summarizeHours(settings.opening_hours).join(", ");
   return {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+    metadataBase: new URL(siteUrl),
     title: {
       default: "Les Délices d'Orodis · Restaurant, pâtisserie et traiteur",
       template: "%s · Les Délices d'Orodis",
@@ -62,6 +63,7 @@ export default async function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: INTRO_SCRIPT }} />
       </head>
       <body>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(restaurantJsonLd(settings)) }} />
         <Header contact={contact} />
         {children}
         <Footer settings={settings} />
