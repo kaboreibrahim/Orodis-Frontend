@@ -16,7 +16,7 @@ export function CateringTeaser({ whatsapp }: { whatsapp?: string }) {
           Vos grands moments, <span className="text-bordeaux italic">notre savoir-faire.</span>
         </h2>
         <p className="max-w-[520px] text-lg text-texte-doux">
-          Du cocktail de 30 personnes au dîner de gala, Orodis prépare, livre et sert. Dites-nous la date, le nombre
+          Du cocktail au dîner de gala, Orodis prépare, livre et sert. Dites-nous la date, le nombre
           d’invités et vos envies : on vous envoie un devis.
         </p>
         <ul className="flex flex-wrap gap-2.5">

@@ -42,8 +42,10 @@ export function RiseText({
         <span key={i} className={`block overflow-hidden ${lineClassName}`}>
           <motion.span
             className="block"
-            initial={{ y: "110%" }}
-            {...trigger}
+            // Animations réduites : texte en place dès le rendu (style serveur différent, voir FadeUp).
+            suppressHydrationWarning
+            initial={reduce ? false : { y: "110%" }}
+            {...(reduce ? { animate: { y: 0 } } : trigger)}
             transition={reduce ? { duration: 0 } : { duration: 0.85, ease: EASE_ORODIS, delay: start + i * 0.15 }}
           >
             {line}

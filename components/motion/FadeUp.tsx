@@ -41,8 +41,12 @@ export function FadeUp({ children, as = "div", className, id, delay = 0, immedia
     <Element
       id={id}
       className={className}
-      initial={{ opacity: 0, y: 24 }}
-      {...trigger}
+      // Animations réduites : état final dès le rendu, sans fondu ni attente du défilement.
+      // Le serveur ne connaît pas cette préférence : son style de départ diffère, d'où suppressHydrationWarning
+      // (Motion applique l'état final au montage).
+      suppressHydrationWarning
+      initial={reduce ? false : { opacity: 0, y: 24 }}
+      {...(reduce ? { animate: visible } : trigger)}
       transition={reduce ? { duration: 0 } : { duration: 0.7, ease: EASE_ORODIS, delay: start }}
     >
       {children}

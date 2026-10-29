@@ -40,24 +40,26 @@ export function Footer({ settings }: { settings: RestaurantSettings }) {
             </p>
           </div>
 
-          <div className="flex flex-[1_1_220px] flex-col gap-3">
-            <ColumnTitle>Contact</ColumnTitle>
-            {phone && (
-              <a href={telLink(phone)} className={linkClass}>
-                Tél. {formatPhone(phone)}
-              </a>
-            )}
-            {whatsapp && (
-              <a href={whatsappLink(whatsapp)} className={linkClass}>
-                WhatsApp {formatPhone(whatsapp)}
-              </a>
-            )}
-            {email && (
-              <a href={`mailto:${email}`} className={`${linkClass} break-all`}>
-                {email}
-              </a>
-            )}
-          </div>
+          {(phone || whatsapp || email) && (
+            <div className="flex flex-[1_1_220px] flex-col gap-3">
+              <ColumnTitle>Contact</ColumnTitle>
+              {phone && (
+                <a href={telLink(phone)} className={linkClass}>
+                  Tél. {formatPhone(phone)}
+                </a>
+              )}
+              {whatsapp && (
+                <a href={whatsappLink(whatsapp)} className={linkClass}>
+                  WhatsApp {formatPhone(whatsapp)}
+                </a>
+              )}
+              {email && (
+                <a href={`mailto:${email}`} className={`${linkClass} break-all`}>
+                  {email}
+                </a>
+              )}
+            </div>
+          )}
 
           <div className="flex flex-[1_1_200px] flex-col gap-3">
             <ColumnTitle>Adresse & horaires</ColumnTitle>

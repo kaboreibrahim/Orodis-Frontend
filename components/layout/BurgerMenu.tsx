@@ -103,7 +103,7 @@ export function BurgerMenu({ open, origin, onClose, buttonRef, contact }: Burger
           aria-modal="true"
           aria-label="Menu"
           className="fixed inset-0 z-0 overflow-y-auto bg-bordeaux text-creme nav:hidden"
-          initial={{ clipPath: `circle(0% at ${origin})` }}
+          initial={reduce ? false : { clipPath: `circle(0% at ${origin})` }}
           animate={{
             clipPath: `circle(150% at ${origin})`,
             transition: reduce ? instant : { duration: 0.9, ease: EASE_IN_OUT },
@@ -121,7 +121,7 @@ export function BurgerMenu({ open, origin, onClose, buttonRef, contact }: Burger
                     href={link.href}
                     onClick={onClose}
                     className="flex items-baseline gap-3 py-1 font-display text-[40px] leading-[1.15] font-bold tracking-[-0.02em] text-creme focus-visible:outline-jaune"
-                    initial={{ y: "110%" }}
+                    initial={reduce ? false : { y: "110%" }}
                     animate={{ y: 0, transition: reduce ? instant : { duration: 0.8, ease: EASE_ORODIS, delay: 0.15 + i * 0.06 } }}
                     exit={{ y: "110%", transition: reduce ? instant : { duration: 0.3, ease: EASE_IN_OUT } }}
                   >
@@ -136,7 +136,7 @@ export function BurgerMenu({ open, origin, onClose, buttonRef, contact }: Burger
 
             <motion.div
               className="flex flex-col gap-2"
-              initial={{ opacity: 0, x: 16 }}
+              initial={reduce ? false : { opacity: 0, x: 16 }}
               animate={{ opacity: 1, x: 0, transition: reduce ? instant : { duration: 0.6, ease: EASE_ORODIS, delay: 0.5 } }}
               exit={{ opacity: 0, transition: reduce ? instant : { duration: 0.2 } }}
             >

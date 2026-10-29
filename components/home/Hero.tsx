@@ -141,7 +141,8 @@ function HeroVisual({ dishes }: { dishes: DishDetail[] }) {
         </div>
       </div>
 
-      <FloatingCard className="top-24 left-0 sm:-left-[18px]" icon={<ChefHat size={20} className="text-bordeaux" />} iconClassName="bg-rose" title="Fait maison" text="cuisiné chaque jour" />
+      {/* En haut, au-dessus de l'écran du téléphone : elle ne couvre ni le logo ni « Que désirez-vous ? ». */}
+      <FloatingCard className="top-0 left-0 sm:-left-[18px]" icon={<ChefHat size={20} className="text-bordeaux" />} iconClassName="bg-rose" title="Fait maison" text="cuisiné chaque jour" />
       <FloatingCard
         className="top-[300px] right-0 sm:-right-[22px]"
         icon={<span className="size-4 rounded-full bg-wave" />}

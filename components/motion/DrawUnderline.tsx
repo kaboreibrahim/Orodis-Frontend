@@ -34,7 +34,9 @@ export function DrawUnderline({ children, className, delay = 0.85, afterIntro = 
           className="stroke-jaune"
           strokeWidth={9}
           strokeLinecap="round"
-          initial={{ pathLength: 0 }}
+          // Animations réduites : trait déjà dessiné (style serveur différent, voir FadeUp).
+          suppressHydrationWarning
+          initial={reduce ? false : { pathLength: 0 }}
           animate={{ pathLength: 1 }}
           transition={reduce ? { duration: 0 } : { duration: 0.9, ease: EASE_IN_OUT, delay: start }}
         />
