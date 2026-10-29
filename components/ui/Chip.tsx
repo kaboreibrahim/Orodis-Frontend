@@ -1,0 +1,3 @@
+// Pastille sélectionnable.
+
+export {};

@@ -1,0 +1,709 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Les Délices d'Orodis — Accueil</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&amp;family=DM+Sans:wght@400;500;700&amp;display=swap">
+<style>
+body{margin:0;background:#FBF5EE}
+@keyframes orodis-marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes orodis-ping{0%{transform:scale(1);opacity:.6}80%,100%{transform:scale(2.6);opacity:0}}
+@keyframes orodis-circle{from{clip-path:circle(0% at 50% 50%)}to{clip-path:circle(80% at 50% 50%)}}
+@keyframes orodis-pop{0%{transform:scale(0) rotate(-18deg);opacity:0}60%{transform:scale(1.08) rotate(3deg);opacity:1}100%{transform:scale(1) rotate(0deg);opacity:1}}
+@keyframes orodis-rise{from{transform:translateY(110%)}to{transform:translateY(0)}}
+@keyframes orodis-leave{0%{transform:translateY(0)}99%{transform:translateY(-100%);visibility:visible}100%{transform:translateY(-100%);visibility:hidden}}
+@keyframes orodis-fadeup{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes orodis-draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+.hiw-grid{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:56px;margin-top:20px}
+.hiw-steps{grid-column:1;grid-row:1}
+.hiw-step{min-height:520px;display:flex;flex-direction:column;justify-content:center;gap:16px;transition:opacity .5s,transform .5s cubic-bezier(.22,1,.36,1)}
+.hiw-side{grid-column:2;grid-row:1}
+.hiw-sticky{position:sticky;top:110px;display:flex;align-items:center;gap:56px;padding:20px 0}
+@container (max-width: 820px){
+.hiw-grid{grid-template-columns:minmax(0,1fr);column-gap:0}
+.hiw-side{grid-column:1;grid-row:1;z-index:2;pointer-events:none}
+.hiw-sticky{top:78px;justify-content:center;gap:0;padding:0;height:360px;align-items:flex-start;background:linear-gradient(#241014 82%,rgba(36,16,20,0))}
+.hiw-line{display:none}
+.hiw-phone{transform:scale(.55);transform-origin:50% 0}
+.hiw-steps{padding-top:380px}
+.hiw-step{min-height:460px;justify-content:flex-start}
+}
+.nav-burger{display:none}
+.nav-overlay{display:none}
+@container (max-width: 820px){
+.nav-links,.nav-ctas{display:none!important}
+.nav-burger{display:flex}
+.nav-overlay{display:block}
+}
+@media (prefers-reduced-motion: reduce){.orodis-intro{display:none}*{animation-duration:.01ms!important;animation-delay:0s!important}}
+</style>
+</helmet>
+<div style="position: relative; width: 100%; container-type: inline-size; background: #FBF5EE; color: #241014; font-family: 'DM Sans', system-ui, sans-serif; font-size: 16px; line-height: 1.55; overflow: clip">
+
+<!-- ============ INTRO (écran de bienvenue) ============ -->
+<sc-if value="{{showIntro}}" hint-placeholder-val="{{ true }}">
+<div class="orodis-intro" aria-hidden="true" style="position: absolute; left: 0; top: 0; width: 100%; height: 900px; z-index: 50; background: #FBF5EE; animation: orodis-leave 0.8s cubic-bezier(0.65,0,0.35,1) 3s both">
+<div style="position: absolute; inset: 0; background: #810C1B; animation: orodis-circle 0.9s cubic-bezier(0.45,0,0.4,1) 0s both"></div>
+<div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 24px; text-align: center">
+<img src="/_blob/0d6e91a20714decd9c8f610f1bf379db" alt="" style="width: clamp(180px, 22cqi, 300px); height: auto; animation: orodis-pop 0.75s cubic-bezier(0.34,1.56,0.64,1) 0.5s both">
+<span style="display: block; overflow: hidden; padding-bottom: 6px">
+<span style="display: block; font-family: 'Fraunces', Georgia, serif; font-weight: 700; font-size: clamp(40px, 6.2cqi, 92px); line-height: 1; letter-spacing: -0.025em; color: #FFFFFF; animation: orodis-rise 0.8s cubic-bezier(0.16,1,0.3,1) 0.95s both">Les Délices d'Orodis</span>
+</span>
+<span style="display: block; overflow: hidden">
+<span style="display: block; font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: clamp(13px, 1.5cqi, 20px); letter-spacing: 0.22em; text-transform: uppercase; color: #EBE320; animation: orodis-rise 0.8s cubic-bezier(0.16,1,0.3,1) 1.3s both">Pâtisserie · Restauration · Service</span>
+</span>
+<span style="display: block; overflow: hidden; padding-bottom: 4px">
+<span style="display: block; font-family: 'Fraunces', Georgia, serif; font-style: italic; font-weight: 600; font-size: clamp(18px, 2cqi, 28px); color: #F2D9D6; animation: orodis-rise 0.8s cubic-bezier(0.16,1,0.3,1) 1.6s both">Le savoir-faire à votre service</span>
+</span>
+</div>
+</div>
+</sc-if>
+
+<!-- ============ NAV ============ -->
+<header style="position: sticky; top: 0; z-index: 20; padding: 14px 16px 0">
+<nav aria-label="Navigation principale" style="{{navStyle}}">
+<a href="#accueil" style="display: flex; align-items: center; text-decoration: none">
+<img src="{{navLogo}}" alt="Les Délices d'Orodis, restaurant" style="height: 50px; width: auto; display: block">
+</a>
+<div class="nav-links" style="display: flex; flex-wrap: wrap; align-items: center; gap: 2px 22px; font-weight: 500; font-size: 15px">
+<a href="#carte" style="color: #241014; text-decoration: none; padding: 10px 0">La carte</a>
+<a href="#comment" style="color: #241014; text-decoration: none; padding: 10px 0">Comment ça marche</a>
+<a href="#traiteur" style="color: #241014; text-decoration: none; padding: 10px 0">Traiteur</a>
+<a href="#acces" style="color: #241014; text-decoration: none; padding: 10px 0">Nous trouver</a>
+</div>
+<div class="nav-ctas" style="display: flex; gap: 8px">
+<a href="#reserver" style="color: #810C1B; text-decoration: none; padding: 12px 18px; border-radius: 999px; font-weight: 700; font-size: 15px; border: 1.5px solid #810C1B">Réserver</a>
+<a href="#carte" style="background: #810C1B; color: #FFFFFF; text-decoration: none; padding: 12px 20px; border-radius: 999px; font-weight: 700; font-size: 15px">Commander</a>
+</div>
+<button type="button" class="nav-burger" onClick="{{toggleMenu}}" aria-expanded="{{menuExpanded}}" aria-controls="menu-mobile" aria-label="{{burgerLabel}}" style="{{burgerStyle}}">
+<span style="{{bar1}}"></span>
+<span style="{{bar2}}"></span>
+</button>
+</nav>
+</header>
+
+<!-- ============ MENU MOBILE (révélation en cercle depuis le burger) ============ -->
+<div id="menu-mobile" class="nav-overlay" aria-hidden="{{menuHidden}}" style="{{overlayStyle}}">
+<div style="padding: 110px 28px 36px; min-height: 100%; box-sizing: border-box; display: flex; flex-direction: column; gap: 34px">
+<ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px">
+<sc-for list="{{menuLinks}}" as="m" hint-placeholder-count="6">
+<li style="overflow: hidden; padding-bottom: 4px">
+<a href="{{m.href}}" onClick="{{closeMenu}}" tabIndex="{{menuTab}}" style="{{m.style}}">
+<span style="font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; color: #EBE320; min-width: 26px">{{m.num}}</span>
+<span>{{m.label}}</span>
+</a>
+</li>
+</sc-for>
+</ol>
+<div style="{{menuFoot}}">
+<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #EBE320">Ouvert 24h/24 · 7j/7</span>
+<a href="https://wa.me/2250702578159" tabIndex="{{menuTab}}" style="color: #FFFFFF; text-decoration: none; font-size: 17px; padding: 4px 0">WhatsApp +225 07 02 57 81 59</a>
+<a href="tel:+2250556631756" tabIndex="{{menuTab}}" style="color: #FFFFFF; text-decoration: none; font-size: 17px; padding: 4px 0">Tél. +225 05 56 63 17 56</a>
+<a href="#carte" onClick="{{closeMenu}}" tabIndex="{{menuTab}}" style="margin-top: 14px; background: #EBE320; color: #241014; text-decoration: none; height: 56px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 17px">Commander en ligne</a>
+</div>
+</div>
+</div>
+
+<!-- ============ HERO ============ -->
+<section id="accueil" style="max-width: 1200px; margin: 0 auto; padding: 56px 24px 72px; display: flex; flex-wrap: wrap; align-items: center; gap: 56px 48px">
+<div style="flex: 1 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 26px">
+<span style="align-self: flex-start; display: inline-flex; align-items: center; gap: 10px; background: #FFFFFF; border: 1px solid #EADBD3; padding: 8px 16px 8px 12px; border-radius: 999px; font-size: 14px; font-weight: 700; color: #241014; animation: orodis-fadeup 0.7s cubic-bezier(0.16,1,0.3,1) {{d0}} both">
+<span style="position: relative; width: 10px; height: 10px; display: inline-block">
+<span style="position: absolute; inset: 0; border-radius: 50%; background: #1F9D55; animation: orodis-ping 1.8s ease-out infinite"></span>
+<span style="position: absolute; inset: 0; border-radius: 50%; background: #1F9D55"></span>
+</span>
+Ouvert 24h/24 · 7j/7 · Livraison
+</span>
+<h1 style="margin: 0; font-family: 'Fraunces', Georgia, serif; font-weight: 700; font-size: clamp(46px, 6.4cqi, 88px); line-height: 0.98; letter-spacing: -0.025em; color: #241014">
+<span style="display: block; overflow: hidden; padding-bottom: 0.06em"><span style="display: block; animation: orodis-rise 0.85s cubic-bezier(0.16,1,0.3,1) {{d1}} both">Le savoir-faire</span></span>
+<span style="display: block; overflow: hidden; padding-bottom: 0.2em; margin-bottom: -0.14em"><span style="display: block; animation: orodis-rise 0.85s cubic-bezier(0.16,1,0.3,1) {{d2}} both">à votre <span style="position: relative; display: inline-block; color: #810C1B; font-style: italic">service.<svg viewBox="0 0 300 24" preserveAspectRatio="none" aria-hidden="true" style="position: absolute; left: 0; bottom: -10px; width: 100%; height: 18px"><path d="M4 16 C80 4 200 2 296 12" fill="none" stroke="#EBE320" stroke-width="9" stroke-linecap="round" pathLength="1" stroke-dasharray="1" style="animation: orodis-draw 0.9s cubic-bezier(0.65,0,0.35,1) {{d3}} both"></path></svg></span></span></span>
+</h1>
+<p style="margin: 0; font-size: clamp(17px, 1.45cqi, 20px); color: #6B5458; max-width: 520px; animation: orodis-fadeup 0.7s cubic-bezier(0.16,1,0.3,1) {{d4}} both">Spécialités africaines et européennes, pâtisserie maison. Sur place, à emporter ou livré chez vous, à toute heure.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; animation: orodis-fadeup 0.7s cubic-bezier(0.16,1,0.3,1) {{d5}} both">
+<a href="#carte" style="background: #810C1B; color: #FFFFFF; text-decoration: none; padding: 17px 30px; border-radius: 999px; font-weight: 700; font-size: 17px; box-shadow: 0 12px 28px rgba(129,12,27,0.28)">Commander en ligne</a>
+<a href="#reserver" style="background: #FFFFFF; color: #241014; text-decoration: none; padding: 17px 30px; border-radius: 999px; font-weight: 700; font-size: 17px; border: 1.5px solid #241014">Réserver une table</a>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; font-size: 13px; font-weight: 700; color: #6B5458; letter-spacing: 0.06em; text-transform: uppercase">
+<span>Payez avec</span>
+<span style="display: inline-flex; align-items: center; gap: 6px; text-transform: none; letter-spacing: 0; color: #241014"><span style="width: 9px; height: 9px; border-radius: 50%; background: #1DC8F2"></span>Wave</span>
+<span style="display: inline-flex; align-items: center; gap: 6px; text-transform: none; letter-spacing: 0; color: #241014"><span style="width: 9px; height: 9px; border-radius: 50%; background: #FF7900"></span>Orange Money</span>
+<span style="display: inline-flex; align-items: center; gap: 6px; text-transform: none; letter-spacing: 0; color: #241014"><span style="width: 9px; height: 9px; border-radius: 50%; background: #FFCB05"></span>MTN MoMo</span>
+<span style="display: inline-flex; align-items: center; gap: 6px; text-transform: none; letter-spacing: 0; color: #241014"><span style="width: 9px; height: 9px; border-radius: 50%; background: #2E7D32"></span>Espèces</span>
+</div>
+</div>
+
+<!-- hero visual -->
+<div style="flex: 1 1 420px; min-width: 0; display: flex; justify-content: center; animation: orodis-fadeup 1s cubic-bezier(0.16,1,0.3,1) {{d4}} both">
+<div style="position: relative; width: 460px; max-width: 100%; height: 600px">
+<div style="position: absolute; left: 50%; top: 50%; width: 440px; height: 440px; margin: -220px 0 0 -220px; border-radius: 50%; background: #810C1B"></div>
+<div style="position: absolute; left: 50%; top: 50%; width: 540px; height: 540px; margin: -270px 0 0 -270px; border-radius: 50%; border: 1.5px dashed #D9B8B4"></div>
+<!-- phone -->
+<div style="position: absolute; left: 50%; top: 20px; width: 270px; height: 560px; margin-left: -135px; background: #241014; border-radius: 44px; padding: 10px; box-shadow: 0 34px 70px rgba(60,10,20,0.35)">
+<div style="position: relative; width: 100%; height: 100%; border-radius: 35px; overflow: hidden; background: #FBF5EE">
+<div style="position: absolute; left: 50%; top: 9px; width: 84px; height: 24px; margin-left: -42px; background: #241014; border-radius: 14px"></div>
+<div style="padding: 46px 16px 16px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<img src="/_blob/9605bc1b83d0a09f9605df8729f3433b" alt="" style="height: 36px; width: auto">
+<span style="background: #F4E3E1; color: #810C1B; font-size: 11px; font-weight: 700; padding: 5px 10px; border-radius: 999px">Table 5</span>
+</div>
+<div style="font-family: 'Fraunces', serif; font-weight: 700; font-size: 22px; line-height: 1.05">Que désirez-vous ?</div>
+<div style="display: flex; gap: 6px; font-size: 11px; font-weight: 700">
+<span style="background: #810C1B; color: #FFFFFF; padding: 6px 10px; border-radius: 999px">Africain</span>
+<span style="background: #FFFFFF; border: 1px solid #EADBD3; padding: 6px 10px; border-radius: 999px">Européen</span>
+<span style="background: #FFFFFF; border: 1px solid #EADBD3; padding: 6px 10px; border-radius: 999px">Pâtisserie</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; gap: 10px; align-items: center; background: #FFFFFF; border-radius: 14px; padding: 8px"><div style="width: 50px; height: 44px; border-radius: 10px; background: #F2D9C7"></div><div style="flex: 1; min-width: 0"><div style="font-size: 13px; font-weight: 700">Kedjenou de poulet</div><div style="font-size: 11px; color: #6B5458">avec attiéké</div></div><div style="width: 26px; height: 26px; border-radius: 50%; background: #810C1B; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700">+</div></div>
+<div style="display: flex; gap: 10px; align-items: center; background: #FFFFFF; border-radius: 14px; padding: 8px"><div style="width: 50px; height: 44px; border-radius: 10px; background: #F6E7A8"></div><div style="flex: 1; min-width: 0"><div style="font-size: 13px; font-weight: 700">Garba spécial</div><div style="font-size: 11px; color: #6B5458">thon frit, piment</div></div><div style="width: 26px; height: 26px; border-radius: 50%; background: #810C1B; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700">+</div></div>
+<div style="display: flex; gap: 10px; align-items: center; background: #FFFFFF; border-radius: 14px; padding: 8px"><div style="width: 50px; height: 44px; border-radius: 10px; background: #EBD3D0"></div><div style="flex: 1; min-width: 0"><div style="font-size: 13px; font-weight: 700">Poulet braisé</div><div style="font-size: 11px; color: #6B5458">alloco, sauce maison</div></div><div style="width: 26px; height: 26px; border-radius: 50%; background: #810C1B; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700">+</div></div>
+</div>
+<div style="margin-top: 6px; background: #810C1B; color: #FFFFFF; border-radius: 999px; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">Voir mon panier · 2</div>
+</div>
+</div>
+</div>
+<!-- floating cards -->
+<div style="position: absolute; left: -18px; top: 96px; background: #FFFFFF; border-radius: 18px; padding: 12px 16px; display: flex; gap: 10px; align-items: center; box-shadow: 0 16px 36px rgba(60,10,20,0.16)">
+<div style="width: 36px; height: 36px; border-radius: 11px; background: #F4E3E1; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#810C1B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"></path></svg></div>
+<div><div style="font-size: 14px; font-weight: 700">QR code scanné</div><div style="font-size: 12px; color: #6B5458">Table 5 · sur place</div></div>
+</div>
+<div style="position: absolute; right: -22px; top: 300px; background: #FFFFFF; border-radius: 18px; padding: 12px 16px; display: flex; gap: 10px; align-items: center; box-shadow: 0 16px 36px rgba(60,10,20,0.16)">
+<div style="width: 36px; height: 36px; border-radius: 11px; background: #E1F6FC; display: flex; align-items: center; justify-content: center"><span style="width: 16px; height: 16px; border-radius: 50%; background: #1DC8F2"></span></div>
+<div><div style="font-size: 14px; font-weight: 700">Paiement Wave</div><div style="font-size: 12px; color: #6B5458">confirmé</div></div>
+</div>
+<div style="position: absolute; left: 0; bottom: 40px; background: #241014; color: #FFFFFF; border-radius: 18px; padding: 12px 16px; display: flex; gap: 10px; align-items: center; box-shadow: 0 16px 36px rgba(60,10,20,0.25)">
+<div style="width: 36px; height: 36px; border-radius: 11px; background: #EBE320; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#241014" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="17" r="3"></circle><circle cx="18" cy="17" r="3"></circle><path d="M6 17h7l3-7h3M13 17l-2-6H8"></path></svg></div>
+<div><div style="font-size: 14px; font-weight: 700">Livré chaud</div><div style="font-size: 12px; color: #D9C3C6">même la nuit</div></div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- ============ MARQUEES ============ -->
+<section aria-label="Nos spécialités" style="position: relative; height: 230px; margin-top: -10px">
+<div style="position: absolute; left: -5%; width: 110%; top: 34px; transform: rotate(-3deg); background: #810C1B; padding: 18px 0; overflow: hidden">
+<div style="display: flex; width: max-content; animation: orodis-marquee 38s linear infinite; font-family: 'Fraunces', serif; font-weight: 700; font-size: 40px; color: #FFFFFF; white-space: nowrap; letter-spacing: -0.01em">
+<span style="padding-right: 28px">Petit-déjeuner <span style="color: #EBE320">★</span> Déjeuner <span style="color: #EBE320">★</span> Dîner <span style="color: #EBE320">★</span> Goûter <span style="color: #EBE320">★</span> Pâtisserie <span style="color: #EBE320">★</span> Traiteur <span style="color: #EBE320">★</span> Livraison 24/7 <span style="color: #EBE320">★</span></span>
+<span style="padding-right: 28px" aria-hidden="true">Petit-déjeuner <span style="color: #EBE320">★</span> Déjeuner <span style="color: #EBE320">★</span> Dîner <span style="color: #EBE320">★</span> Goûter <span style="color: #EBE320">★</span> Pâtisserie <span style="color: #EBE320">★</span> Traiteur <span style="color: #EBE320">★</span> Livraison 24/7 <span style="color: #EBE320">★</span></span>
+</div>
+</div>
+<div style="position: absolute; left: -5%; width: 110%; top: 118px; transform: rotate(2deg); background: #241014; padding: 16px 0; overflow: hidden">
+<div style="display: flex; width: max-content; animation: orodis-marquee 46s linear infinite reverse; font-size: 26px; font-weight: 700; color: #FFFFFF; white-space: nowrap">
+<span style="padding-right: 24px">Kedjenou ✦ Garba ✦ Poulet braisé ✦ Attiéké poisson ✦ Sauce graine ✦ Alloco ✦ Burger maison ✦ Pizza ✦ Salade niçoise ✦ Croissants ✦ Éclairs ✦</span>
+<span style="padding-right: 24px" aria-hidden="true">Kedjenou ✦ Garba ✦ Poulet braisé ✦ Attiéké poisson ✦ Sauce graine ✦ Alloco ✦ Burger maison ✦ Pizza ✦ Salade niçoise ✦ Croissants ✦ Éclairs ✦</span>
+</div>
+</div>
+</section>
+
+<!-- ============ POURQUOI ============ -->
+<section style="max-width: 1200px; margin: 0 auto; padding: 72px 24px 0; display: flex; flex-direction: column; gap: 36px">
+<div style="display: flex; flex-direction: column; gap: 10px; max-width: 680px">
+<span style="font-size: 13px; font-weight: 700; color: #810C1B; letter-spacing: 0.14em; text-transform: uppercase">Pourquoi Orodis</span>
+<h2 style="margin: 0; font-family: 'Fraunces', serif; font-weight: 700; font-size: clamp(36px, 4.4cqi, 60px); line-height: 1.02; letter-spacing: -0.02em">Deux cuisines, <span style="font-style: italic; color: #810C1B">un seul</span> savoir-faire.</h2>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr)); gap: 18px">
+<!-- 24/7 -->
+<article style="background: #241014; color: #FFFFFF; border-radius: 28px; padding: 30px; min-height: 320px; display: flex; flex-direction: column; justify-content: space-between; gap: 20px; position: relative; overflow: hidden">
+<div>
+<h3 style="margin: 0; font-family: 'Fraunces', serif; font-size: 28px; font-weight: 700">Ouvert jour et nuit.</h3>
+<p style="margin: 8px 0 0; color: #D9C3C6; max-width: 280px">Petite faim à 3 h du matin ? La cuisine tourne 24h/24, 7j/7.</p>
+</div>
+<div style="display: flex; align-items: baseline; gap: 8px">
+<span style="font-family: 'Fraunces', serif; font-weight: 700; font-size: 96px; line-height: 0.9; color: #EBE320">24/7</span>
+</div>
+<div aria-hidden="true" style="position: absolute; right: -50px; bottom: -50px; width: 200px; height: 200px; border-radius: 50%; border: 18px solid rgba(235,227,32,0.14)"></div>
+</article>
+<!-- livraison -->
+<article style="background: #FFFFFF; border: 1px solid #EADBD3; border-radius: 28px; padding: 30px; min-height: 320px; display: flex; flex-direction: column; gap: 18px">
+<div style="width: 52px; height: 52px; border-radius: 16px; background: #F4E3E1; display: flex; align-items: center; justify-content: center"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#810C1B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="17" r="3"></circle><circle cx="18" cy="17" r="3"></circle><path d="M6 17h7l3-7h3M13 17l-2-6H8"></path></svg></div>
+<h3 style="margin: 0; font-family: 'Fraunces', serif; font-size: 28px; font-weight: 700">Livré chaud, chez vous.</h3>
+<p style="margin: 0; color: #6B5458">Commandez en ligne, suivez votre livreur en direct et payez par Mobile Money ou en espèces à la livraison.</p>
+<div style="margin-top: auto; height: 70px; border-radius: 16px; background: #F5ECE4; position: relative; overflow: hidden" aria-hidden="true">
+<div style="position: absolute; left: 0; right: 0; top: 30px; height: 10px; background: #FFFFFF"></div>
+<div style="position: absolute; left: 30%; top: 0; bottom: 0; width: 10px; background: #FFFFFF"></div>
+<div style="position: absolute; left: 24px; top: 24px; width: 22px; height: 22px; border-radius: 50%; background: #810C1B; border: 3px solid #FFFFFF"></div>
+<div style="position: absolute; left: 46px; right: 52px; top: 33px; border-top: 4px dashed #810C1B"></div>
+<div style="position: absolute; right: 26px; top: 24px; width: 22px; height: 22px; border-radius: 50%; background: #241014; border: 3px solid #FFFFFF"></div>
+</div>
+</article>
+<!-- pâtisserie -->
+<article style="background: #810C1B; color: #FFFFFF; border-radius: 28px; padding: 30px; min-height: 320px; display: flex; flex-direction: column; gap: 18px">
+<div style="width: 52px; height: 52px; border-radius: 16px; background: rgba(255,255,255,0.14); display: flex; align-items: center; justify-content: center"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#EBE320" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21h16M5 21v-6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v6M8 13V9h8v4M12 9V5M12 5a1.5 1.5 0 1 0 0-.01"></path></svg></div>
+<h3 style="margin: 0; font-family: 'Fraunces', serif; font-size: 28px; font-weight: 700">Pâtisserie maison.</h3>
+<p style="margin: 0; color: #F2D9D6">Croissants du matin, gâteaux d'anniversaire, douceurs du goûter : tout est préparé sur place.</p>
+<div style="margin-top: auto; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+<div style="height: 70px; border-radius: 12px; background: rgba(255,255,255,0.12); display: flex; align-items: flex-end; padding: 6px 8px; font-size: 11px; font-weight: 700; color: #F2D9D6">[PHOTO]</div>
+<div style="height: 70px; border-radius: 12px; background: rgba(255,255,255,0.18); display: flex; align-items: flex-end; padding: 6px 8px; font-size: 11px; font-weight: 700; color: #F2D9D6">[PHOTO]</div>
+<div style="height: 70px; border-radius: 12px; background: rgba(255,255,255,0.12); display: flex; align-items: flex-end; padding: 6px 8px; font-size: 11px; font-weight: 700; color: #F2D9D6">[PHOTO]</div>
+</div>
+</article>
+<!-- deux cuisines -->
+<article style="background: #FFFFFF; border: 1px solid #EADBD3; border-radius: 28px; padding: 30px; display: flex; flex-direction: column; gap: 16px">
+<h3 style="margin: 0; font-family: 'Fraunces', serif; font-size: 28px; font-weight: 700">Africain ou européen ?</h3>
+<p style="margin: 0; color: #6B5458">Kedjenou ou burger, attiéké poisson ou pizza : à chacun son envie, à la même table.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<span style="background: #F4E3E1; color: #810C1B; padding: 7px 14px; border-radius: 999px; font-weight: 700; font-size: 14px">Kedjenou</span>
+<span style="background: #F4E3E1; color: #810C1B; padding: 7px 14px; border-radius: 999px; font-weight: 700; font-size: 14px">Garba</span>
+<span style="background: #F4E3E1; color: #810C1B; padding: 7px 14px; border-radius: 999px; font-weight: 700; font-size: 14px">Sauce graine</span>
+<span style="background: #F5ECE4; color: #241014; padding: 7px 14px; border-radius: 999px; font-weight: 700; font-size: 14px">Burger</span>
+<span style="background: #F5ECE4; color: #241014; padding: 7px 14px; border-radius: 999px; font-weight: 700; font-size: 14px">Pizza</span>
+<span style="background: #F5ECE4; color: #241014; padding: 7px 14px; border-radius: 999px; font-weight: 700; font-size: 14px">Salade niçoise</span>
+</div>
+</article>
+<!-- whatsapp -->
+<article style="background: #F5ECE4; border-radius: 28px; padding: 30px; display: flex; flex-direction: column; gap: 16px">
+<div style="width: 52px; height: 52px; border-radius: 16px; background: #25D366; display: flex; align-items: center; justify-content: center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"></path></svg></div>
+<h3 style="margin: 0; font-family: 'Fraunces', serif; font-size: 28px; font-weight: 700">Une question ? Un message.</h3>
+<p style="margin: 0; color: #6B5458">L'équipe répond sur WhatsApp, pour une commande, une réservation ou un devis.</p>
+<a href="#contact" style="margin-top: auto; color: #810C1B; font-weight: 700; text-decoration: underline; text-underline-offset: 4px">+225 07 02 57 81 59</a>
+</article>
+<!-- sur place -->
+<article style="background: #FFFFFF; border: 1px solid #EADBD3; border-radius: 28px; padding: 30px; display: flex; flex-direction: column; gap: 16px">
+<div style="width: 52px; height: 52px; border-radius: 16px; background: #F4E3E1; display: flex; align-items: center; justify-content: center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#810C1B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"></path></svg></div>
+<h3 style="margin: 0; font-family: 'Fraunces', serif; font-size: 28px; font-weight: 700">À table, sans attendre.</h3>
+<p style="margin: 0; color: #6B5458">Scannez le QR code de votre table : la carte s'ouvre, vous commandez, la cuisine reçoit tout de suite.</p>
+</article>
+</div>
+</section>
+
+<!-- ============ CARTE ============ -->
+<section id="carte" style="max-width: 1200px; margin: 0 auto; padding: 104px 24px 0; display: flex; flex-direction: column; gap: 30px">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center">
+<span style="font-size: 13px; font-weight: 700; color: #810C1B; letter-spacing: 0.14em; text-transform: uppercase">La carte</span>
+<h2 style="margin: 0; font-family: 'Fraunces', serif; font-weight: 700; font-size: clamp(36px, 4.4cqi, 60px); line-height: 1.02; letter-spacing: -0.02em">Du petit-déjeuner au <span style="font-style: italic; color: #810C1B">dessert.</span></h2>
+<p style="margin: 0; color: #6B5458; font-size: 17px; max-width: 520px">Faites glisser la roue pour choisir une catégorie, puis faites défiler les plats du doigt.</p>
+</div>
+<div style="margin: -10px -24px -30px">
+<dc-import name="Carte" embedded="{{yes}}" hint-size="100%,1240px"></dc-import>
+</div>
+<a href="#carte" style="align-self: center; background: #241014; color: #FFFFFF; text-decoration: none; padding: 17px 32px; border-radius: 999px; font-weight: 700; font-size: 17px">Voir toute la carte et commander</a>
+</section>
+
+<!-- ============ COMMENT ÇA MARCHE (défilement collant) ============ -->
+<section id="comment" style="margin-top: 110px; background: #241014; color: #FFFFFF">
+<div style="max-width: 1200px; margin: 0 auto; padding: 96px 24px 40px">
+<div style="display: flex; flex-direction: column; gap: 14px; max-width: 640px">
+<span style="font-size: 13px; font-weight: 700; color: #EBE320; letter-spacing: 0.14em; text-transform: uppercase">Comment ça marche</span>
+<h2 style="margin: 0; font-family: 'Fraunces', serif; font-weight: 700; font-size: clamp(36px, 4.4cqi, 60px); line-height: 1.02; letter-spacing: -0.02em">Commander à table, <span style="font-style: italic; color: #EBE320">en 4 gestes.</span></h2>
+</div>
+
+<div class="hiw-grid">
+<!-- colonne des étapes (défile) -->
+<div class="hiw-steps">
+<sc-for list="{{steps}}" as="s" hint-placeholder-count="4">
+<article ref="{{s.ref}}" class="hiw-step" style="{{s.style}}">
+<span style="font-size: 15px; font-weight: 700; color: #EBE320; letter-spacing: 0.06em">Étape {{s.num}}</span>
+<h3 style="margin: 0; font-family: 'Fraunces', serif; font-weight: 700; font-size: clamp(48px, 6.4cqi, 92px); line-height: 0.95; letter-spacing: -0.03em; color: #FFFFFF">{{s.title}}</h3>
+<p style="margin: 0; font-size: clamp(17px, 1.5cqi, 20px); color: #D9C3C6; max-width: 440px">{{s.text}}</p>
+</article>
+</sc-for>
+</div>
+
+<!-- colonne collante : frise + téléphone -->
+<div class="hiw-side">
+<div class="hiw-sticky">
+<!-- frise verticale -->
+<div class="hiw-line" aria-hidden="true" style="position: relative; width: 14px; height: 480px; flex-shrink: 0">
+<div style="position: absolute; left: 6px; top: 0; bottom: 0; width: 2px; background: #4A2A31"></div>
+<div style="position: absolute; left: 6px; top: 0; width: 2px; background: #EBE320; transform-origin: 50% 0; {{lineFill}}"></div>
+<sc-for list="{{lineDots}}" as="ld" hint-placeholder-count="4"><span style="{{ld}}"></span></sc-for>
+</div>
+<!-- téléphone -->
+<div class="hiw-phone" style="position: relative; width: 300px; height: 620px; flex-shrink: 0">
+<div aria-hidden="true" style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -54%); font-family: 'Fraunces', serif; font-weight: 700; font-size: 380px; line-height: 1; color: rgba(235,227,32,0.07); letter-spacing: -0.05em; pointer-events: none; transition: opacity 0.4s">{{ghost}}</div>
+<div style="position: absolute; inset: 0; background: #0F0608; border-radius: 48px; padding: 11px; box-shadow: 0 0 0 1px #3A1E24, 0 40px 90px rgba(129,12,27,0.45)">
+<div style="position: relative; width: 100%; height: 100%; border-radius: 38px; overflow: hidden; background: #FBF5EE; color: #241014">
+<div style="position: absolute; left: 50%; top: 10px; width: 90px; height: 26px; margin-left: -45px; background: #0F0608; border-radius: 14px; z-index: 5"></div>
+
+<!-- écran 1 : scan -->
+<div style="{{scr1}}">
+<div style="padding: 60px 22px 22px; display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center">
+<img src="/_blob/9605bc1b83d0a09f9605df8729f3433b" alt="" style="height: 64px; width: auto">
+<div style="font-family: 'Fraunces', serif; font-weight: 700; font-size: 22px">Table 5</div>
+<div style="width: 190px; height: 190px; padding: 12px; background: #FFFFFF; border-radius: 18px; box-shadow: 0 10px 26px rgba(60,10,20,0.12); display: grid; grid-template-columns: repeat(13, minmax(0, 1fr)); gap: 2px; box-sizing: border-box">
+<sc-for list="{{qr}}" as="c" hint-placeholder-count="169"><div style="background: {{c}}; border-radius: 1px; aspect-ratio: 1"></div></sc-for>
+</div>
+<div style="font-size: 14px; color: #6B5458">Scannez avec l'appareil photo de votre téléphone</div>
+</div>
+</div>
+
+<!-- écran 2 : choisir -->
+<div style="{{scr2}}">
+<div style="padding: 50px 16px 16px; display: flex; flex-direction: column; gap: 10px">
+<div style="font-family: 'Fraunces', serif; font-weight: 700; font-size: 22px">Plats africains</div>
+<div style="background: #FFFFFF; border-radius: 16px; overflow: hidden"><div style="height: 110px; background: #F2D9C7"></div><div style="padding: 10px 12px; display: flex; justify-content: space-between; align-items: center"><div><div style="font-weight: 700; font-size: 15px">Kedjenou de poulet</div><div style="font-size: 12px; color: #6B5458">avec attiéké</div></div><div style="width: 34px; height: 34px; border-radius: 50%; background: #810C1B; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700">+</div></div></div>
+<div style="background: #FFFFFF; border-radius: 16px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center"><div><div style="font-weight: 700; font-size: 15px">Garba spécial</div><div style="font-size: 12px; color: #6B5458">thon frit, piment</div></div><div style="width: 34px; height: 34px; border-radius: 50%; background: #810C1B; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700">+</div></div>
+<div style="background: #FFFFFF; border-radius: 16px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center"><div><div style="font-weight: 700; font-size: 15px">Sauce graine</div><div style="font-size: 12px; color: #6B5458">riz ou foutou</div></div><div style="width: 34px; height: 34px; border-radius: 50%; background: #810C1B; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700">+</div></div>
+</div>
+</div>
+
+<!-- écran 3 : commander -->
+<div style="{{scr3}}">
+<div style="padding: 50px 18px 18px; display: flex; flex-direction: column; gap: 12px; height: 100%; box-sizing: border-box">
+<div style="font-family: 'Fraunces', serif; font-weight: 700; font-size: 22px">Ma commande</div>
+<div style="font-size: 13px; color: #6B5458; margin-top: -8px">Table 5 · sur place</div>
+<div style="display: flex; justify-content: space-between; font-size: 15px; padding: 8px 0; border-bottom: 1px solid #EADBD3"><span>1× Kedjenou de poulet</span><span style="font-weight: 700">[PRIX]</span></div>
+<div style="display: flex; justify-content: space-between; font-size: 15px; padding: 8px 0; border-bottom: 1px solid #EADBD3"><span>1× Jus de bissap</span><span style="font-weight: 700">[PRIX]</span></div>
+<div style="flex: 1"></div>
+<div style="display: flex; justify-content: space-between; font-family: 'Fraunces', serif; font-weight: 700; font-size: 20px"><span>Total</span><span>[TOTAL] F</span></div>
+<div style="background: #810C1B; color: #FFFFFF; border-radius: 999px; height: 52px; display: flex; align-items: center; justify-content: center; font-weight: 700">Envoyer en cuisine</div>
+<div style="text-align: center; font-size: 12px; color: #6B5458; margin-bottom: 14px">Payez maintenant ou à la fin du repas</div>
+</div>
+</div>
+
+<!-- écran 4 : savourer -->
+<div style="{{scr4}}">
+<div style="padding: 56px 20px 20px; display: flex; flex-direction: column; gap: 16px">
+<div style="font-family: 'Fraunces', serif; font-weight: 700; font-size: 22px">Suivi en direct</div>
+<div style="display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; gap: 12px; align-items: center"><span style="width: 30px; height: 30px; border-radius: 50%; background: #1F9D55; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px">✓</span><span style="font-weight: 700">Commande reçue</span></div>
+<div style="display: flex; gap: 12px; align-items: center"><span style="width: 30px; height: 30px; border-radius: 50%; background: #1F9D55; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px">✓</span><span style="font-weight: 700">En préparation</span></div>
+<div style="display: flex; gap: 12px; align-items: center"><span style="width: 30px; height: 30px; border-radius: 50%; background: #810C1B; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px">3</span><span style="font-weight: 700">Servie à votre table</span></div>
+</div>
+<div style="margin-top: 12px; background: #810C1B; color: #FFFFFF; border-radius: 22px; padding: 26px 20px; text-align: center">
+<div style="font-family: 'Fraunces', serif; font-weight: 700; font-size: 30px; font-style: italic">Bon appétit !</div>
+<div style="font-size: 13px; color: #F2D9D6; margin-top: 6px">Le serveur arrive avec votre plat.</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<p style="margin: 40px 0 0; color: #D9C3C6; font-size: 15px">Pas sur place ? La même carte est disponible en ligne, en livraison ou à emporter.</p>
+</div>
+</section>
+
+<!-- ============ TRAITEUR ============ -->
+<section id="traiteur" style="max-width: 1200px; margin: 0 auto; padding: 104px 24px 0; display: flex; flex-wrap: wrap; gap: 48px; align-items: center">
+<div style="flex: 1 1 440px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+<span style="font-size: 13px; font-weight: 700; color: #810C1B; letter-spacing: 0.14em; text-transform: uppercase">Traiteur &amp; événements</span>
+<h2 style="margin: 0; font-family: 'Fraunces', serif; font-weight: 700; font-size: clamp(36px, 4.4cqi, 60px); line-height: 1.02; letter-spacing: -0.02em">Vos grands moments, <span style="font-style: italic; color: #810C1B">notre savoir-faire.</span></h2>
+<p style="margin: 0; color: #6B5458; font-size: 18px; max-width: 520px">Du cocktail de 30 personnes au dîner de gala, Orodis prépare, livre et sert. Dites-nous la date, le nombre d'invités et vos envies : on vous envoie un devis.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 10px">
+<sc-for list="{{events}}" as="e" hint-placeholder-count="8">
+<span style="background: #FFFFFF; border: 1px solid #EADBD3; padding: 10px 16px; border-radius: 999px; font-weight: 700; font-size: 15px">{{e}}</span>
+</sc-for>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 6px">
+<a href="#contact" style="background: #810C1B; color: #FFFFFF; text-decoration: none; padding: 16px 28px; border-radius: 999px; font-weight: 700; font-size: 17px">Demander un devis sur WhatsApp</a>
+<a href="#contact" style="color: #241014; text-decoration: none; padding: 16px 28px; border-radius: 999px; font-weight: 700; font-size: 17px; border: 1.5px solid #241014">Voir nos formules</a>
+</div>
+</div>
+<div style="flex: 1 1 440px; min-width: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px">
+<div style="grid-row: span 2; min-height: 420px; border-radius: 24px; background: #EBD3D0; display: flex; align-items: flex-end; padding: 18px; box-sizing: border-box; font-weight: 700; color: #6B3A34">[PHOTO : buffet de mariage]</div>
+<div style="min-height: 203px; border-radius: 24px; background: #F2D9C7; display: flex; align-items: flex-end; padding: 18px; box-sizing: border-box; font-weight: 700; color: #6B3A34">[PHOTO : cocktail]</div>
+<div style="min-height: 203px; border-radius: 24px; background: #241014; color: #FFFFFF; display: flex; flex-direction: column; justify-content: flex-end; padding: 20px; box-sizing: border-box">
+<span style="font-family: 'Fraunces', serif; font-weight: 700; font-size: 40px; line-height: 1; color: #EBE320">[N]+</span>
+<span style="font-size: 14px; color: #D9C3C6; margin-top: 6px">événements réalisés</span>
+</div>
+</div>
+</section>
+
+<!-- ============ CHIFFRES ============ -->
+<section style="max-width: 1200px; margin: 0 auto; padding: 96px 24px 0">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); border-top: 1px solid #EADBD3; border-bottom: 1px solid #EADBD3">
+<div style="padding: 30px 24px 30px 0"><div style="font-family: 'Fraunces', serif; font-weight: 700; font-size: 60px; line-height: 1; color: #810C1B">24<span style="font-size: 30px">h/24</span></div><div style="color: #6B5458; margin-top: 8px">Ouvert tous les jours</div></div>
+<div style="padding: 30px 24px"><div style="font-family: 'Fraunces', serif; font-weight: 700; font-size: 60px; line-height: 1; color: #810C1B">2</div><div style="color: #6B5458; margin-top: 8px">Cuisines : africaine et européenne</div></div>
+<div style="padding: 30px 24px"><div style="font-family: 'Fraunces', serif; font-weight: 700; font-size: 60px; line-height: 1; color: #810C1B">4</div><div style="color: #6B5458; margin-top: 8px">Moyens de paiement</div></div>
+<div style="padding: 30px 24px"><div style="font-family: 'Fraunces', serif; font-weight: 700; font-size: 60px; line-height: 1; color: #810C1B">[N]<span style="font-size: 30px"> min</span></div><div style="color: #6B5458; margin-top: 8px">Délai moyen de livraison</div></div>
+</div>
+</section>
+
+<!-- ============ RÉSERVATION ============ -->
+<section id="reserver" style="max-width: 1200px; margin: 0 auto; padding: 96px 24px 0">
+<div style="background: #F5ECE4; border-radius: 36px; padding: clamp(28px, 4cqi, 56px); display: flex; flex-wrap: wrap; gap: 40px; align-items: center">
+<div style="flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+<span style="font-size: 13px; font-weight: 700; color: #810C1B; letter-spacing: 0.14em; text-transform: uppercase">Réservation</span>
+<h2 style="margin: 0; font-family: 'Fraunces', serif; font-weight: 700; font-size: clamp(34px, 4cqi, 54px); line-height: 1.02; letter-spacing: -0.02em">Votre table vous attend.</h2>
+<p style="margin: 0; color: #6B5458; font-size: 17px">Un dîner en famille, un déjeuner d'affaires, un anniversaire ? Réservez en une minute, on vous confirme par WhatsApp.</p>
+</div>
+<form style="flex: 1 1 420px; min-width: 0; background: #FFFFFF; border-radius: 26px; padding: 28px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 20px 50px rgba(90,20,30,0.10)">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-weight: 700; font-size: 14px">Nombre de personnes</span>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{guests}}" as="g" hint-placeholder-count="6">
+<button type="button" onClick="{{g.pick}}" aria-pressed="{{g.pressed}}" style="{{g.style}}">{{g.label}}</button>
+</sc-for>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+<label style="display: flex; flex-direction: column; gap: 6px; font-weight: 700; font-size: 14px">Date<input type="date" style="height: 48px; padding: 0 12px; border: 1.5px solid #E2CFC6; border-radius: 12px; background: #FFFFFF; color: #241014; font: inherit; font-weight: 400"></label>
+<label style="display: flex; flex-direction: column; gap: 6px; font-weight: 700; font-size: 14px">Heure<select style="height: 48px; padding: 0 12px; border: 1.5px solid #E2CFC6; border-radius: 12px; background: #FFFFFF; color: #241014; font: inherit; font-weight: 400"><option>12:00</option><option>13:00</option><option>19:00</option><option>20:00</option><option>21:00</option><option>22:00</option></select></label>
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+<label style="display: flex; flex-direction: column; gap: 6px; font-weight: 700; font-size: 14px">Nom<input type="text" placeholder="Votre nom" style="height: 48px; padding: 0 12px; border: 1.5px solid #E2CFC6; border-radius: 12px; background: #FFFFFF; color: #241014; font: inherit; font-weight: 400; min-width: 0"></label>
+<label style="display: flex; flex-direction: column; gap: 6px; font-weight: 700; font-size: 14px">Téléphone<input type="tel" placeholder="07 00 00 00 00" style="height: 48px; padding: 0 12px; border: 1.5px solid #E2CFC6; border-radius: 12px; background: #FFFFFF; color: #241014; font: inherit; font-weight: 400; min-width: 0"></label>
+</div>
+<button type="button" style="height: 56px; border: 0; border-radius: 999px; background: #810C1B; color: #FFFFFF; font: inherit; font-weight: 700; font-size: 17px; cursor: pointer">Réserver pour {{guestLabel}}</button>
+</form>
+</div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section style="max-width: 860px; margin: 0 auto; padding: 104px 24px 0; display: flex; flex-direction: column; gap: 26px">
+<div style="text-align: center; display: flex; flex-direction: column; gap: 10px">
+<span style="font-size: 13px; font-weight: 700; color: #810C1B; letter-spacing: 0.14em; text-transform: uppercase">FAQ</span>
+<h2 style="margin: 0; font-family: 'Fraunces', serif; font-weight: 700; font-size: clamp(34px, 4cqi, 54px); line-height: 1.02; letter-spacing: -0.02em">Questions fréquentes.</h2>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px">
+<sc-for list="{{faq}}" as="f" hint-placeholder-count="5">
+<div style="background: #FFFFFF; border: 1px solid #EADBD3; border-radius: 20px; overflow: hidden">
+<button type="button" onClick="{{f.toggle}}" aria-expanded="{{f.expanded}}" style="width: 100%; min-height: 64px; padding: 16px 22px; border: 0; background: transparent; display: flex; justify-content: space-between; align-items: center; gap: 16px; font: inherit; font-weight: 700; font-size: 17px; color: #241014; text-align: left; cursor: pointer">{{f.q}}<span style="font-size: 24px; color: #810C1B; flex-shrink: 0">{{f.sign}}</span></button>
+<sc-if value="{{f.open}}" hint-placeholder-val="{{ false }}"><p style="margin: 0; padding: 0 22px 20px; color: #6B5458">{{f.a}}</p></sc-if>
+</div>
+</sc-for>
+</div>
+</section>
+
+<!-- ============ NOUS TROUVER (carte) ============ -->
+<section id="acces" style="max-width: 1200px; margin: 0 auto; padding: 104px 24px 0">
+<div style="display: flex; flex-wrap: wrap; gap: 28px; align-items: stretch">
+<div style="flex: 1 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 18px; justify-content: center">
+<span style="font-size: 13px; font-weight: 700; color: #810C1B; letter-spacing: 0.14em; text-transform: uppercase">Nous trouver</span>
+<h2 style="margin: 0; font-family: 'Fraunces', serif; font-weight: 700; font-size: clamp(34px, 4cqi, 54px); line-height: 1.02; letter-spacing: -0.02em">Passez nous voir, <span style="font-style: italic; color: #810C1B">de jour comme de nuit.</span></h2>
+<div style="display: flex; flex-direction: column; gap: 14px; margin-top: 4px">
+<div style="display: flex; gap: 14px; align-items: flex-start"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#810C1B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 2px"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg><div><strong>Adresse</strong><br><span style="color: #6B5458">[ADRESSE, quartier, repère]</span></div></div>
+<div style="display: flex; gap: 14px; align-items: flex-start"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#810C1B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 2px"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg><div><strong>Horaires</strong><br><span style="color: #6B5458">Ouvert 24h/24, 7j/7</span></div></div>
+<div style="display: flex; gap: 14px; align-items: flex-start"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#810C1B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 2px"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"></path></svg><div><strong>Téléphone</strong><br><a href="tel:+2250556631756" style="color: #6B5458; text-decoration: none">+225 05 56 63 17 56</a></div></div>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 6px">
+<a href="https://www.google.com/maps/dir/?api=1&amp;destination=5.223998,-3.827711" style="background: #810C1B; color: #FFFFFF; text-decoration: none; padding: 15px 26px; border-radius: 999px; font-weight: 700; font-size: 16px">Itinéraire</a>
+<a href="https://www.google.com/maps/search/?api=1&amp;query=Restaurant%20les%20d%C3%A9lices%20d%E2%80%99orodis" style="color: #241014; text-decoration: none; padding: 15px 26px; border-radius: 999px; font-weight: 700; font-size: 16px; border: 1.5px solid #241014">Ouvrir dans Google Maps</a>
+</div>
+</div>
+
+<!-- Emplacement de la carte Google Maps (iframe intégré dans le site final) -->
+<a href="https://www.google.com/maps/search/?api=1&amp;query=Restaurant%20les%20d%C3%A9lices%20d%E2%80%99orodis" aria-label="Voir Restaurant les délices d'orodis sur Google Maps" style="flex: 1.4 1 460px; min-width: 0; min-height: 420px; position: relative; display: block; border-radius: 28px; overflow: hidden; background: #EFE7DC; border: 1px solid #EADBD3; text-decoration: none; color: #241014">
+<span aria-hidden="true" style="position: absolute; inset: 0">
+<span style="position: absolute; left: -10%; right: -10%; top: 38%; height: 26px; background: #FFFFFF; transform: rotate(-8deg)"></span>
+<span style="position: absolute; left: -10%; right: -10%; top: 72%; height: 16px; background: #FFFFFF; transform: rotate(4deg)"></span>
+<span style="position: absolute; top: -10%; bottom: -10%; left: 30%; width: 18px; background: #FFFFFF; transform: rotate(10deg)"></span>
+<span style="position: absolute; top: -10%; bottom: -10%; left: 68%; width: 14px; background: #FFFFFF; transform: rotate(-6deg)"></span>
+<span style="position: absolute; left: 6%; top: 8%; width: 18%; height: 22%; border-radius: 14px; background: #D6E6C8"></span>
+<span style="position: absolute; left: 76%; top: 46%; width: 18%; height: 18%; border-radius: 14px; background: #D6E6C8"></span>
+<span style="position: absolute; left: 40%; top: 6%; width: 22%; height: 24%; border-radius: 14px; background: #E5D9CB"></span>
+<span style="position: absolute; left: 8%; top: 52%; width: 16%; height: 14%; border-radius: 14px; background: #E5D9CB"></span>
+<span style="position: absolute; left: -10%; right: -10%; bottom: -8%; height: 22%; background: #C5DDEB; transform: rotate(-3deg)"></span>
+</span>
+<span style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -100%); display: flex; flex-direction: column; align-items: center">
+<span style="background: #FFFFFF; border-radius: 18px; padding: 8px 14px 8px 8px; display: flex; align-items: center; gap: 10px; box-shadow: 0 14px 34px rgba(60,10,20,0.22); white-space: nowrap">
+<img src="/_blob/9605bc1b83d0a09f9605df8729f3433b" alt="" style="height: 40px; width: auto">
+<span style="display: flex; flex-direction: column; line-height: 1.2"><strong style="font-size: 15px">Les Délices d'Orodis</strong><span style="font-size: 12px; color: #1F9D55; font-weight: 700">Ouvert 24h/24</span></span>
+</span>
+<svg width="34" height="44" viewBox="0 0 34 44" aria-hidden="true" style="margin-top: 6px"><path d="M17 43s15-13.6 15-25A15 15 0 0 0 2 18c0 11.4 15 25 15 25z" fill="#810C1B"></path><circle cx="17" cy="17" r="6" fill="#EBE320"></circle></svg>
+</span>
+<span style="position: absolute; left: 14px; bottom: 14px; background: rgba(255,255,255,0.92); border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700; color: #6B5458">Aperçu · la carte Google Maps interactive s'affiche ici sur le site</span>
+</a>
+</div>
+</section>
+
+<!-- ============ CTA FINAL ============ -->
+<section style="max-width: 1200px; margin: 0 auto; padding: 104px 24px">
+<div style="background: #810C1B; border-radius: 40px; padding: clamp(36px, 5cqi, 72px); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 30px; position: relative; overflow: hidden">
+<div aria-hidden="true" style="position: absolute; right: -80px; top: -80px; width: 320px; height: 320px; border-radius: 50%; border: 30px solid rgba(235,227,32,0.16)"></div>
+<h2 style="margin: 0; font-family: 'Fraunces', serif; font-weight: 700; font-size: clamp(38px, 5cqi, 70px); line-height: 0.98; letter-spacing: -0.02em; color: #FFFFFF; max-width: 640px; position: relative">Une faim ? <span style="font-style: italic; color: #EBE320">On s'occupe de tout.</span></h2>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; position: relative">
+<a href="#carte" style="background: #EBE320; color: #241014; text-decoration: none; padding: 17px 30px; border-radius: 999px; font-weight: 700; font-size: 17px">Commander en ligne</a>
+<a href="#reserver" style="background: transparent; color: #FFFFFF; text-decoration: none; padding: 17px 30px; border-radius: 999px; font-weight: 700; font-size: 17px; border: 1.5px solid #FFFFFF">Réserver une table</a>
+</div>
+</div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer id="contact" style="background: #241014; color: #FFFFFF">
+<div style="max-width: 1200px; margin: 0 auto; padding: 72px 24px 32px; display: flex; flex-direction: column; gap: 48px">
+<div style="display: flex; flex-wrap: wrap; gap: 40px 56px; justify-content: space-between">
+<div style="flex: 1 1 280px; display: flex; flex-direction: column; gap: 16px; max-width: 340px">
+<img src="/_blob/0d6e91a20714decd9c8f610f1bf379db" alt="Les Délices d'Orodis, restaurant" style="width: 190px; height: auto">
+<p style="margin: 0; color: #D9C3C6">Pâtisserie · Restauration · Service. Spécialités africaines et européennes, traiteur pour tous vos événements.</p>
+</div>
+<div style="flex: 1 1 220px; display: flex; flex-direction: column; gap: 12px">
+<h3 style="margin: 0 0 4px; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: #EBE320">Contact</h3>
+<a href="tel:+2250556631756" style="color: #FFFFFF; text-decoration: none; padding: 4px 0">Tél. +225 05 56 63 17 56</a>
+<a href="https://wa.me/2250702578159" style="color: #FFFFFF; text-decoration: none; padding: 4px 0">WhatsApp +225 07 02 57 81 59</a>
+<a href="mailto:orodistraiteur@gmail.com" style="color: #FFFFFF; text-decoration: none; padding: 4px 0">orodistraiteur@gmail.com</a>
+</div>
+<div style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 12px">
+<h3 style="margin: 0 0 4px; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: #EBE320">Adresse &amp; horaires</h3>
+<span style="color: #D9C3C6">[ADRESSE, quartier, repère]</span>
+<span style="color: #D9C3C6">Ouvert 24h/24, 7j/7</span>
+<span style="color: #D9C3C6">Livraison : [ZONES]</span>
+</div>
+<div style="flex: 1 1 160px; display: flex; flex-direction: column; gap: 12px">
+<h3 style="margin: 0 0 4px; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: #EBE320">Le site</h3>
+<a href="#carte" style="color: #FFFFFF; text-decoration: none; padding: 4px 0">La carte</a>
+<a href="#reserver" style="color: #FFFFFF; text-decoration: none; padding: 4px 0">Réserver</a>
+<a href="#traiteur" style="color: #FFFFFF; text-decoration: none; padding: 4px 0">Traiteur</a>
+</div>
+</div>
+<div style="border-top: 1px solid #3F232A; padding-top: 24px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; font-size: 14px; color: #BFA6AA">
+<span>© 2026 Les Délices d'Orodis · Côte d'Ivoire</span>
+<span>[Facebook] · [Instagram] · [TikTok]</span>
+</div>
+</div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"showIntro":{"editor":"boolean","default":true},"$preview":{"width":1440,"height":10200}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { tab: 'afr', step: 0, prog: 0, guests: 2, faq: 0, menu: false };
+    this._stepEls = [];
+    var self = this;
+    this._stepRefs = [0, 1, 2, 3].map(function (i) { return function (el) { self._stepEls[i] = el; }; });
+    this._onScroll = function () {
+      if (self._raf) return;
+      self._raf = requestAnimationFrame(function () { self._raf = 0; self.measureSteps(); });
+    };
+  }
+  componentDidMount() {
+    window.addEventListener('scroll', this._onScroll, { passive: true });
+    window.addEventListener('resize', this._onScroll);
+    this.measureSteps();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this._onScroll);
+    window.removeEventListener('resize', this._onScroll);
+    if (this._raf) cancelAnimationFrame(this._raf);
+  }
+  // Étape active = celle dont le centre est le plus proche du milieu de l'écran (comme woudys.com)
+  measureSteps() {
+    var els = this._stepEls.filter(Boolean);
+    if (els.length < 4) return;
+    var mid = window.innerHeight * 0.55, best = 0, bestD = Infinity, centers = [];
+    for (var i = 0; i < 4; i++) {
+      var r = this._stepEls[i].getBoundingClientRect(), c = r.top + r.height / 2;
+      centers.push(c);
+      var d = Math.abs(c - mid);
+      if (d < bestD) { bestD = d; best = i; }
+    }
+    var p = (mid - centers[0]) / (centers[3] - centers[0]);
+    p = Math.max(0, Math.min(1, p));
+    p = Math.round(p * 100) / 100;
+    if (best !== this.state.step || p !== this.state.prog) this.setState({ step: best, prog: p });
+  }
+  renderVals() {
+    var self = this;
+    var pill = 'min-height: 44px; padding: 0 18px; border-radius: 999px; font: inherit; font-weight: 700; font-size: 15px; cursor: pointer; ';
+    var tabDefs = [['dej', 'Petit-déjeuner'], ['afr', 'Plats africains'], ['eur', 'Plats européens'], ['pat', 'Pâtisserie'], ['bois', 'Boissons']];
+    var tabs = tabDefs.map(function (t) {
+      var on = self.state.tab === t[0];
+      return {
+        label: t[1], selected: on ? 'true' : 'false',
+        style: pill + (on ? 'background: #810C1B; color: #FFFFFF; border: 1.5px solid #810C1B;' : 'background: #FFFFFF; color: #241014; border: 1.5px solid #E2CFC6;'),
+        pick: function () { self.setState({ tab: t[0] }); }
+      };
+    });
+    var menu = {
+      dej: [['Croissant & café', 'Viennoiserie du jour, café ou chocolat chaud', 'Matin'], ['Omelette complète', 'Œufs, oignons, tomate, pain', 'Matin'], ['Bouillie de mil', 'Lait, sucre, beignets', 'Africain'], ['Formule petit-déj', 'Boisson chaude, jus, viennoiserie', 'Formule']],
+      afr: [['Kedjenou de poulet', 'Mijoté à l’étouffée, servi avec attiéké', 'Africain'], ['Garba spécial', 'Attiéké, thon frit, piment, oignons', 'Africain'], ['Poulet braisé', 'Alloco et sauce maison', 'Grillade'], ['Sauce graine', 'Viande ou poisson, riz ou foutou', 'Africain']],
+      eur: [['Burger maison', 'Bœuf, cheddar, frites maison', 'Européen'], ['Pizza Orodis', 'La pizza signature de la maison', 'Européen'], ['Salade niçoise', 'Thon, œuf, olives, crudités', 'Européen'], ['Émincé de bœuf', 'Sauce champignons, riz ou frites', 'Européen']],
+      pat: [['Éclair', 'Chocolat ou café', 'Pâtisserie'], ['Part de gâteau', 'Selon l’arrivage du jour', 'Pâtisserie'], ['Tarte aux fruits', 'Fruits de saison', 'Pâtisserie'], ['Gâteau d’anniversaire', 'Sur commande, 48 h à l’avance', 'Commande']],
+      bois: [['Jus de bissap', 'Fait maison, bien frais', 'Maison'], ['Jus de gingembre', 'Fait maison, relevé', 'Maison'], ['Cocktail de fruits', 'Fruits frais de saison', 'Maison'], ['Sodas & eaux', 'Large choix', 'Boisson']]
+    };
+    var tints = ['#F2D9C7', '#EBD3D0', '#F6E7A8', '#F5ECE4'];
+    var dishes = (menu[this.state.tab] || []).map(function (d, i) { return { name: d[0], desc: d[1], tag: d[2], tint: tints[i % 4] }; });
+
+    var stepDefs = [['01', 'Scannez.', 'Le QR code posé sur votre table ouvre la carte sur votre téléphone. Aucune application à installer.'], ['02', 'Choisissez.', 'Plats africains, européens, pâtisseries, boissons : parcourez la carte, précisez vos envies.'], ['03', 'Commandez.', 'Un geste, et la commande part directement en cuisine. Payez tout de suite ou à la fin du repas.'], ['04', 'Savourez.', 'Suivez la préparation en direct. Le serveur vous apporte votre plat, bien chaud.']];
+    var cur = this.state.step;
+    var steps = stepDefs.map(function (s, i) {
+      var on = cur === i;
+      return {
+        num: s[0], title: s[1], text: s[2], ref: self._stepRefs[i],
+        style: on ? 'opacity: 1; transform: none' : 'opacity: 0.28; transform: translateX(-6px)'
+      };
+    });
+    var scr = function (i) {
+      var on = cur === i;
+      return 'position: absolute; inset: 0; transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.22,1,0.36,1), filter 0.5s ease; ' + (on ? 'opacity: 1; transform: none; filter: none' : 'opacity: 0; transform: scale(0.97); filter: blur(6px); pointer-events: none');
+    };
+    var prog = this.state.prog;
+    var lineDots = [0, 1, 2, 3].map(function (i) {
+      var reached = cur >= i;
+      return 'position: absolute; left: 0; top: calc(' + (i / 3 * 100) + '% - 7px); width: 14px; height: 14px; border-radius: 50%; box-sizing: border-box; transition: background 0.3s, transform 0.3s; ' + (reached ? 'background: #EBE320; border: 0;' : 'background: #241014; border: 2px solid #6E4A51;') + (cur === i ? ' transform: scale(1.35);' : '');
+    });
+
+    var qr = [];
+    for (var y = 0; y < 13; y++) for (var x = 0; x < 13; x++) {
+      var finder = (x < 4 && y < 4) || (x > 8 && y < 4) || (x < 4 && y > 8);
+      var on = finder ? !(x % 4 === 1 && y % 4 === 1) && !((x === 1 || x === 2) && (y === 1 || y === 2)) && !((x === 10 || x === 11) && (y === 1 || y === 2)) && !((x === 1 || x === 2) && (y === 10 || y === 11)) : ((x * 7 + y * 13 + x * y) % 3 === 0);
+      if (finder && ((x === 3 || x === 9) || (y === 3 || y === 9))) on = false;
+      if (finder && ((x === 1 || x === 2 || x === 10 || x === 11) && (y === 1 || y === 2 || y === 10 || y === 11))) on = true;
+      qr.push(on ? '#241014' : 'transparent');
+    }
+
+    var guestVals = [1, 2, 3, 4, 6, 8];
+    var guests = guestVals.map(function (n) {
+      var on = self.state.guests === n;
+      return {
+        label: n === 8 ? '8+' : String(n), pressed: on ? 'true' : 'false',
+        style: 'min-width: 48px; height: 44px; padding: 0 12px; border-radius: 999px; font: inherit; font-weight: 700; cursor: pointer; ' + (on ? 'background: #241014; color: #FFFFFF; border: 1.5px solid #241014;' : 'background: #FFFFFF; color: #241014; border: 1.5px solid #E2CFC6;'),
+        pick: function () { self.setState({ guests: n }); }
+      };
+    });
+    var g = this.state.guests;
+    var guestLabel = g === 1 ? '1 personne' : (g === 8 ? '8 personnes et +' : g + ' personnes');
+
+    var faqDefs = [
+      ['Êtes-vous vraiment ouverts 24h/24 ?', 'Oui, 7 jours sur 7. La carte de nuit peut être réduite : [À PRÉCISER AVEC LE RESTAURANT].'],
+      ['Comment commander à table ?', 'Scannez le QR code posé sur votre table. La carte s’ouvre sur votre téléphone, sans application à installer.'],
+      ['Livrez-vous dans tout Abidjan ?', 'Nous livrons [ZONES DE LIVRAISON]. Les frais s’affichent avant de valider la commande.'],
+      ['Quels moyens de paiement acceptez-vous ?', 'Wave, Orange Money, MTN MoMo et espèces, sur place comme à la livraison.'],
+      ['Faites-vous traiteur pour les grands événements ?', 'Oui : mariages, anniversaires, cocktails, séminaires, buffets et dîners de gala. Contactez-nous sur WhatsApp pour un devis.']
+    ];
+    var faq = faqDefs.map(function (f, i) {
+      var open = self.state.faq === i;
+      return { q: f[0], a: f[1], open: open, expanded: open ? 'true' : 'false', sign: open ? '−' : '+', toggle: function () { self.setState({ faq: open ? -1 : i }); } };
+    });
+
+    // ---- Menu burger mobile (à la woudys.com)
+    var open = this.state.menu;
+    var E = 'cubic-bezier(0.65,0,0.35,1)', O = 'cubic-bezier(0.16,1,0.3,1)';
+    var linkDefs = [['#accueil', 'Accueil'], ['#carte', 'La carte'], ['#comment', 'Comment ça marche'], ['#traiteur', 'Traiteur'], ['#reserver', 'Réserver'], ['#acces', 'Nous trouver']];
+    var menuLinks = linkDefs.map(function (l, i) {
+      return {
+        href: l[0], label: l[1], num: '0' + (i + 1),
+        style: 'display: flex; align-items: baseline; gap: 12px; color: #FFFFFF; text-decoration: none; font-family: \'Fraunces\', serif; font-weight: 700; font-size: 40px; line-height: 1.15; letter-spacing: -0.02em; padding: 4px 0; transform: translateY(' + (open ? '0' : '110%') + '); transition: transform ' + (open ? '0.8s ' + O + ' ' + (0.15 + i * 0.06).toFixed(2) + 's' : '0.3s ' + E + ' 0s') + ';'
+      };
+    });
+    var navStyle = 'max-width: 1200px; margin: 0 auto; border-radius: 999px; padding: 8px 10px 8px 18px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 20px; transition: background 0.3s, border-color 0.3s, box-shadow 0.3s; backdrop-filter: blur(14px); ' + (open ? 'background: transparent; border: 1px solid transparent; box-shadow: none;' : 'background: rgba(251,245,238,0.86); border: 1px solid #EADBD3; box-shadow: 0 10px 30px rgba(90,20,30,0.08);');
+    var bar = function (r) { return 'position: absolute; left: 14px; width: 20px; height: 2px; border-radius: 2px; background: ' + (open ? '#241014' : '#FFFFFF') + '; transition: transform 0.45s ' + O + ', top 0.3s, background 0.3s; ' + r; };
+    var intro = this.props.showIntro ?? true;
+    var b = intro ? 3.3 : 0.1;
+    var sec = function (x) { return (b + x).toFixed(2) + 's'; };
+    return {
+      showIntro: intro, yes: true,
+      navStyle: navStyle, navLogo: open ? '/_blob/0d6e91a20714decd9c8f610f1bf379db' : '/_blob/9605bc1b83d0a09f9605df8729f3433b',
+      burgerStyle: 'position: relative; width: 48px; height: 48px; border-radius: 50%; border: 0; cursor: pointer; transition: background 0.3s; background: ' + (open ? '#EBE320' : '#241014') + ';',
+      bar1: bar(open ? 'top: 23px; transform: rotate(45deg);' : 'top: 19px; transform: none;'),
+      bar2: bar(open ? 'top: 23px; transform: rotate(-45deg);' : 'top: 27px; transform: none;'),
+      burgerLabel: open ? 'Fermer le menu' : 'Ouvrir le menu', menuExpanded: open ? 'true' : 'false', menuHidden: open ? 'false' : 'true', menuTab: open ? '0' : '-1',
+      overlayStyle: 'position: fixed; inset: 0; z-index: 19; background: #810C1B; overflow-y: auto; clip-path: circle(' + (open ? '150%' : '0%') + ' at calc(100% - 50px) 52px); transition: clip-path ' + (open ? '0.75s ' + E : '0.55s ' + E + ' 0.1s') + '; pointer-events: ' + (open ? 'auto' : 'none') + ';',
+      menuLinks: menuLinks,
+      menuFoot: 'display: flex; flex-direction: column; gap: 8px; transition: opacity 0.5s, transform 0.6s ' + O + '; ' + (open ? 'opacity: 1; transform: none; transition-delay: 0.5s;' : 'opacity: 0; transform: translateX(16px); transition-delay: 0s;'),
+      toggleMenu: function () { self.setState({ menu: !open }); },
+      closeMenu: function () { self.setState({ menu: false }); },
+      d0: sec(0), d1: sec(0.1), d2: sec(0.22), d3: sec(0.85), d4: sec(0.4), d5: sec(0.55),
+      tabs: tabs, dishes: dishes, steps: steps, qr: qr,
+      scr1: scr(0), scr2: scr(1), scr3: scr(2), scr4: scr(3), ghost: stepDefs[cur][0], lineDots: lineDots,
+      lineFill: 'height: 100%; transform: scaleY(' + prog + '); transition: transform 0.15s linear',
+      events: ['Mariage', 'Anniversaire', 'Cocktail', 'Séminaire', 'Baptême', 'Buffet', 'Soirée dînatoire', 'Dîner de gala'],
+      guests: guests, guestLabel: guestLabel, faq: faq
+    };
+  }
+}
+</script>
+</body>
+</html>

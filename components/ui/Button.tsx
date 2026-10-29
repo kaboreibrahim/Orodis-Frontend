@@ -1,0 +1,3 @@
+// Bouton en pilule.
+
+export {};

@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Réserver une table</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,700&amp;family=DM+Sans:wght@400;500;700&amp;display=swap">
+<style>
+body{margin:0;background:#FBF5EE}
+@keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.12)}100%{transform:scale(1)}}
+@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes slide{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+</style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; overflow: hidden; background: #FBF5EE; color: #241014; font-family: 'DM Sans', system-ui, sans-serif">
+
+<div style="padding: 12px 16px 0; display: flex; align-items: center; justify-content: space-between">
+<button type="button" onClick="{{back}}" aria-label="Étape précédente" style="width: 44px; height: 44px; border: 0; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#241014" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+<img src="/_blob/7ab1a07f2344daf048d5aa18a3980797" alt="Les Délices d'Orodis" style="height: 50px; width: auto">
+<span style="width: 44px; text-align: right; font-size: 13px; font-weight: 700; color: #6B5458">{{stepLabel}}</span>
+</div>
+<div style="margin: 8px 20px 0; height: 5px; border-radius: 3px; background: #EADBD3; overflow: hidden"><div style="{{bar}}"></div></div>
+
+<!-- ÉTAPE 1 -->
+<sc-if value="{{s0}}" hint-placeholder-val="{{ true }}">
+<div style="padding: 14px 20px 0; display: flex; flex-direction: column; gap: 14px; animation: slide 0.35s ease both">
+<h1 style="margin: 0; font-family: 'Fraunces', serif; font-weight: 700; font-size: 30px; line-height: 1.05">Réserver <span style="font-style: italic; color: #810C1B">une table</span></h1>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-weight: 700; font-size: 14px">Date</span>
+<div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-right: -20px">
+<sc-for list="{{days}}" as="d" hint-placeholder-count="8">
+<button type="button" onClick="{{d.pick}}" aria-pressed="{{d.pressed}}" style="{{d.style}}"><span style="font-size: 12px; font-weight: 500">{{d.dow}}</span><span style="font-family: 'Fraunces', serif; font-weight: 700; font-size: 22px; line-height: 1">{{d.num}}</span><span style="font-size: 11px">{{d.mon}}</span></button>
+</sc-for>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-weight: 700; font-size: 14px">Nombre de personnes</span>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{people}}" as="p" hint-placeholder-count="7">
+<button type="button" onClick="{{p.pick}}" aria-pressed="{{p.pressed}}" style="{{p.style}}">{{p.label}}</button>
+</sc-for>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-weight: 700; font-size: 14px">Heure</span>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px">
+<sc-for list="{{slots}}" as="h" hint-placeholder-count="12">
+<button type="button" onClick="{{h.pick}}" aria-pressed="{{h.pressed}}" disabled="{{h.full}}" style="{{h.style}}">{{h.label}}<span style="{{h.subStyle}}">{{h.sub}}</span></button>
+</sc-for>
+</div>
+</div>
+</div>
+</sc-if>
+
+<!-- ÉTAPE 2 -->
+<sc-if value="{{s1}}" hint-placeholder-val="{{ false }}">
+<div style="padding: 14px 20px 0; display: flex; flex-direction: column; gap: 14px; animation: slide 0.35s ease both">
+<h1 style="margin: 0; font-family: 'Fraunces', serif; font-weight: 700; font-size: 30px; line-height: 1.05">Vos <span style="font-style: italic; color: #810C1B">coordonnées</span></h1>
+<div style="background: #FFFFFF; border-radius: 18px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; gap: 10px">
+<div><div style="font-weight: 700">{{recapDate}}</div><div style="font-size: 14px; color: #6B5458">{{recapLine}}</div></div>
+<button type="button" onClick="{{back}}" style="min-height: 44px; border: 0; background: transparent; color: #810C1B; font: inherit; font-weight: 700; font-size: 14px; cursor: pointer; text-decoration: underline">Modifier</button>
+</div>
+<label style="display: flex; flex-direction: column; gap: 6px; font-weight: 700; font-size: 14px">Nom
+<input type="text" placeholder="Votre nom" value="Aïcha Koné" style="height: 48px; padding: 0 14px; border: 1.5px solid #E2CFC6; border-radius: 12px; background: #FFFFFF; font: inherit; font-weight: 400; color: #241014">
+</label>
+<label style="display: flex; flex-direction: column; gap: 6px; font-weight: 700; font-size: 14px">Numéro WhatsApp
+<span style="display: flex; align-items: center; height: 48px; border: 1.5px solid #E2CFC6; border-radius: 12px; background: #FFFFFF; overflow: hidden"><span style="padding: 0 12px; height: 100%; display: flex; align-items: center; background: #F5ECE4; font-weight: 700; font-size: 14px">+225</span><input type="tel" placeholder="07 00 00 00 00" style="flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; padding: 0 12px; font: inherit; font-weight: 400; color: #241014; background: transparent"></span>
+</label>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-weight: 700; font-size: 14px">Une occasion particulière&nbsp;? <span style="font-weight: 400; color: #6B5458">(facultatif)</span></span>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{occasions}}" as="o" hint-placeholder-count="4">
+<button type="button" onClick="{{o.pick}}" aria-pressed="{{o.pressed}}" style="{{o.style}}">{{o.label}}</button>
+</sc-for>
+</div>
+</div>
+<label style="display: flex; flex-direction: column; gap: 6px; font-weight: 700; font-size: 14px">Une demande&nbsp;? <span style="font-weight: 400; color: #6B5458; font-size: 13px">Ex. : chaise bébé, table en terrasse, gâteau</span>
+<textarea rows="2" style="padding: 10px 14px; border: 1.5px solid #E2CFC6; border-radius: 12px; background: #FFFFFF; font: inherit; font-weight: 400; font-size: 14px; color: #241014; resize: none"></textarea>
+</label>
+</div>
+</sc-if>
+
+<!-- ÉTAPE 3 -->
+<sc-if value="{{s2}}" hint-placeholder-val="{{ false }}">
+<div style="padding: 30px 24px 0; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center">
+<svg width="84" height="84" viewBox="0 0 100 100" aria-hidden="true" style="animation: pop 0.5s cubic-bezier(0.34,1.56,0.64,1) both"><circle cx="50" cy="50" r="46" fill="#1F9D55"></circle><path d="M30 52 L45 66 L72 37" stroke="#FFFFFF" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1" style="animation: draw 0.45s ease 0.35s both"></path></svg>
+<h1 style="margin: 0; font-family: 'Fraunces', serif; font-weight: 700; font-size: 30px; line-height: 1.05">Demande envoyée&nbsp;!</h1>
+<p style="margin: 0; font-size: 15px; color: #4A3A3E; max-width: 300px">Le restaurant vous confirme votre table sur WhatsApp dans les prochaines minutes.</p>
+<div style="width: 100%; background: #FFFFFF; border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 10px; text-align: left; box-shadow: 0 10px 26px rgba(60,10,20,0.08)">
+<div style="display: flex; justify-content: space-between"><span style="color: #6B5458">Date</span><strong>{{recapDate}}</strong></div>
+<div style="display: flex; justify-content: space-between"><span style="color: #6B5458">Heure</span><strong>{{recapTime}}</strong></div>
+<div style="display: flex; justify-content: space-between"><span style="color: #6B5458">Personnes</span><strong>{{recapPeople}}</strong></div>
+<div style="display: flex; justify-content: space-between"><span style="color: #6B5458">Au nom de</span><strong>Aïcha Koné</strong></div>
+<div style="display: flex; justify-content: space-between; align-items: center"><span style="color: #6B5458">Statut</span><span style="background: #FFF1C2; color: #5C4A00; font-weight: 700; font-size: 13px; padding: 4px 10px; border-radius: 999px">En attente de confirmation</span></div>
+</div>
+<p style="margin: 0; font-size: 13px; color: #6B5458">Un empêchement&nbsp;? Prévenez-nous au 05 56 63 17 56.</p>
+</div>
+</sc-if>
+
+<div style="position: absolute; left: 16px; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 8px">
+<button type="button" onClick="{{next}}" disabled="{{ctaDisabled}}" style="{{ctaStyle}}">{{cta}}</button>
+<sc-if value="{{s2}}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{restart}}" style="height: 48px; border-radius: 999px; border: 1.5px solid #E2CFC6; background: #FFFFFF; color: #241014; font: inherit; font-weight: 700; font-size: 15px; cursor: pointer">Retour au site</button></sc-if>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { step: 0, day: 1, people: 4, slot: -1, occ: -1 }; }
+  renderVals() {
+    var self = this, st = this.state;
+    var DOW = ['dim.', 'lun.', 'mar.', 'mer.', 'jeu.', 'ven.', 'sam.'], MON = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+    var start = Date.UTC(2026, 9, 29), days = [];
+    for (var i = 0; i < 10; i++) {
+      var dt = new Date(start + i * 864e5), on = st.day === i;
+      days.push({ dow: i === 0 ? 'auj.' : DOW[dt.getUTCDay()], num: dt.getUTCDate(), mon: MON[dt.getUTCMonth()], full: DOW[dt.getUTCDay()] + ' ' + dt.getUTCDate() + ' ' + MON[dt.getUTCMonth()], pressed: on ? 'true' : 'false',
+        style: 'flex-shrink: 0; width: 60px; height: 76px; border-radius: 16px; font: inherit; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; ' + (on ? 'background: #810C1B; color: #FFFFFF; border: 0;' : 'background: #FFFFFF; color: #241014; border: 1.5px solid #E2CFC6;'),
+        pick: (function (k) { return function () { self.setState({ day: k, slot: -1 }); }; })(i) });
+    }
+    var people = [1, 2, 3, 4, 5, 6, 8].map(function (n) {
+      var on = st.people === n;
+      return { label: n === 8 ? '8+' : String(n), pressed: on ? 'true' : 'false', style: 'min-width: 44px; height: 44px; padding: 0 10px; border-radius: 999px; font: inherit; font-weight: 700; cursor: pointer; ' + (on ? 'background: #241014; color: #FFFFFF; border: 1.5px solid #241014;' : 'background: #FFFFFF; color: #241014; border: 1.5px solid #E2CFC6;'), pick: function () { self.setState({ people: n }); } };
+    });
+    var times = ['12:00', '12:30', '13:00', '13:30', '14:00', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00'];
+    var fullSet = { 1: [6, 7], 2: [7, 8, 9], 3: [6, 7, 8, 9] }[st.day] || [];
+    var slots = times.map(function (t, i) {
+      var full = fullSet.indexOf(i) >= 0, on = st.slot === i;
+      return { label: t, sub: full ? 'complet' : '', full: full, pressed: on ? 'true' : 'false', subStyle: full ? 'display: block; font-size: 10px; font-weight: 500' : 'display: none',
+        style: 'height: 48px; border-radius: 12px; font: inherit; font-weight: 700; font-size: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; ' + (full ? 'background: #F1E9E5; color: #8E7176; border: 1.5px dashed #D9C9C3; cursor: not-allowed;' : on ? 'background: #810C1B; color: #FFFFFF; border: 0; cursor: pointer;' : 'background: #FFFFFF; color: #241014; border: 1.5px solid #E2CFC6; cursor: pointer;'),
+        pick: function () { if (!full) self.setState({ slot: i }); } };
+    });
+    var occasions = ['Anniversaire', 'En famille', 'Repas d’affaires', 'En amoureux'].map(function (o, i) {
+      var on = st.occ === i;
+      return { label: o, pressed: on ? 'true' : 'false', style: 'min-height: 40px; padding: 0 14px; border-radius: 999px; font: inherit; font-weight: 700; font-size: 13.5px; cursor: pointer; ' + (on ? 'background: #F4E3E1; color: #810C1B; border: 1.5px solid #810C1B;' : 'background: #FFFFFF; color: #241014; border: 1.5px solid #E2CFC6;'), pick: function () { self.setState({ occ: on ? -1 : i }); } };
+    });
+    var d = days[st.day], time = st.slot >= 0 ? times[st.slot] : '', ppl = st.people === 8 ? '8 personnes et +' : st.people + (st.people > 1 ? ' personnes' : ' personne');
+    var disabled = st.step === 0 && st.slot < 0;
+    var ctas = [st.slot < 0 ? 'Choisissez une heure' : 'Continuer · ' + time, 'Envoyer la demande', 'Ajouter à mon agenda'];
+    return {
+      s0: st.step === 0, s1: st.step === 1, s2: st.step === 2,
+      stepLabel: (st.step + 1) + ' / 3',
+      bar: 'height: 100%; background: #810C1B; border-radius: 3px; transition: width 0.4s; width: ' + ((st.step + 1) / 3 * 100) + '%',
+      days: days, people: people, slots: slots, occasions: occasions,
+      recapDate: d.full.charAt(0).toUpperCase() + d.full.slice(1), recapTime: time, recapPeople: ppl,
+      recapLine: time + ' · ' + ppl,
+      cta: ctas[st.step], ctaDisabled: disabled,
+      ctaStyle: 'width: 100%; height: 58px; border-radius: 999px; border: 0; font: inherit; font-weight: 700; font-size: 17px; ' + (disabled ? 'background: #D9C9C3; color: #FFFFFF; cursor: not-allowed;' : 'background: #810C1B; color: #FFFFFF; cursor: pointer; box-shadow: 0 14px 30px rgba(129,12,27,0.3);'),
+      next: function () { if (!disabled && st.step < 2) self.setState({ step: st.step + 1 }); },
+      back: function () { if (st.step > 0) self.setState({ step: st.step - 1 }); },
+      restart: function () { self.setState({ step: 0, slot: -1, occ: -1 }); }
+    };
+  }
+}
+</script>
+</body>
+</html>
