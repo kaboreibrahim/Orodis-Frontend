@@ -42,7 +42,10 @@ export default async function OpengraphImage() {
     ...(sans ? [{ name: "DM Sans", data: sans, weight: 500 as const, style: "normal" as const }] : []),
     ...(display ? [{ name: "Fraunces", data: display, weight: 700 as const, style: "normal" as const }] : []),
   ];
-  const sansFamily = sans ? "DM Sans" : undefined;
+  // Jamais fontFamily: undefined dans un style (Satori plante dessus) : la clé n'est posée que si la police est chargée.
+  const sansFamily = sans ? "DM Sans" : null;
+  const displayStyle = display ? { fontFamily: "Fraunces" } : {};
+  const sansStyle = sansFamily ? { fontFamily: sansFamily } : {};
 
   return new ImageResponse(
     (
@@ -58,18 +61,15 @@ export default async function OpengraphImage() {
           color: colors.creme,
         }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element -- ImageResponse n'accepte que <img> */}
         <img src={`data:image/png;base64,${logo.toString("base64")}`} width={340} height={301} alt="" />
         <div style={{ display: "flex", flexDirection: "column", gap: 22, flex: 1 }}>
-          <div style={{ fontFamily: display ? "Fraunces" : undefined, fontSize: 84, fontWeight: 700, lineHeight: 1, letterSpacing: -2 }}>
-            {TITLE}
-          </div>
+          <div style={{ ...displayStyle, fontSize: 84, fontWeight: 700, lineHeight: 1, letterSpacing: -2 }}>{TITLE}</div>
           <div style={{ width: 220, height: 10, borderRadius: 10, background: colors.jaune }} />
-          <div style={{ fontFamily: sansFamily, fontSize: 36, fontWeight: 500, color: colors.jaune }}>{TAGLINE}</div>
-          <div style={{ fontFamily: sansFamily, fontSize: 30, fontWeight: 500, opacity: 0.85 }}>{SUBTITLE}</div>
+          <div style={{ ...sansStyle, fontSize: 36, fontWeight: 500, color: colors.jaune }}>{TAGLINE}</div>
+          <div style={{ ...sansStyle, fontSize: 30, fontWeight: 500, opacity: 0.85 }}>{SUBTITLE}</div>
         </div>
       </div>
     ),
-    { ...size, fonts: fonts.length ? fonts : undefined },
+    { ...size, ...(fonts.length ? { fonts } : {}) },
   );
 }
