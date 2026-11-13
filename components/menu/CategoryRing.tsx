@@ -13,6 +13,8 @@ type CategoryRingProps = {
   categories: Category[];
   active: number;
   onChange: (index: number) => void;
+  /** App de table : petites cartes (maquette phase3/Carte), sans la ligne « N plats ». */
+  compact?: boolean;
 };
 
 export function dishCount(category: Category): number {
@@ -23,7 +25,7 @@ export function plural(n: number, word: string): string {
   return `${n} ${word}${n > 1 ? "s" : ""}`;
 }
 
-export function CategoryRing({ categories, active, onChange }: CategoryRingProps) {
+export function CategoryRing({ categories, active, onChange, compact = false }: CategoryRingProps) {
   const id = useId();
   const { pos, centered, handlers } = useFlowPosition({ active, count: categories.length, unit: 120, onChange });
 
@@ -34,8 +36,9 @@ export function CategoryRing({ categories, active, onChange }: CategoryRingProps
       aria-label="Catégories : faites glisser ou utilisez les flèches pour tourner la roue"
       aria-activedescendant={`${id}-${active}`}
       {...handlers}
-      className="relative cursor-grab touch-pan-y outline-offset-[-4px] select-none [--R:clamp(330px,34vw,500px)] [--rw:clamp(128px,12.5vw,180px)] active:cursor-grabbing"
-      style={{ height: "calc(var(--rw) * 1.25 + 0.42 * var(--R) + 10px)" }}
+      // Rayon, largeur et hauteur réglables par un parent (--ring-r, --ring-w, --ring-h) ; sinon les valeurs du site.
+      className="relative cursor-grab touch-pan-y outline-offset-[-4px] select-none [--R:var(--ring-r,clamp(330px,34vw,500px))] [--rw:var(--ring-w,clamp(128px,12.5vw,180px))] active:cursor-grabbing"
+      style={{ height: "var(--ring-h, calc(var(--rw) * 1.25 + 0.32 * var(--R) + 10px))" }}
     >
       {categories.map((category, i) => (
         <RingItem
@@ -46,6 +49,7 @@ export function CategoryRing({ categories, active, onChange }: CategoryRingProps
           category={category}
           isActive={i === centered}
           onSelect={() => onChange(i)}
+          compact={compact}
         />
       ))}
     </div>
@@ -59,9 +63,10 @@ type RingItemProps = {
   category: Category;
   isActive: boolean;
   onSelect: () => void;
+  compact: boolean;
 };
 
-function RingItem({ id, index, pos, category, isActive, onSelect }: RingItemProps) {
+function RingItem({ id, index, pos, category, isActive, onSelect, compact }: RingItemProps) {
   const transform = useTransform(pos, (p) => {
     const d = index - p;
     const scale = 1.08 - Math.min(Math.abs(d), 1) * 0.16;
@@ -79,7 +84,9 @@ function RingItem({ id, index, pos, category, isActive, onSelect }: RingItemProp
       aria-selected={isActive}
       aria-label={`${category.name}, ${count}`}
       onClick={onSelect}
-      className={`absolute left-1/2 flex cursor-pointer flex-col items-center justify-center gap-2.5 rounded-[22px] p-3.5 text-center transition-[background-color,box-shadow,border-color] duration-300 ${
+      className={`absolute left-1/2 flex cursor-pointer flex-col items-center justify-center text-center transition-[background-color,box-shadow,border-color] duration-300 ${
+        compact ? "gap-1.5 rounded-[18px] p-2" : "gap-2.5 rounded-[22px] p-3.5"
+      } ${
         isActive ? "border border-transparent bg-bordeaux text-creme shadow-relief" : "border border-bordure bg-white text-encre shadow-pilule"
       }`}
       style={{
@@ -94,14 +101,17 @@ function RingItem({ id, index, pos, category, isActive, onSelect }: RingItemProp
     >
       <span
         aria-hidden="true"
-        className={`flex size-[46px] items-center justify-center rounded-[14px] text-2xl transition-colors duration-300 ${
-          isActive ? "bg-creme/15" : "bg-rose"
-        }`}
+        className={`flex items-center justify-center transition-colors duration-300 ${
+          compact ? "size-9 rounded-[11px] text-xl" : "size-[46px] rounded-[14px] text-2xl"
+        } ${isActive ? "bg-creme/15" : "bg-rose"}`}
       >
         {category.icon || category.name.charAt(0)}
       </span>
-      <span className="font-display text-[clamp(16px,1.6vw,21px)] leading-[1.1] font-bold">{category.name}</span>
-      <span className={`text-[13px] font-medium ${isActive ? "text-rose" : "text-texte-doux"}`}>{count}</span>
+      <span className={`font-display leading-[1.1] font-bold ${compact ? "text-[13px]" : "text-[clamp(16px,1.6vw,21px)]"}`}>
+        {category.name}
+      </span>
+      {/* En compact, le nombre de plats reste lu par les lecteurs d'écran (aria-label) */}
+      {!compact && <span className={`text-[13px] font-medium ${isActive ? "text-rose" : "text-texte-doux"}`}>{count}</span>}
     </motion.div>
   );
 }

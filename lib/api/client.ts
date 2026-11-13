@@ -20,13 +20,17 @@ type ApiOptions = RequestInit & {
   tags?: string[];
 };
 
+/** Adresse complète d'une route de l'API : apiUrl("/table/requests/"). */
+export function apiUrl(path: string): string {
+  const baseUrl = process.env.API_URL;
+  if (!baseUrl) throw new Error("API_URL manquante : renseignez-la dans .env.local ou dans Coolify.");
+  return `${baseUrl.replace(/\/+$/, "")}/${path.replace(/^\/+/, "")}`;
+}
+
 /** Appelle l'API : api<Type>("/settings/"). Lève ApiError si l'API ne répond pas ou renvoie une erreur. */
 export async function api<T>(path: string, options: ApiOptions = {}): Promise<T> {
   const { revalidate = 600, tags = ["menu"], headers, ...init } = options;
-  const baseUrl = process.env.API_URL;
-  if (!baseUrl) throw new Error("API_URL manquante : renseignez-la dans .env.local ou dans Coolify.");
-
-  const url = `${baseUrl.replace(/\/+$/, "")}/${path.replace(/^\/+/, "")}`;
+  const url = apiUrl(path);
   let response: Response;
   try {
     response = await fetch(url, {

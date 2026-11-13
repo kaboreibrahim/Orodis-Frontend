@@ -9,6 +9,7 @@ import { HowItWorks } from "@/components/home/HowItWorks";
 import { Intro } from "@/components/home/Intro";
 import { Location } from "@/components/home/Location";
 import { Marquees } from "@/components/home/Marquees";
+import { NoCube } from "@/components/home/NoCube";
 import { ReserveCta } from "@/components/home/ReserveCta";
 import { Stats } from "@/components/home/Stats";
 import { MenuExplorer } from "@/components/menu/MenuExplorer";
@@ -31,6 +32,7 @@ export default async function HomePage() {
       <Hero dishes={featured} hours={settings.opening_hours} />
       <Marquees dishes={featured} />
       <Bento settings={settings} dishes={featured} />
+      <NoCube />
 
       <section id="carte" className="flex flex-col items-center gap-[30px] pt-[104px]">
         <FadeUp className="flex max-w-[1200px] flex-col items-center gap-2.5 px-6 text-center">

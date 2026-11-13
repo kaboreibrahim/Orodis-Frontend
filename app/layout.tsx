@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import { DM_Sans, Fraunces } from "next/font/google";
-import { Footer } from "@/components/layout/Footer";
-import { Header } from "@/components/layout/Header";
 import { getSettings } from "@/lib/api/settings";
 import { summarizeHours } from "@/lib/format";
 import { INTRO_SCRIPT } from "@/lib/intro";
@@ -45,12 +43,8 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const settings = await getSettings();
-  const contact = {
-    phone: settings.phone,
-    whatsapp: settings.whatsapp,
-    hours: summarizeHours(settings.opening_hours),
-  };
 
+  // En-tête et pied de page : app/(site)/layout.tsx ; l'app de table (/t/…) a sa propre mise en page.
   return (
     // suppressHydrationWarning : le script du <head> pose data-intro avant l'hydratation.
     <html
@@ -64,9 +58,7 @@ export default async function RootLayout({
       </head>
       <body>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(restaurantJsonLd(settings)) }} />
-        <Header contact={contact} />
         {children}
-        <Footer settings={settings} />
       </body>
     </html>
   );

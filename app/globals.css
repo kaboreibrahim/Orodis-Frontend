@@ -21,6 +21,39 @@
   --color-orange-money: #FF7900;
   --color-mtn: #FFCB05;
   --color-especes: #2E7D32;
+  /* Espace du personnel (maquettes phase3/Gestion et phase3/Cuisine). */
+  --color-texte-nav: #E9DCD5;
+  --color-cuisine-fond: #1A1210;
+  --color-cuisine-colonne: #2A201C;
+  --color-cuisine-barre: #2C221E;
+  --color-cuisine-pastille: #3D302A;
+  --color-cuisine-filet: #3A2A26;
+  --color-cuisine-texte: #CFC3BC;
+  --color-cuisine-vide: #8E7176;
+  --color-ticket-doux: #6B5458;
+  --color-en-preparation: #E0782E;
+  --color-prete: #3DDC84;
+  --color-servie: #1F7A45;
+  --color-retard: #B3261E;
+  --color-note: #FFF7D6;
+  --color-note-texte: #5C4A00;
+  --color-canal-table: #5E504A;
+  --color-canal-comptoir: #245B6E;
+  /* Pastilles de statut de la gestion (maquettes phase3/Gestion et phase3/Tables). */
+  --color-pastille-nouvelle: #FFF7C2;
+  --color-pastille-preparation: #FCE3D2;
+  --color-texte-preparation: #8A3B12;
+  --color-pastille-ok: #E3F5EA;
+  --color-texte-ok: #146C3B;
+  --color-pastille-terminee: #EDE7E4;
+  --color-pastille-attente: #FFF1D6;
+  --color-texte-attente: #7A5200;
+  --color-a-encaisser: #C99A00;
+  --color-pastille-encaisser: #FFF1C2;
+  --color-pastille-comptoir: #DDEBF0;
+  --color-filet-ligne: #F1E2DA;
+  --color-ligne-active: #FFF7F3;
+  --color-etape-inactive: #9C8A8E;
   --shadow-pilule: 0 10px 30px rgb(90 20 30 / 0.08);
   --shadow-bouton: 0 12px 28px rgb(129 12 27 / 0.28);
   --shadow-carte: 0 16px 36px rgb(60 10 20 / 0.16);
@@ -75,6 +108,17 @@ html:not([data-intro="play"]) .orodis-intro {
   display: none;
 }
 
+/* App de table : visiteur déjà entré dans cet onglet (script de WelcomeExperience).
+   Pas d'écran « Touchez pour commencer », accueil affiché tout de suite. */
+html[data-bienvenue="vue"] .table-gate {
+  display: none;
+}
+
+html[data-bienvenue="vue"] .welcome-item {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
 /* Fiche d'un plat (DishSheet) : <dialog> natif qui monte en apparaissant ; la page ne défile pas derrière. */
 @keyframes orodis-sheet {
   from {
@@ -106,6 +150,34 @@ html:not([data-intro="play"]) .orodis-intro {
 
 html:has(dialog[open]) {
   overflow: hidden;
+}
+
+/* Écran cuisine : un nouveau ticket descend puis pulse en jaune jusqu'à ce qu'on le touche. */
+@keyframes cuisine-arrivee {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes cuisine-halo {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgb(235 227 32 / 0), 0 10px 24px rgb(0 0 0 / 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgb(235 227 32 / 0.55), 0 10px 24px rgb(0 0 0 / 0.35);
+  }
+}
+
+.ticket-nouveau {
+  animation:
+    cuisine-arrivee 0.5s var(--ease-orodis) both,
+    cuisine-halo 1.6s ease-in-out 0.5s infinite;
 }
 
 /* Visiteur ayant réduit les animations : le contenu s'affiche directement. */

@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>La carte</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600;1,9..144,700&amp;family=DM+Sans:wght@400;500;700&amp;display=swap">
+<style>
+body{margin:0;background:#FBF5EE}
+</style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; overflow: hidden; background: #FBF5EE; color: #241014; font-family: 'DM Sans', system-ui, sans-serif">
+
+<!-- en-tête -->
+<div style="padding: 12px 16px 0; display: flex; align-items: center; justify-content: space-between">
+<div style="display: flex; align-items: center; gap: 6px">
+<a href="Main.dc.html" aria-label="Retour à l'accueil" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: #241014; text-decoration: none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#241014" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></a>
+<img src="/_blob/7ab1a07f2344daf048d5aa18a3980797" alt="Les Délices d'Orodis" style="height: 52px; width: auto">
+</div>
+<span style="display: inline-flex; align-items: center; gap: 6px; background: #810C1B; color: #FFFFFF; font-weight: 700; font-size: 14px; padding: 9px 14px; border-radius: 999px">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#EBE320" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9h18M5 9v10M19 9v10M8 9V6M16 9V6M8 14h8"></path></svg>
+Table 5</span>
+</div>
+
+<h1 style="margin: 6px 22px 0; font-family: 'Fraunces', Georgia, serif; font-weight: 700; font-size: 30px; line-height: 1.05; letter-spacing: -0.02em">Que désirez-vous<br><span style="font-style: italic; color: #810C1B">aujourd'hui&nbsp;?</span></h1>
+
+<!-- anneau des catégories -->
+<section aria-label="Catégories : faites glisser pour tourner la roue" tabIndex="0" onKeyDown="{{ringZ.key}}" onPointerDown="{{ringZ.down}}" onPointerMove="{{ringZ.move}}" onPointerUp="{{ringZ.up}}" onPointerCancel="{{ringZ.up}}" style="position: relative; height: 150px; margin-top: 6px; touch-action: pan-y; user-select: none; cursor: grab">
+<sc-for list="{{ring}}" as="c" hint-placeholder-count="6">
+<button type="button" onClick="{{c.pick}}" aria-pressed="{{c.pressed}}" aria-label="{{c.name}}" style="{{c.style}}">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="{{c.iconFg}}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{c.icon}}"></path></svg>
+<span style="font-size: 12.5px; font-weight: 700; line-height: 1.15; color: {{c.fg}}; white-space: pre-line">{{c.label}}</span>
+</button>
+</sc-for>
+</section>
+
+<!-- sous-catégories -->
+<div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 2px">
+<span style="width: 40px; height: 1px; background: #C9A9A4"></span>
+<span style="font-family: 'Fraunces', serif; font-weight: 700; font-size: 18px; color: #810C1B">{{catName}}</span>
+<span style="width: 40px; height: 1px; background: #C9A9A4"></span>
+</div>
+<div tabIndex="0" aria-label="Sous-catégories : faites glisser pour parcourir" onKeyDown="{{subZ.key}}" onPointerDown="{{subZ.down}}" onPointerMove="{{subZ.move}}" onPointerUp="{{subZ.up}}" onPointerCancel="{{subZ.up}}" style="position: relative; height: 128px; margin-top: 6px; perspective: 900px; transform-style: preserve-3d; touch-action: pan-y; user-select: none; cursor: grab">
+<sc-for list="{{subs}}" as="s" hint-placeholder-count="4">
+<button type="button" onClick="{{s.pick}}" aria-pressed="{{s.pressed}}" aria-label="{{s.name}}" style="{{s.style}}">
+<sc-if value="{{s.hasImg}}" hint-placeholder-val="{{ true }}"><img src="{{s.img}}" alt="" draggable="false" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none"></sc-if>
+<sc-if value="{{s.noImg}}" hint-placeholder-val="{{ false }}"><span style="position: absolute; inset: 0; background: {{s.tint}}; display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-style: italic; font-weight: 700; font-size: 44px; color: {{s.mono}}">{{s.initial}}</span></sc-if>
+<span style="position: absolute; left: 0; right: 0; bottom: 0; background: #810C1B; color: #FFFFFF; font-size: 13px; font-weight: 700; padding: 8px 6px; text-align: center">{{s.name}}</span>
+</button>
+</sc-for>
+</div>
+
+<!-- plats -->
+<div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 10px">
+<span style="width: 40px; height: 1px; background: #C9A9A4"></span>
+<span style="font-family: 'Fraunces', serif; font-weight: 700; font-size: 18px; color: #241014">{{subName}}</span>
+<span style="width: 40px; height: 1px; background: #C9A9A4"></span>
+</div>
+<div tabIndex="0" aria-label="Plats : faites glisser pour parcourir" onKeyDown="{{itemZ.key}}" onPointerDown="{{itemZ.down}}" onPointerMove="{{itemZ.move}}" onPointerUp="{{itemZ.up}}" onPointerCancel="{{itemZ.up}}" style="position: relative; height: 236px; margin-top: 6px; perspective: 1000px; transform-style: preserve-3d; touch-action: pan-y; user-select: none; cursor: grab">
+<sc-for list="{{items}}" as="it" hint-placeholder-count="4">
+<div style="{{it.style}}">
+<button type="button" onClick="{{it.pick}}" aria-label="{{it.name}}" style="display: block; width: 100%; height: 128px; padding: 0; border: 0; background: transparent; cursor: pointer; position: relative">
+<sc-if value="{{it.hasImg}}" hint-placeholder-val="{{ true }}"><img src="{{it.img}}" alt="" draggable="false" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none"></sc-if>
+<sc-if value="{{it.noImg}}" hint-placeholder-val="{{ false }}"><span style="position: absolute; inset: 0; background: {{it.tint}}; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px"><span style="font-family: 'Fraunces', serif; font-style: italic; font-weight: 700; font-size: 50px; line-height: 1; color: {{it.mono}}">{{it.initial}}</span><span style="font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{it.mono}}">Photo à venir</span></span></sc-if>
+</button>
+<div style="padding: 10px 10px 12px; text-align: center; display: flex; flex-direction: column; gap: 4px; align-items: center">
+<span style="font-family: 'Fraunces', serif; font-weight: 700; font-size: 16px; line-height: 1.15">{{it.name}}</span>
+<span style="font-weight: 700; font-size: 15px; color: #810C1B">{{it.price}}</span>
+<sc-if value="{{it.on}}" hint-placeholder-val="{{ false }}"><a href="Fiche.dc.html" style="margin-top: 4px; background: #810C1B; color: #FFFFFF; text-decoration: none; font-weight: 700; font-size: 14px; padding: 8px 26px; border-radius: 999px">Voir</a></sc-if>
+</div>
+</div>
+</sc-for>
+</div>
+<div aria-hidden="true" style="display: flex; justify-content: center; gap: 6px; margin-top: 4px">
+<sc-for list="{{dots}}" as="dt" hint-placeholder-count="4"><span style="{{dt}}"></span></sc-for>
+</div>
+<p style="margin: 6px 0 0; text-align: center; font-size: 13px; color: #6B5458">Faites glisser du doigt pour parcourir</p>
+
+<!-- barre panier -->
+<a href="Panier.dc.html" style="position: absolute; left: 16px; right: 16px; bottom: 16px; height: 60px; border-radius: 999px; background: #810C1B; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; box-shadow: 0 14px 30px rgba(129,12,27,0.35)">
+<span style="display: flex; align-items: center; gap: 12px">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#EBE320" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.5 11h11L21 7H6.5"></path><circle cx="9" cy="20" r="1.5"></circle><circle cx="18" cy="20" r="1.5"></circle></svg>
+<span style="font-weight: 700; font-size: 16px">Voir mon panier · 2</span></span>
+<span style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 16px">8 000 F<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></span>
+</a>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { cat: 2, sub: 1, item: 0, dragZone: null, dx: 0 };
+  }
+  data() {
+    if (this._data) return this._data;
+    var B = {
+      grill: '/_blob/cc89050d0b429ee1ff432f578387fd59', sauces: '/_blob/28c68b8a15bf9779395bab8ae125d7bc', attieke: '/_blob/e40da456fef41d067635a5cda35accef', accomp: '/_blob/b004d036d9a8dbf27a2425495e58106b',
+      kedjenou: '/_blob/d5a89a5c7b1264603c87511657080e47', garba: '/_blob/b05b4627d5dfda14d8f4fbe192971681', poulet: '/_blob/4c93b125d3c15ca1523ae93065970a3e', saucegraine: '/_blob/4c1d4bb69e5bc1235c9e3c46cf6fbab5',
+      foutou: '/_blob/cf8b05d94498f7b36699762c0cd5cece', riz: '/_blob/ea7c2d1d6faa2cd1aaee2a561d82230b'
+    };
+    var I = {
+      leaf: 'M5 21c0-9 6-15 15-16-1 9-7 15-15 16zM5 21l8-8',
+      cup: 'M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5zM17 10h1.5a2.5 2.5 0 0 1 0 5H17M8 3c0 1.5 1 1.5 1 3M12 3c0 1.5 1 1.5 1 3',
+      cloche: 'M3 18h18M5 18a7 7 0 0 1 14 0M12 8V6M10 6h4',
+      fork: 'M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M17 3c-2 2-2 6 0 8v10',
+      cake: 'M4 21h16M5 21v-7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v7M5 16c2 1 3 1 4.5 0s3-1 4.5 0 3 1 5 0M12 12V8M12 5.5v.5',
+      glass: 'M7 3h10l-1 18H8zM7.5 9h9M15 3l2-1'
+    };
+    function it(n, p, img) { return { name: n, price: p, img: img || '' }; }
+    var C = [
+      { label: 'Entrées', icon: I.leaf, tint: '#E9EFD9', mono: '#4D6B2E', subs: [['Froides', '', [it('Salade niçoise', '3 000 F'), it('Avocat crevettes', '3 500 F')]], ['Chaudes', '', [it('Accras de poisson', '2 000 F'), it('Soupe du jour', '2 500 F')]]] },
+      { label: 'Petit-\ndéjeuner', icon: I.cup, tint: '#F6E7A8', mono: '#7A5C00', subs: [['Viennoiseries', '', [it('Croissant', '800 F'), it('Pain au chocolat', '900 F')]], ['Plats chauds', '', [it('Omelette complète', '2 500 F'), it('Bouillie de mil', '1 000 F')]]] },
+      { label: 'Plats\nafricains', icon: I.cloche, tint: '#F2D9C7', mono: '#8A3B12', subs: [
+        ['Grillades', B.grill, [it('Poulet braisé', '5 000 F', B.poulet), it('Poisson braisé', '6 000 F'), it('Brochettes de bœuf', '3 000 F')]],
+        ['Sauces', B.sauces, [it('Kedjenou de poulet', '4 500 F', B.kedjenou), it('Sauce graine', '3 500 F', B.saucegraine), it('Sauce arachide', '3 500 F'), it('Sauce feuille', '3 500 F')]],
+        ['Attiéké & garba', B.attieke, [it('Garba spécial', '3 500 F', B.garba), it('Attiéké poisson', '4 000 F'), it('Attiéké poulet', '4 000 F')]],
+        ['Accompagnements', B.accomp, [it('Alloco', '1 000 F', B.accomp), it('Foutou banane', '1 000 F', B.foutou), it('Riz blanc', '500 F', B.riz)]]] },
+      { label: 'Plats\neuropéens', icon: I.fork, tint: '#EBD3D0', mono: '#810C1B', subs: [['Burgers', '', [it('Burger maison', '5 000 F'), it('Double cheese', '6 000 F')]], ['Pizzas', '', [it('Margherita', '6 000 F'), it('Pizza Orodis', '7 500 F')]], ['Viandes', '', [it('Émincé de bœuf', '6 500 F'), it('Escalope de poulet', '5 500 F')]]] },
+      { label: 'Pâtisserie\n& desserts', icon: I.cake, tint: '#F4E3E1', mono: '#9C2A4A', subs: [['Gâteaux', '', [it('Forêt-noire', '2 000 F'), it('Gâteau coco', '1 500 F')]], ['Petites douceurs', '', [it('Éclair', '1 000 F'), it('Tartelette', '1 200 F')]]] },
+      { label: 'Boissons', icon: I.glass, tint: '#DDEBF0', mono: '#245B6E', subs: [['Jus maison', '', [it('Bissap', '1 000 F'), it('Gingembre', '1 000 F'), it('Bouye (baobab)', '1 000 F')]], ['Sodas & eaux', '', [it('Coca-Cola', '1 000 F'), it('Eau minérale', '500 F')]]] }
+    ];
+    C.forEach(function (c) { c.subs = c.subs.map(function (s) { return { name: s[0], img: s[1], items: s[2] }; }); });
+    this._data = C;
+    return C;
+  }
+  renderVals() {
+    var self = this, st = this.state, C = this.data();
+    var cat = C[st.cat], sub = cat.subs[Math.min(st.sub, cat.subs.length - 1)];
+    var items = sub.items, iAct = Math.min(st.item, items.length - 1);
+    var ease = 'cubic-bezier(0.22,1,0.36,1)', dz = st.dragZone, dx = st.dx || 0;
+
+    function clampF(v, n) { return v < -0.35 ? -0.35 : (v > n - 0.65 ? n - 0.65 : v); }
+    function zone(name, unit, active, count, go) {
+      return {
+        down: function (e) { self._zone = name; self._sx = e.clientX; self._moved = false; },
+        move: function (e) {
+          if (self._zone !== name) return;
+          var d = e.clientX - self._sx;
+          if (!self._moved && Math.abs(d) > 8) { self._moved = true; try { e.currentTarget.setPointerCapture(e.pointerId); } catch (err) {} }
+          if (self._moved) self.setState({ dragZone: name, dx: d });
+        },
+        up: function () {
+          if (self._zone !== name) return;
+          self._zone = null;
+          if (!self._moved) return;
+          var d = self.state.dx || 0, steps = Math.round(-d / unit);
+          if (steps === 0 && Math.abs(d) > 30) steps = d < 0 ? 1 : -1;
+          var p = go(Math.max(0, Math.min(count - 1, active + steps))); p.dragZone = null; p.dx = 0;
+          self.setState(p);
+          setTimeout(function () { self._moved = false; }, 0);
+        },
+        key: function (e) {
+          if (e.key === 'ArrowRight' && active < count - 1) self.setState(go(active + 1));
+          if (e.key === 'ArrowLeft' && active > 0) self.setState(go(active - 1));
+        }
+      };
+    }
+    var goCat = function (n) { return { cat: n, sub: n === 2 ? 1 : 0, item: 0 }; };
+    var goSub = function (n) { return { sub: n, item: 0 }; };
+    var goItem = function (n) { return { item: n }; };
+    var ringZ = zone('ring', 80, st.cat, C.length, goCat);
+    var subZ = zone('sub', 90, st.sub, cat.subs.length, goSub);
+    var itemZ = zone('item', 110, iAct, items.length, goItem);
+    var fCat = dz === 'ring' ? clampF(st.cat - dx / 80, C.length) : st.cat;
+    var fSub = dz === 'sub' ? clampF(st.sub - dx / 90, cat.subs.length) : st.sub;
+    var fItem = dz === 'item' ? clampF(iAct - dx / 110, items.length) : iAct;
+
+    var ring = C.map(function (c, i) {
+      var d = i - fCat, on = Math.round(d) === 0;
+      return {
+        name: c.label.replace('\n', ' '), label: c.label, icon: c.icon, pressed: on ? 'true' : 'false',
+        iconFg: on ? '#EBE320' : '#810C1B', fg: on ? '#FFFFFF' : '#241014',
+        style: 'position: absolute; left: 50%; top: 330px; width: 92px; height: 100px; margin: -50px 0 0 -46px; transform: rotate(' + (d * 21).toFixed(2) + 'deg) translateY(-276px) scale(' + (on ? 1.08 : 0.94) + '); transform-origin: 50% 50%; transition: ' + (dz === 'ring' ? 'background 0.3s' : 'transform 0.7s ' + ease + ', background 0.3s') + '; z-index: ' + (10 - Math.round(Math.abs(d))) + '; border-radius: 18px; border: ' + (on ? '0' : '1px solid #EADBD3') + '; background: ' + (on ? '#810C1B' : '#FFFFFF') + '; box-shadow: ' + (on ? '0 14px 30px rgba(129,12,27,0.35)' : '0 6px 16px rgba(60,10,20,0.08)') + '; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 8px; text-align: center; font: inherit; cursor: pointer; opacity: ' + (Math.abs(d) > 2.6 ? 0 : 1) + ';',
+        pick: function () { if (self._moved) return; self.setState(goCat(i)); }
+      };
+    });
+    function flow(d, w, dragging) {
+      var a = Math.abs(d), s = d < 0 ? -1 : 1, m = Math.min(a, 1);
+      var k = a <= 1 ? s * 0.62 * a : s * (0.62 + (a - 1) * 0.3);
+      return 'position: absolute; left: 50%; top: 4px; width: ' + w + 'px; transform: translateX(-50%) translateX(' + (w * k).toFixed(1) + 'px) translateZ(' + (-120 * m).toFixed(1) + 'px) rotateY(' + (-s * 50 * m).toFixed(2) + 'deg); transition: ' + (dragging ? 'box-shadow 0.3s' : 'transform 0.6s ' + ease + ', box-shadow 0.3s') + '; z-index: ' + (50 - Math.round(a)) + '; opacity: ' + (a > 4 ? 0 : 1) + ';';
+    }
+    var subs = cat.subs.map(function (s, i) {
+      var d = i - fSub, on = Math.round(d) === 0;
+      return {
+        name: s.name, img: s.img, hasImg: !!s.img, noImg: !s.img, initial: s.name.charAt(0), tint: cat.tint, mono: cat.mono, pressed: on ? 'true' : 'false',
+        style: flow(d, 132, dz === 'sub') + ' height: 116px; border-radius: 16px; overflow: hidden; border: ' + (on ? '3px solid #EBE320' : '0') + '; padding: 0; background: #FFFFFF; box-shadow: ' + (on ? '0 14px 30px rgba(60,10,20,0.3)' : '0 6px 14px rgba(60,10,20,0.12)') + '; cursor: pointer; font: inherit;',
+        pick: function () { if (self._moved) return; self.setState(goSub(i)); }
+      };
+    });
+    var list = items.map(function (x, i) {
+      var d = i - fItem, on = Math.round(d) === 0;
+      return {
+        name: x.name, price: x.price, img: x.img, hasImg: !!x.img, noImg: !x.img, initial: x.name.charAt(0), tint: cat.tint, mono: cat.mono, on: on && dz !== 'item',
+        style: flow(d, 176, dz === 'item') + ' border-radius: 20px; overflow: hidden; background: #FFFFFF; box-shadow: ' + (on ? '0 20px 44px rgba(60,10,20,0.28)' : '0 8px 20px rgba(60,10,20,0.12)') + ';',
+        pick: function () { if (self._moved) return; self.setState(goItem(i)); }
+      };
+    });
+    return {
+      ring: ring, subs: subs, items: list, catName: cat.label.replace('\n', ' '), subName: sub.name,
+      ringZ: ringZ, subZ: subZ, itemZ: itemZ,
+      dots: items.map(function (x, i) { return i === iAct ? 'width: 20px; height: 7px; border-radius: 4px; background: #810C1B; transition: width 0.3s' : 'width: 7px; height: 7px; border-radius: 4px; background: #E2CFC6; transition: width 0.3s'; })
+    };
+  }
+}
+</script>
+</body>
+</html>

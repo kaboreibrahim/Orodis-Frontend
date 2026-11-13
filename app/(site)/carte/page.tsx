@@ -1,6 +1,7 @@
 // Carte complète : anneau des catégories, CouvertureFlow des sous-catégories et des plats.
 import type { Metadata } from "next";
 import { MenuExplorer } from "@/components/menu/MenuExplorer";
+import { NoCubeBadge } from "@/components/menu/NoCubeBadge";
 import { getMenu } from "@/lib/api/menu";
 import { getSettings } from "@/lib/api/settings";
 
@@ -22,6 +23,7 @@ export default async function CartePage() {
         <h1 className="text-[clamp(32px,4vw,54px)] leading-[1.04]">
           Que désirez-vous <span className="text-bordeaux italic">aujourd’hui&nbsp;?</span>
         </h1>
+        <NoCubeBadge className="mt-2" />
       </section>
       <div className="mt-2">
         <MenuExplorer categories={menu} whatsapp={settings.whatsapp} />

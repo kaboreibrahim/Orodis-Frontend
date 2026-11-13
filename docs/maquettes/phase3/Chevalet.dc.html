@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Chevalet QR de table</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,700&amp;family=DM+Sans:wght@400;500;700&amp;display=swap">
+<style>
+body{margin:0;background:#FBF5EE}
+</style>
+</helmet>
+<div style="position: relative; width: 559px; height: 794px; overflow: hidden; background: #FBF5EE; color: #241014; font-family: 'DM Sans', system-ui, sans-serif">
+
+<div style="height: 190px; background: #810C1B; position: relative; display: flex; align-items: flex-start; justify-content: center; padding-top: 34px; box-sizing: border-box">
+<img src="/_blob/027155e9550be3e1a5582afafb7115d0" alt="Les Délices d'Orodis" style="height: 110px; width: auto">
+<svg viewBox="0 0 559 40" preserveAspectRatio="none" aria-hidden="true" style="position: absolute; left: 0; bottom: -1px; width: 100%; height: 40px"><path d="M0 22 C160 46 380 0 559 26 L559 40 L0 40 Z" fill="#FBF5EE"></path><path d="M0 22 C160 46 380 0 559 26" fill="none" stroke="#EBE320" stroke-width="4"></path></svg>
+</div>
+
+<div style="padding: 18px 48px 0; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px">
+<div style="font-family: 'Fraunces', serif; font-weight: 700; font-size: 34px; line-height: 1.05; letter-spacing: -0.01em">Scannez <span style="font-style: italic; color: #810C1B">pour commander</span></div>
+
+<div style="background: #FFFFFF; border-radius: 22px; padding: 18px; box-shadow: 0 10px 26px rgba(60,10,20,0.12); border: 3px solid #810C1B">
+<div style="width: 220px; height: 220px; display: grid; grid-template-columns: repeat(21, minmax(0, 1fr))">
+<sc-for list="{{qr}}" as="c" hint-placeholder-count="441"><div style="background: {{c}}; aspect-ratio: 1"></div></sc-for>
+</div>
+</div>
+
+<div style="display: flex; align-items: baseline; gap: 12px">
+<span style="font-size: 16px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #6B5458">Table</span>
+<span style="font-family: 'Fraunces', serif; font-weight: 700; font-size: 72px; line-height: 0.9; color: #810C1B">{{num}}</span>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; width: 100%">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><span style="width: 40px; height: 40px; border-radius: 50%; background: #241014; color: #EBE320; display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-weight: 700; font-size: 18px">1</span><span style="font-size: 14px; font-weight: 700">Scannez</span><span style="font-size: 12px; color: #4A3A3E">avec l'appareil photo</span></div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><span style="width: 40px; height: 40px; border-radius: 50%; background: #241014; color: #EBE320; display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-weight: 700; font-size: 18px">2</span><span style="font-size: 14px; font-weight: 700">Choisissez</span><span style="font-size: 12px; color: #4A3A3E">sur la carte</span></div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><span style="width: 40px; height: 40px; border-radius: 50%; background: #241014; color: #EBE320; display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-weight: 700; font-size: 18px">3</span><span style="font-size: 14px; font-weight: 700">Savourez</span><span style="font-size: 12px; color: #4A3A3E">on vous sert</span></div>
+</div>
+</div>
+
+<div style="position: absolute; left: 40px; right: 40px; bottom: 40px; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center">
+<div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; font-size: 12.5px; font-weight: 700">
+<span style="display: inline-flex; align-items: center; gap: 6px; background: #FFFFFF; border: 1px solid #E2CFC6; padding: 5px 10px; border-radius: 999px"><span style="width: 9px; height: 9px; border-radius: 50%; background: #1DC8F2"></span>Wave</span>
+<span style="display: inline-flex; align-items: center; gap: 6px; background: #FFFFFF; border: 1px solid #E2CFC6; padding: 5px 10px; border-radius: 999px"><span style="width: 9px; height: 9px; border-radius: 50%; background: #FF7900"></span>Orange Money</span>
+<span style="display: inline-flex; align-items: center; gap: 6px; background: #FFFFFF; border: 1px solid #E2CFC6; padding: 5px 10px; border-radius: 999px"><span style="width: 9px; height: 9px; border-radius: 50%; background: #FFCB05"></span>MTN MoMo</span>
+<span style="display: inline-flex; align-items: center; gap: 6px; background: #FFFFFF; border: 1px solid #E2CFC6; padding: 5px 10px; border-radius: 999px"><span style="width: 9px; height: 9px; border-radius: 50%; background: #2E7D32"></span>Espèces</span>
+</div>
+<div style="font-size: 12.5px; color: #4A3A3E">Pas de téléphone&nbsp;? Un serveur prend votre commande. · Wi-Fi : [NOM] / [CODE]</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"num":{"editor":"int","default":5,"min":1,"max":99},"$preview":{"width":559,"height":794}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var num = this.props.num ?? 5, n = 21, qr = [], seed = num * 7 + 13;
+    var finder = function (x, y, ox, oy) { var dx = x - ox, dy = y - oy; if (dx < 0 || dy < 0 || dx > 6 || dy > 6) return null; if (dx === 0 || dy === 0 || dx === 6 || dy === 6) return true; return dx >= 2 && dx <= 4 && dy >= 2 && dy <= 4; };
+    for (var y = 0; y < n; y++) for (var x = 0; x < n; x++) {
+      var f = finder(x, y, 0, 0); if (f === null) f = finder(x, y, 14, 0); if (f === null) f = finder(x, y, 0, 14);
+      var on;
+      if (f !== null) on = f; else if (x === 7 || y === 7 || (x === 13 && y < 8) || (y === 13 && x < 8)) on = false; else on = ((x * 31 + y * 17 + x * y * seed) % 5) < 2;
+      qr.push(on ? '#241014' : '#FFFFFF');
+    }
+    return { qr: qr, num: num };
+  }
+}
+</script>
+</body>
+</html>

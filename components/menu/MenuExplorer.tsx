@@ -1,7 +1,8 @@
 "use client";
 
-// La carte interactive (page /carte et section #carte de l'accueil) :
+// La carte interactive (page /carte, section #carte de l'accueil et app de table) :
 // anneau des catégories, puis CouvertureFlow des sous-catégories et des plats, et la fiche rapide.
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { Category, Dish } from "@/lib/api/types";
 import { CategoryRing, dishCount, plural } from "./CategoryRing";
@@ -12,12 +13,17 @@ import { DishSheet } from "./DishSheet";
 type MenuExplorerProps = {
   categories: Category[];
   whatsapp?: string;
+  /** Mode commande (app de table) : toucher le plat du centre ouvre `${dishHrefBase}/<slug>` au lieu de la fiche rapide. */
+  dishHrefBase?: string;
+  /** App de table : mesures de la maquette phase3/Carte (390 px), tout tient sur un écran de téléphone. */
+  compact?: boolean;
 };
 
 /** Le deuxième plat au centre : il reste une voisine de chaque côté. */
 const firstItem = (dishes: Dish[]) => Math.min(1, dishes.length - 1);
 
-export function MenuExplorer({ categories, whatsapp }: MenuExplorerProps) {
+export function MenuExplorer({ categories, whatsapp, dishHrefBase, compact = false }: MenuExplorerProps) {
+  const router = useRouter();
   const [cat, setCat] = useState(0);
   const [sub, setSub] = useState(0);
   const [item, setItem] = useState(() => firstItem(categories[0]?.subcategories[0]?.dishes ?? []));
@@ -43,11 +49,19 @@ export function MenuExplorer({ categories, whatsapp }: MenuExplorerProps) {
   }
 
   return (
-    <div className="overflow-x-clip [--cw:clamp(190px,21vw,290px)] [--sw:clamp(150px,15vw,210px)]">
-      <CategoryRing categories={categories} active={cat} onChange={pickCategory} />
+    <div
+      className={`overflow-x-clip ${
+        compact
+          ? "[--cw:150px] [--ring-h:160px] [--ring-r:276px] [--ring-w:96px] [--sw:128px]"
+          : "[--cw:clamp(190px,21vw,290px)] [--sw:clamp(150px,15vw,210px)]"
+      }`}
+    >
+      <CategoryRing categories={categories} active={cat} onChange={pickCategory} compact={compact} />
 
-      <div className="mx-auto mt-9 max-w-[1200px] px-5">
-        <h3 className="mb-3.5 text-center text-[clamp(24px,2.6vw,34px)] text-bordeaux">{category.name}</h3>
+      <div className={`mx-auto max-w-[1200px] px-5 ${compact ? "mt-0" : "mt-3"}`}>
+        <h3 className={`text-center text-bordeaux ${compact ? "mb-2 text-xl" : "mb-3.5 text-[clamp(24px,2.6vw,34px)]"}`}>
+          {category.name}
+        </h3>
         <CoverFlow
           key={`sub-${category.id}`}
           items={category.subcategories}
@@ -80,7 +94,7 @@ export function MenuExplorer({ categories, whatsapp }: MenuExplorerProps) {
           items={dishes}
           active={item}
           onChange={setItem}
-          onActivate={(i) => setDetail(dishes[i])}
+          onActivate={(i) => (dishHrefBase ? router.push(`${dishHrefBase}/${dishes[i].slug}`) : setDetail(dishes[i]))}
           getKey={(d) => d.id}
           getLabel={(d, on) => `${d.name}${on ? ", voir le détail" : ""}`}
           label="Plats : faites glisser ou utilisez les flèches, Entrée pour voir le détail"
@@ -96,13 +110,17 @@ export function MenuExplorer({ categories, whatsapp }: MenuExplorerProps) {
           }
           renderItem={(d, on) => <DishCard dish={d} isActive={on} />}
         />
-        <p className="mt-3.5 text-center text-sm text-texte-doux">
-          Faites glisser du doigt pour parcourir, touchez le plat du centre pour le voir en détail.
+        <p className={`text-center text-sm text-texte-doux ${compact ? "mt-2" : "mt-3.5"}`}>
+          {compact
+            ? "Faites glisser du doigt pour parcourir"
+            : "Faites glisser du doigt pour parcourir, touchez le plat du centre pour le voir en détail."}
           <span className="sr-only"> {plural(dishCount(category), "plat")} dans cette catégorie.</span>
         </p>
       </div>
 
-      <DishSheet dish={detail} path={`${category.name} · ${subcategory.name}`} whatsapp={whatsapp} onClose={() => setDetail(null)} />
+      {!dishHrefBase && (
+        <DishSheet dish={detail} path={`${category.name} · ${subcategory.name}`} whatsapp={whatsapp} onClose={() => setDetail(null)} />
+      )}
     </div>
   );
 }

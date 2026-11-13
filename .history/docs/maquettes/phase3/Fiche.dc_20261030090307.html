@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fiche plat : Kedjenou de poulet</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600;1,9..144,700&amp;family=DM+Sans:wght@400;500;700&amp;display=swap">
+<style>
+body{margin:0;background:#FBF5EE}
+</style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; overflow: hidden; background: #FBF5EE; color: #241014; font-family: 'DM Sans', system-ui, sans-serif">
+
+<div style="position: relative; height: 262px">
+<img src="/_blob/589e81e6b9ea68af8829fd98ee200128" alt="Kedjenou de poulet dans son canari" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover">
+<a href="Carte.dc.html" aria-label="Fermer et revenir à la carte" style="position: absolute; right: 14px; top: 14px; width: 44px; height: 44px; border-radius: 50%; background: rgba(251,245,238,0.94); display: flex; align-items: center; justify-content: center; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#810C1B" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></a>
+<span style="position: absolute; left: 14px; top: 20px; background: #810C1B; color: #EBE320; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 6px 12px; border-radius: 999px">Spécialité maison</span>
+<span style="position: absolute; right: 14px; bottom: 30px; background: rgba(36,16,20,0.6); color: #FFFFFF; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 999px">Photo d'illustration</span>
+</div>
+
+<div style="position: relative; margin-top: -22px; background: #FBF5EE; border-radius: 26px 26px 0 0; padding: 18px 20px 0; display: flex; flex-direction: column; gap: 12px">
+<span style="font-size: 13px; font-weight: 700; color: #810C1B">Plats africains · Sauces</span>
+<h1 style="margin: -4px 0 0; font-family: 'Fraunces', Georgia, serif; font-weight: 700; font-size: 32px; line-height: 1.02; letter-spacing: -0.02em">Kedjenou <span style="font-style: italic; color: #810C1B">de poulet</span></h1>
+<p style="margin: 0; font-size: 14.5px; line-height: 1.45; color: #5A4549">Poulet mijoté à l'étouffée avec tomates, oignons, piment doux et aromates. [Description à confirmer par le restaurant]</p>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-weight: 700; font-size: 15px">Choix de l'accompagnement</span>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+<sc-for list="{{accs}}" as="a" hint-placeholder-count="3">
+<button type="button" onClick="{{a.pick}}" aria-pressed="{{a.pressed}}" style="{{a.style}}">
+<img src="{{a.img}}" alt="" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover">
+<span style="display: flex; flex-direction: column; align-items: flex-start; line-height: 1.15"><span style="font-weight: 700; font-size: 14px">{{a.name}}</span><span style="font-size: 11px; opacity: 0.85">{{a.extra}}</span></span>
+</button>
+</sc-for>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-weight: 700; font-size: 15px">Piment</span>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+<sc-for list="{{spices}}" as="p" hint-placeholder-count="3">
+<button type="button" onClick="{{p.pick}}" aria-pressed="{{p.pressed}}" style="{{p.style}}">{{p.name}}</button>
+</sc-for>
+</div>
+</div>
+
+<label style="display: flex; flex-direction: column; gap: 6px; font-weight: 700; font-size: 14px">Une précision pour la cuisine&nbsp;?
+<input type="text" placeholder="Ex. : sans oignon, bien chaud…" style="height: 44px; padding: 0 14px; border: 1.5px solid #E2CFC6; border-radius: 12px; background: #FFFFFF; font: inherit; font-weight: 400; font-size: 14px; color: #241014">
+</label>
+
+<div style="display: flex; justify-content: space-between; align-items: center">
+<div><div style="font-family: 'Fraunces', serif; font-weight: 700; font-size: 26px; color: #810C1B">{{unit}}</div><div style="font-size: 12px; color: #6B5458">par portion</div></div>
+<div style="display: flex; align-items: center; gap: 4px; background: #FFFFFF; border: 1.5px solid #E2CFC6; border-radius: 999px; padding: 3px">
+<button type="button" onClick="{{minus}}" aria-label="Retirer une portion" style="width: 44px; height: 44px; border-radius: 50%; border: 0; background: #F5ECE4; font: inherit; font-size: 22px; font-weight: 700; color: #241014; cursor: pointer">−</button>
+<span style="min-width: 30px; text-align: center; font-weight: 700; font-size: 18px">{{qty}}</span>
+<button type="button" onClick="{{plus}}" aria-label="Ajouter une portion" style="width: 44px; height: 44px; border-radius: 50%; border: 0; background: #810C1B; font: inherit; font-size: 22px; font-weight: 700; color: #FFFFFF; cursor: pointer">+</button>
+</div>
+</div>
+</div>
+
+<a href="Panier.dc.html" style="position: absolute; left: 16px; right: 16px; bottom: 16px; height: 60px; border-radius: 999px; background: #810C1B; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 12px; font-weight: 700; font-size: 17px; box-shadow: 0 14px 30px rgba(129,12,27,0.35)">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EBE320" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.5 11h11L21 7H6.5"></path><circle cx="9" cy="20" r="1.5"></circle><circle cx="18" cy="20" r="1.5"></circle></svg>
+Ajouter au panier · {{total}}</a>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { acc: 0, spice: 1, qty: 1 }; }
+  renderVals() {
+    var self = this, st = this.state;
+    var fmt = function (n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' F'; };
+    var accDefs = [['Attiéké', 'inclus', 0, '/_blob/2c6cfb99be238ae3f9173e4bda946151'], ['Riz', 'inclus', 0, '/_blob/ea7c2d1d6faa2cd1aaee2a561d82230b'], ['Foutou', '+ 500 F', 500, '/_blob/cf8b05d94498f7b36699762c0cd5cece']];
+    var base = 4500, unitPrice = base + accDefs[st.acc][2];
+    var pill = 'min-height: 52px; border-radius: 999px; font: inherit; cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 4px 8px; ';
+    var accs = accDefs.map(function (a, i) {
+      var on = st.acc === i;
+      return { name: a[0], extra: a[1], img: a[3], pressed: on ? 'true' : 'false', style: pill + (on ? 'background: #810C1B; color: #FFFFFF; border: 2px solid #EBE320;' : 'background: #FFFFFF; color: #241014; border: 1.5px solid #E2CFC6;'), pick: function () { self.setState({ acc: i }); } };
+    });
+    var spices = ['Sans', 'Doux', 'Fort'].map(function (s, i) {
+      var on = st.spice === i;
+      return { name: s, pressed: on ? 'true' : 'false', style: 'min-height: 44px; border-radius: 999px; font: inherit; font-weight: 700; font-size: 14px; cursor: pointer; ' + (on ? 'background: #810C1B; color: #FFFFFF; border: 2px solid #EBE320;' : 'background: #FFFFFF; color: #241014; border: 1.5px solid #E2CFC6;'), pick: function () { self.setState({ spice: i }); } };
+    });
+    return {
+      accs: accs, spices: spices, qty: st.qty, unit: fmt(unitPrice), total: fmt(unitPrice * st.qty),
+      minus: function () { self.setState({ qty: Math.max(1, st.qty - 1) }); },
+      plus: function () { self.setState({ qty: st.qty + 1 }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

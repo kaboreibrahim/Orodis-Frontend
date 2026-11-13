@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Suivi de la commande</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600;1,9..144,700&amp;family=DM+Sans:wght@400;500;700&amp;display=swap">
+<style>
+body{margin:0;background:#FBF5EE}
+@keyframes ping{0%{transform:scale(1);opacity:.6}80%,100%{transform:scale(2.6);opacity:0}}
+</style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; overflow: hidden; background: #FBF5EE; color: #241014; font-family: 'DM Sans', system-ui, sans-serif">
+
+<div style="padding: 12px 16px 0; display: flex; align-items: center; justify-content: space-between">
+<a href="Carte.dc.html" aria-label="Retour à la carte" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; text-decoration: none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#241014" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></a>
+<img src="/_blob/7ab1a07f2344daf048d5aa18a3980797" alt="Les Délices d'Orodis" style="height: 48px; width: auto">
+<span style="display: inline-flex; align-items: center; gap: 6px; background: #810C1B; color: #FFFFFF; font-weight: 700; font-size: 14px; padding: 9px 14px; border-radius: 999px">Table 5</span>
+</div>
+
+<div style="padding: 10px 20px 0; display: flex; flex-direction: column; gap: 14px">
+<span style="align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; background: #1F7A45; color: #FFFFFF; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 6px 12px; border-radius: 999px">
+<span style="position: relative; width: 8px; height: 8px; display: inline-block"><span style="position: absolute; inset: 0; border-radius: 50%; background: #9FE3B8; animation: ping 1.6s ease-out infinite"></span><span style="position: absolute; inset: 0; border-radius: 50%; background: #9FE3B8"></span></span>En direct</span>
+<h1 style="margin: 0; font-family: 'Fraunces', Georgia, serif; font-weight: 700; font-size: 30px; line-height: 1.05">Suivi de votre commande</h1>
+
+<div style="background: #810C1B; color: #FFFFFF; border-radius: 24px; padding: 20px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 16px 34px rgba(129,12,27,0.3)">
+<div style="font-family: 'Fraunces', serif; font-weight: 700; font-style: italic; font-size: 26px">{{bannerTitle}}</div>
+<div style="font-size: 14px; color: #F2D9D6">{{bannerText}}</div>
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="width: 38px; height: 38px; border-radius: 50%; background: #EBE320; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#241014" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2.5 2M9 2h6"></path></svg></span>
+<div><div style="font-size: 12px; color: #F2D9D6">Temps estimé</div><div style="font-weight: 700; font-size: 17px; color: #EBE320">{{eta}}</div></div>
+</div>
+</div>
+
+<div style="background: #FFFFFF; border-radius: 22px; padding: 18px 18px 6px">
+<div style="display: flex; justify-content: space-between; margin-bottom: 12px"><span style="font-weight: 700">Progression</span><span style="font-weight: 700; color: #810C1B; font-size: 14px">Commande n° 208</span></div>
+<sc-for list="{{steps}}" as="s" hint-placeholder-count="4">
+<div style="display: flex; gap: 14px">
+<div style="display: flex; flex-direction: column; align-items: center">
+<span style="{{s.dot}}">{{s.mark}}</span>
+<span style="{{s.line}}"></span>
+</div>
+<div style="padding-bottom: 16px; flex: 1">
+<div style="display: flex; justify-content: space-between; gap: 8px"><span style="{{s.titleStyle}}">{{s.title}}</span><span style="font-size: 12.5px; color: #6B5458">{{s.time}}</span></div>
+<div style="font-size: 13px; color: #6B5458; margin-top: 2px">{{s.text}}</div>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="position: absolute; left: 16px; right: 16px; bottom: 16px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+<a href="Carte.dc.html" style="height: 56px; border-radius: 999px; border: 1.5px solid #810C1B; color: #810C1B; background: #FFFFFF; text-decoration: none; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px">Commander autre chose</a>
+<a href="Panier.dc.html" style="height: 56px; border-radius: 999px; background: #810C1B; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px">Demander l'addition</a>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { step: 1 }; }
+  componentDidMount() {
+    var self = this;
+    this._t = setInterval(function () { if (self.state.step < 3) self.setState({ step: self.state.step + 1 }); else clearInterval(self._t); }, 4000);
+  }
+  componentWillUnmount() { clearInterval(this._t); }
+  renderVals() {
+    var cur = this.state.step;
+    var defs = [['Commande reçue', 'Transmise directement en cuisine', '13h42'], ['En préparation', 'Le chef prépare votre Kedjenou et votre Garba', '13h44'], ['Prête', 'Votre serveur la récupère au passe', ''], ['Servie à votre table', 'Bon appétit !', '']];
+    var steps = defs.map(function (d, i) {
+      var done = i < cur, now = i === cur, last = i === defs.length - 1;
+      return {
+        title: d[0], text: d[1], time: done || now ? (d[2] || 'à l’instant') : 'à venir', mark: done ? '✓' : String(i + 1),
+        dot: 'width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; transition: background 0.4s, transform 0.4s; ' + (done ? 'background: #1F9D55; color: #FFFFFF;' : now ? 'background: #810C1B; color: #FFFFFF; transform: scale(1.12); box-shadow: 0 0 0 6px rgba(129,12,27,0.14);' : 'background: #F4E3E1; color: #8E7176;'),
+        line: last ? 'display: none' : 'width: 2px; flex: 1; min-height: 18px; margin: 4px 0; transition: background 0.4s; background: ' + (done ? '#1F9D55' : '#EADBD3') + ';',
+        titleStyle: 'font-weight: 700; font-size: 15px; ' + (done || now ? 'color: #241014;' : 'color: #8E7176;')
+      };
+    });
+    var banners = [['Commande envoyée !', 'La cuisine vient de recevoir votre commande.', 'environ 20 min'], ['Bon appétit bientôt !', 'Notre chef prépare vos plats avec soin.', 'environ 15 min'], ['C’est prêt !', 'Votre serveur arrive avec vos plats.', 'quelques instants'], ['Bon appétit !', 'Vos plats sont servis. Merci de votre visite.', 'servi']];
+    var b = banners[cur];
+    return { steps: steps, bannerTitle: b[0], bannerText: b[1], eta: b[2] };
+  }
+}
+</script>
+</body>
+</html>

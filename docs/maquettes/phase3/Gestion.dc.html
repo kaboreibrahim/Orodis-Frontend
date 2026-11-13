@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Gestion des commandes</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700&amp;family=DM+Sans:wght@400;500;700&amp;display=swap">
+<style>
+body{margin:0;background:#FBF5EE}
+</style>
+</helmet>
+<div style="width: 100%; min-height: 900px; display: flex; flex-wrap: wrap; background: #FBF5EE; color: #241014; font-family: 'DM Sans', system-ui, sans-serif; font-size: 15px">
+
+<!-- menu latéral -->
+<nav aria-label="Navigation du gestionnaire" style="flex: 1 1 230px; max-width: 250px; min-width: 210px; background: #241014; color: #FFFFFF; padding: 22px 14px; box-sizing: border-box; display: flex; flex-direction: column; gap: 4px">
+<img src="/_blob/027155e9550be3e1a5582afafb7115d0" alt="Les Délices d'Orodis" style="width: 150px; height: auto; margin: 0 0 22px 6px">
+<sc-for list="{{nav}}" as="n" hint-placeholder-count="7">
+<a href="#" style="{{n.style}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{n.icon}}"></path></svg>{{n.label}}<span style="{{n.badgeStyle}}">{{n.badge}}</span></a>
+</sc-for>
+<div style="flex: 1"></div>
+<div style="display: flex; align-items: center; gap: 10px; padding: 12px 8px; border-top: 1px solid #3F232A">
+<span style="width: 36px; height: 36px; border-radius: 50%; background: #810C1B; display: flex; align-items: center; justify-content: center; font-weight: 700">G</span>
+<div><div style="font-weight: 700; font-size: 14px">[Nom du gérant]</div><div style="font-size: 12px; color: #CFC3BC">Gérant</div></div>
+</div>
+</nav>
+
+<!-- contenu -->
+<main style="flex: 999 1 640px; min-width: 0; padding: 24px 28px 32px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px">
+
+<div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px">
+<div>
+<h1 style="margin: 0; font-family: 'Fraunces', serif; font-weight: 700; font-size: 32px">Commandes</h1>
+<div style="color: #6B5458; font-size: 14px">Mercredi 28 octobre 2026 · données d'exemple</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+<label style="display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 14px; border-radius: 999px; background: #FFFFFF; border: 1px solid #EADBD3; min-width: 240px">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B5458" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+<span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Rechercher</span>
+<input type="search" placeholder="N° de commande, table, client…" style="border: 0; outline: 0; background: transparent; font: inherit; font-size: 14px; width: 100%; color: #241014">
+</label>
+<span style="display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px; border-radius: 999px; background: #E3F5EA; color: #146C3B; font-weight: 700; font-size: 14px"><span style="width: 9px; height: 9px; border-radius: 50%; background: #1F9D55"></span>Service ouvert</span>
+</div>
+</div>
+
+<!-- indicateurs -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px">
+<sc-for list="{{kpis}}" as="k" hint-placeholder-count="5">
+<div style="background: #FFFFFF; border: 1px solid #EADBD3; border-radius: 18px; padding: 14px 16px; border-top: 4px solid {{k.color}}">
+<div style="font-size: 13px; color: #6B5458; font-weight: 700">{{k.label}}</div>
+<div style="font-family: 'Fraunces', serif; font-weight: 700; font-size: 30px; margin-top: 2px">{{k.value}}</div>
+</div>
+</sc-for>
+</div>
+
+<!-- filtres -->
+<div role="tablist" aria-label="Filtrer par canal" style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{filters}}" as="f" hint-placeholder-count="4">
+<button type="button" role="tab" aria-selected="{{f.selected}}" onClick="{{f.pick}}" style="{{f.style}}">{{f.label}}<span style="{{f.countStyle}}">{{f.count}}</span></button>
+</sc-for>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start">
+
+<!-- liste -->
+<div style="flex: 999 1 520px; min-width: 0; background: #FFFFFF; border: 1px solid #EADBD3; border-radius: 20px; overflow-x: auto">
+<table style="width: 100%; min-width: 700px; border-collapse: collapse; font-size: 14px">
+<thead>
+<tr style="text-align: left; color: #6B5458; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em">
+<th style="padding: 14px 16px; font-weight: 700">Commande</th>
+<th style="padding: 14px 10px; font-weight: 700">Canal</th>
+<th style="padding: 14px 10px; font-weight: 700">Client / table</th>
+<th style="padding: 14px 10px; font-weight: 700; text-align: right">Montant</th>
+<th style="padding: 14px 10px; font-weight: 700">Paiement</th>
+<th style="padding: 14px 10px; font-weight: 700">Statut</th>
+<th style="padding: 14px 16px 14px 10px; font-weight: 700">Heure</th>
+</tr>
+</thead>
+<tbody>
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="6">
+<tr style="{{r.rowStyle}}">
+<td style="padding: 12px 16px"><button type="button" onClick="{{r.pick}}" aria-pressed="{{r.pressed}}" style="min-height: 40px; border: 0; background: transparent; font: inherit; font-weight: 700; font-size: 15px; color: #810C1B; cursor: pointer; padding: 0; text-align: left; text-decoration: underline; text-underline-offset: 3px">{{r.num}}</button></td>
+<td style="padding: 12px 10px"><span style="{{r.chStyle}}">{{r.channel}}</span></td>
+<td style="padding: 12px 10px">{{r.who}}</td>
+<td style="padding: 12px 10px; text-align: right; font-weight: 700; white-space: nowrap">{{r.amount}}</td>
+<td style="padding: 12px 10px"><span style="{{r.payStyle}}">{{r.pay}}</span></td>
+<td style="padding: 12px 10px"><span style="{{r.stStyle}}">{{r.status}}</span></td>
+<td style="padding: 12px 16px 12px 10px; color: #6B5458; white-space: nowrap">{{r.time}}</td>
+</tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+
+<!-- détail -->
+<aside aria-label="Détail de la commande" style="flex: 1 1 320px; max-width: 380px; min-width: 280px; background: #FFFFFF; border: 1px solid #EADBD3; border-radius: 20px; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px">
+<div>
+<div style="font-family: 'Fraunces', serif; font-weight: 700; font-size: 26px">{{d.num}}</div>
+<div style="color: #6B5458; font-size: 14px">{{d.who}} · {{d.time}}</div>
+</div>
+<span style="{{d.chStyle}}">{{d.channel}}</span>
+</div>
+
+<ol style="list-style: none; margin: 0; padding: 0; display: flex; gap: 4px">
+<sc-for list="{{d.steps}}" as="s" hint-placeholder-count="4">
+<li style="flex: 1; display: flex; flex-direction: column; gap: 6px"><span style="{{s.bar}}"></span><span style="font-size: 11.5px; font-weight: 700; color: {{s.color}}">{{s.label}}</span></li>
+</sc-for>
+</ol>
+
+<div style="display: flex; flex-direction: column; gap: 8px; border-top: 1px solid #EADBD3; padding-top: 12px">
+<sc-for list="{{d.items}}" as="i" hint-placeholder-count="2">
+<div style="display: flex; justify-content: space-between; gap: 10px"><div><div style="font-weight: 700">{{i.q}}× {{i.n}}</div><div style="font-size: 13px; color: #6B5458">{{i.o}}</div></div><span style="white-space: nowrap">{{i.p}}</span></div>
+</sc-for>
+<div style="display: flex; justify-content: space-between; border-top: 1px solid #EADBD3; padding-top: 10px; font-family: 'Fraunces', serif; font-weight: 700; font-size: 20px"><span>Total</span><span style="color: #810C1B">{{d.amount}}</span></div>
+</div>
+
+<sc-if value="{{d.hasNote}}" hint-placeholder-val="{{ false }}"><div style="font-size: 13.5px; background: #FFF7D6; color: #5C4A00; border-radius: 12px; padding: 10px 12px"><strong>Note :</strong> {{d.note}}</div></sc-if>
+<div style="font-size: 14px"><span style="color: #6B5458">Paiement :</span> <span style="{{d.payStyle}}">{{d.pay}}</span></div>
+
+<sc-if value="{{d.isDelivery}}" hint-placeholder-val="{{ false }}">
+<label style="display: flex; flex-direction: column; gap: 6px; font-weight: 700; font-size: 14px">Livreur
+<select value="{{d.driver}}" onChange="{{d.assign}}" style="height: 44px; padding: 0 12px; border: 1.5px solid #E2CFC6; border-radius: 12px; background: #FFFFFF; font: inherit; font-weight: 400; color: #241014">
+<sc-for list="{{d.drivers}}" as="dr" hint-placeholder-count="3"><option value="{{dr.v}}">{{dr.l}}</option></sc-for>
+</select>
+</label>
+</sc-if>
+
+<sc-if value="{{d.canAdvance}}" hint-placeholder-val="{{ true }}">
+<button type="button" onClick="{{d.advance}}" style="height: 52px; border: 0; border-radius: 999px; background: #810C1B; color: #FFFFFF; font: inherit; font-weight: 700; font-size: 16px; cursor: pointer">{{d.nextLabel}}</button>
+</sc-if>
+<sc-if value="{{d.done}}" hint-placeholder-val="{{ false }}">
+<div style="height: 52px; border-radius: 999px; background: #E3F5EA; color: #146C3B; display: flex; align-items: center; justify-content: center; font-weight: 700">Commande terminée</div>
+</sc-if>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+<a href="Ticket80.dc.html" style="height: 44px; border: 1.5px solid #241014; border-radius: 999px; background: #FFFFFF; color: #241014; text-decoration: none; font-weight: 700; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#241014" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4v-7h16v7h-2M8 14h8v7H8z"></path></svg>Imprimer le reçu</a>
+<a href="RecuA4.dc.html" style="height: 44px; border: 1.5px solid #241014; border-radius: 999px; background: #FFFFFF; color: #241014; text-decoration: none; font-weight: 700; font-size: 14px; display: flex; align-items: center; justify-content: center">Reçu PDF</a>
+</div>
+<button type="button" style="height: 44px; border: 1.5px solid #E2CFC6; border-radius: 999px; background: #FFFFFF; color: #6B5458; font: inherit; font-weight: 700; font-size: 14px; cursor: pointer">Annuler la commande</button>
+</aside>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      filter: 'all', sel: '2048',
+      orders: [
+        { num: '208', ch: 0, who: 'Table 5', amount: 8000, pay: 1, st: 0, time: '13h44', items: [['1', 'Kedjenou de poulet', 'Attiéké · piment doux', 4500], ['1', 'Garba spécial', 'Piment fort', 3500]], note: '' },
+        { num: '2051', ch: 1, who: 'Awa K.', amount: 12000, pay: 3, st: 0, time: '13h41', items: [['2', 'Poulet braisé', 'Alloco', 10000], ['2', 'Jus de bissap', '', 2000]], note: 'Retrait prévu à 14h10' },
+        { num: '2048', ch: 2, who: 'Jean-Marc T. · Cocody, Angré', amount: 9500, pay: 2, st: 1, time: '13h37', items: [['1', 'Pizza Orodis', '', 7500], ['1', 'Bissap frais', '', 1000], ['1', 'Frais de livraison', '', 1000]], note: 'Sonner à la grille bleue', driver: '' },
+        { num: '205', ch: 0, who: 'Table 2', amount: 8000, pay: 0, st: 1, time: '13h34', items: [['2', 'Sauce graine', 'Riz', 7000], ['1', 'Alloco', '', 1000]], note: '' },
+        { num: '203', ch: 0, who: 'Table 9', amount: 7000, pay: 0, st: 2, time: '13h28', items: [['1', 'Burger maison', 'Bien cuit', 5000], ['2', 'Éclair', '', 2000]], note: '' },
+        { num: '2044', ch: 2, who: 'Fatou D. · Bingerville', amount: 12000, pay: 4, st: 3, time: '13h15', items: [['3', 'Garba spécial', 'Piment à part', 10500], ['1', 'Frais de livraison', '', 1500]], note: '', driver: 'moussa' },
+        { num: '199', ch: 0, who: 'Table 4', amount: 11500, pay: 5, st: 4, time: '12h58', items: [['2', 'Kedjenou de poulet', 'Riz', 9000], ['1', 'Poulet braisé', '', 2500]], note: '' }
+      ]
+    };
+  }
+  renderVals() {
+    var self = this, st = this.state;
+    var fmt = function (n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' F'; };
+    var pill = function (bg, fg) { return 'display: inline-block; white-space: nowrap; padding: 4px 10px; border-radius: 999px; font-size: 12.5px; font-weight: 700; background: ' + bg + '; color: ' + fg + ';'; };
+    var CH = [['Sur place', '#F5ECE4', '#5E504A'], ['À emporter', '#DDEBF0', '#245B6E'], ['Livraison', '#F4E3E1', '#810C1B']];
+    var PAY = [['À la fin du repas', '#F5ECE4', '#6B5458'], ['Payé · Wave', '#E3F5EA', '#146C3B'], ['Payé · Orange Money', '#E3F5EA', '#146C3B'], ['À régler au retrait', '#FFF1D6', '#7A5200'], ['Espèces à la livraison', '#FFF1D6', '#7A5200'], ['Payé · espèces', '#E3F5EA', '#146C3B']];
+    var FLOW = [['Nouvelle', 'En préparation', 'Prête', 'Servie'], ['Nouvelle', 'En préparation', 'Prête', 'Remise'], ['Nouvelle', 'En préparation', 'Prête', 'En livraison', 'Livrée']];
+    var NEXT = [['Lancer la préparation', 'Marquer prête', 'Marquer servie'], ['Lancer la préparation', 'Marquer prête', 'Marquer remise au client'], ['Lancer la préparation', 'Marquer prête', 'Remettre au livreur', 'Marquer livrée']];
+    var stColor = function (o) {
+      var last = FLOW[o.ch].length - 1;
+      if (o.st >= last) return pill('#EDE7E4', '#6B5458');
+      return [pill('#FFF7C2', '#5C4A00'), pill('#FCE3D2', '#8A3B12'), pill('#E3F5EA', '#146C3B'), pill('#E0ECF7', '#1F4E79')][o.st];
+    };
+    var counts = [0, 0, 0];
+    st.orders.forEach(function (o) { counts[o.ch]++; });
+    var fdefs = [['all', 'Toutes', st.orders.length], ['0', 'Sur place', counts[0]], ['1', 'À emporter', counts[1]], ['2', 'Livraison', counts[2]]];
+    var filters = fdefs.map(function (f) {
+      var on = st.filter === f[0];
+      return { label: f[1], count: f[2], selected: on ? 'true' : 'false', countStyle: 'margin-left: 8px; padding: 1px 8px; border-radius: 999px; font-size: 12px; ' + (on ? 'background: rgba(255,255,255,0.2);' : 'background: #F5ECE4;'), style: 'height: 42px; padding: 0 16px; border-radius: 999px; font: inherit; font-weight: 700; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; ' + (on ? 'background: #241014; color: #FFFFFF; border: 1.5px solid #241014;' : 'background: #FFFFFF; color: #241014; border: 1.5px solid #E2CFC6;'), pick: function () { self.setState({ filter: f[0] }); } };
+    });
+    var shown = st.orders.filter(function (o) { return st.filter === 'all' || String(o.ch) === st.filter; });
+    var rows = shown.map(function (o) {
+      var on = o.num === st.sel;
+      return {
+        num: 'n° ' + o.num, pressed: on ? 'true' : 'false', channel: CH[o.ch][0], chStyle: pill(CH[o.ch][1], CH[o.ch][2]), who: o.who, amount: fmt(o.amount),
+        pay: PAY[o.pay][0], payStyle: pill(PAY[o.pay][1], PAY[o.pay][2]), status: FLOW[o.ch][o.st], stStyle: stColor(o), time: o.time,
+        rowStyle: 'border-top: 1px solid #F1E2DA; ' + (on ? 'background: #FFF7F3; box-shadow: inset 4px 0 0 #810C1B;' : ''),
+        pick: function () { self.setState({ sel: o.num }); }
+      };
+    });
+    var active = function (s) { return st.orders.filter(function (o) { return o.st === s && o.st < FLOW[o.ch].length - 1; }).length; };
+    var total = st.orders.reduce(function (a, o) { return a + o.amount; }, 0);
+    var kpis = [
+      { label: 'Nouvelles', value: active(0), color: '#EBE320' },
+      { label: 'En préparation', value: active(1), color: '#E0782E' },
+      { label: 'Prêtes', value: active(2), color: '#1F9D55' },
+      { label: 'En livraison', value: active(3), color: '#1F4E79' },
+      { label: 'Total des commandes', value: fmt(total), color: '#810C1B' }
+    ];
+    var o = st.orders.filter(function (x) { return x.num === st.sel; })[0] || st.orders[0];
+    var flow = FLOW[o.ch], last = flow.length - 1;
+    var drivers = [['', 'Choisir un livreur…'], ['moussa', 'Moussa'], ['ibrahim', 'Ibrahim'], ['kevin', 'Kévin']];
+    var update = function (patch) { self.setState({ orders: st.orders.map(function (x) { return x.num === o.num ? Object.assign({}, x, patch) : x; }) }); };
+    var d = {
+      num: 'n° ' + o.num, who: o.who, time: o.time, channel: CH[o.ch][0], chStyle: pill(CH[o.ch][1], CH[o.ch][2]),
+      steps: flow.map(function (l, i) { var reached = i <= o.st; return { label: l, color: reached ? '#241014' : '#9C8A8E', bar: 'height: 6px; border-radius: 3px; background: ' + (reached ? '#810C1B' : '#EADBD3') + ';' }; }),
+      items: o.items.map(function (i) { return { q: i[0], n: i[1], o: i[2], p: fmt(i[3]) }; }),
+      amount: fmt(o.amount), note: o.note, hasNote: !!o.note, pay: PAY[o.pay][0], payStyle: pill(PAY[o.pay][1], PAY[o.pay][2]),
+      isDelivery: o.ch === 2, driver: o.driver || '',
+      drivers: drivers.map(function (x) { return { v: x[0], l: x[1], sel: (o.driver || '') === x[0] }; }),
+      assign: function (e) { update({ driver: e.target.value }); },
+      canAdvance: o.st < last, done: o.st >= last, nextLabel: NEXT[o.ch][Math.min(o.st, NEXT[o.ch].length - 1)],
+      advance: function () { update({ st: Math.min(last, o.st + 1) }); }
+    };
+    var I = { list: 'M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01', chef: 'M6 13a4 4 0 1 1 2-7.5 4 4 0 0 1 8 0A4 4 0 1 1 18 13v6H6z', book: 'M5 3h11a3 3 0 0 1 3 3v15H8a3 3 0 0 1-3-3zM9 8h6M9 12h6', qr: 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h3v3h-3zM20 20v.01', cal: 'M4 5h16v16H4zM4 9h16M8 3v4M16 3v4', bike: 'M6 17a3 3 0 1 0 0-.01M18 17a3 3 0 1 0 0-.01M6 17h7l3-7h3M13 17l-2-6H8', chart: 'M4 20V10M10 20V4M16 20v-7M22 20H2' };
+    var navDefs = [['Commandes', I.list, String(active(0) + active(1) + active(2))], ['Écran cuisine', I.chef, ''], ['Carte & menus', I.book, ''], ['Tables & QR codes', I.qr, ''], ['Réservations', I.cal, ''], ['Livraisons', I.bike, ''], ['Statistiques', I.chart, '']];
+    var nav = navDefs.map(function (n, i) {
+      return { label: n[0], icon: n[1], badge: n[2], badgeStyle: n[2] ? 'margin-left: auto; min-width: 22px; height: 22px; border-radius: 999px; background: #EBE320; color: #241014; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center' : 'display: none', style: 'display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 12px; border-radius: 12px; text-decoration: none; font-weight: 500; font-size: 15px; ' + (i === 0 ? 'background: #810C1B; color: #FFFFFF; font-weight: 700;' : 'color: #E9DCD5;') };
+    });
+    return { nav: nav, kpis: kpis, filters: filters, rows: rows, d: d };
+  }
+}
+</script>
+</body>
+</html>
