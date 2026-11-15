@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Aucune commande native n'est exposée au site : la fenêtre affiche seulement l'espace du personnel.",
+  "windows": ["main"],
+  "permissions": []
+}

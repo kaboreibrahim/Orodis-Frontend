@@ -1,0 +1,57 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Orodis Gestion",
+  "version": "1.0.0",
+  "identifier": "ci.delicesdorodis.gestion",
+  "build": {
+    "frontendDist": "../www"
+  },
+  "app": {
+    "withGlobalTauri": false,
+    "windows": [
+      {
+        "label": "main",
+        "title": "Orodis Gestion",
+        "url": "index.html",
+        "width": 1366,
+        "height": 860,
+        "minWidth": 1024,
+        "minHeight": 680,
+        "maximized": true,
+        "center": true,
+        "backgroundColor": "#241014",
+        "additionalBrowserArgs": "--disable-features=msWebOOUI,msPdfOOUI,msSmartScreenProtection --autoplay-policy=no-user-gesture-required"
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "nsis"
+    ],
+    "publisher": "Les Délices d'Orodis",
+    "copyright": "Les Délices d'Orodis",
+    "category": "Business",
+    "shortDescription": "Espace du personnel",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "webviewInstallMode": {
+        "type": "downloadBootstrapper"
+      },
+      "nsis": {
+        "languages": [
+          "French"
+        ]
+      }
+    }
+  }
+}

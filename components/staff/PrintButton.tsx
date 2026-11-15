@@ -2,6 +2,7 @@
 
 // Bouton « Imprimer » du ticket 80 mm ; ?imprimer=1 ouvre directement la fenêtre d'impression.
 // La hauteur de la page imprimée suit celle du ticket : le rouleau thermique est coupé juste après.
+// Dans l'application Android (mobile/), window.print() n'existe pas : on passe par l'impression Android.
 import { Printer } from "lucide-react";
 import { useEffect } from "react";
 
@@ -16,13 +17,22 @@ function fitPageToTicket() {
   style.textContent = `@page { size: 80mm ${height}mm; margin: 0; }`;
 }
 
+type AndroidBridge = { print(title: string): void };
+
+function printTicket() {
+  fitPageToTicket();
+  const android = (window as Window & { OrodisAndroid?: AndroidBridge }).OrodisAndroid;
+  if (android) android.print(document.title);
+  else window.print();
+}
+
 export function PrintButton({ auto = false }: { auto?: boolean }) {
   useEffect(() => {
     fitPageToTicket();
     window.addEventListener("beforeprint", fitPageToTicket);
     // Les images (logo, QR) changent la hauteur en se chargeant : on remesure une fois la page chargée.
     window.addEventListener("load", fitPageToTicket);
-    const timer = auto ? window.setTimeout(() => (fitPageToTicket(), window.print()), 500) : undefined;
+    const timer = auto ? window.setTimeout(printTicket, 500) : undefined;
     return () => {
       window.removeEventListener("beforeprint", fitPageToTicket);
       window.removeEventListener("load", fitPageToTicket);
@@ -33,10 +43,7 @@ export function PrintButton({ auto = false }: { auto?: boolean }) {
   return (
     <button
       type="button"
-      onClick={() => {
-        fitPageToTicket();
-        window.print();
-      }}
+      onClick={printTicket}
       className="flex h-12 items-center gap-2 rounded-full bg-bordeaux px-6 font-bold text-white shadow-bouton"
     >
       <Printer size={20} aria-hidden="true" />

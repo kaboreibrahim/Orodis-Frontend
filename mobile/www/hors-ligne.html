@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pas de connexion · Orodis Gestion</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    display: flex; align-items: center; justify-content: center; padding: 24px;
+    background: #241014; color: #FBF5EE;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { width: 100%; max-width: 380px; display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; }
+  img { width: 140px; height: auto; }
+  h1 { margin: 8px 0 0; font-family: Georgia, serif; font-size: 28px; line-height: 1.15; }
+  h1 em { color: #EBE320; }
+  p { margin: 0; color: #D9C3C6; font-size: 15px; line-height: 1.5; }
+  button {
+    margin-top: 8px; width: 100%; height: 52px; border: 0; border-radius: 999px;
+    background: #810C1B; color: #fff; font: inherit; font-weight: 700; font-size: 16px; cursor: pointer;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+  }
+  button:disabled { opacity: 0.6; }
+  small { color: #BFA6AA; font-size: 13px; }
+</style>
+</head>
+<body>
+<main>
+  <img src="logo-blanc.png" alt="Les Délices d’Orodis">
+  <h1>Pas de <em>connexion</em></h1>
+  <p>L’espace du personnel a besoin d’internet. Vérifiez le Wi-Fi ou les données mobiles, puis réessayez.</p>
+  <button type="button" id="retry">Réessayer</button>
+  <small id="auto">Nouvel essai automatique dans <span id="count">15</span> s</small>
+</main>
+<script>
+  // L'application connaît l'adresse du site (capacitor.config.ts) ; repli sur la production.
+  var FALLBACK_URL = "https://delicesdorodis.ci/gestion";
+
+  var button = document.getElementById("retry");
+  var count = document.getElementById("count");
+  var seconds = 15;
+
+  function retry() {
+    button.disabled = true;
+    button.textContent = "Connexion…";
+    if (window.OrodisAndroid && window.OrodisAndroid.retry) window.OrodisAndroid.retry();
+    else window.location.replace(FALLBACK_URL);
+  }
+
+  button.addEventListener("click", retry);
+  window.addEventListener("online", retry);
+  setInterval(function () {
+    seconds -= 1;
+    if (seconds <= 0) retry();
+    else count.textContent = String(seconds);
+  }, 1000);
+</script>
+</body>
+</html>

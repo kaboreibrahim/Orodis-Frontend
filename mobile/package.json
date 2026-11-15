@@ -1,0 +1,20 @@
+{
+  "name": "orodis-gestion-android",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Application Android de l'espace du personnel des Délices d'Orodis : ouvre /gestion du site en ligne.",
+  "scripts": {
+    "sync": "cap sync android",
+    "icones": "capacitor-assets generate --android --iconBackgroundColor \"#810C1B\" --splashBackgroundColor \"#241014\"",
+    "ouvrir": "cap open android"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.6.2",
+    "@capacitor/core": "8.6.2"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "4.0.0",
+    "@capacitor/cli": "8.6.2",
+    "typescript": "^5"
+  }
+}

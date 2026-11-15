@@ -1,0 +1,163 @@
+# Compile les applications de l'espace du personnel :
+#   - Android : mobile/  -> APK (Capacitor)
+#   - Windows : desktop/ -> installateur .exe (Tauri)
+# Les deux ouvrent /gestion du site en ligne : seules les modifications de mobile/ ou desktop/ demandent une nouvelle compilation.
+#
+# Chaque poussée sur la branche « applications » qui touche ces dossiers lance aussi une compilation d'essai.
+# Lancer : onglet « Actions » > « Applications du personnel » > « Run workflow »,
+# ou pousser une étiquette app-v1.0.0 (une « Release » GitHub est alors créée avec les deux fichiers).
+#
+# Réglages du dépôt (Settings > Secrets and variables > Actions) :
+#   Variable ORODIS_URL                   adresse du site, par défaut https://delicesdorodis.ci
+#   Secret   ANDROID_KEYSTORE_BASE64      clé de signature encodée en base64 (voir mobile/README.md)
+#   Secret   ANDROID_KEYSTORE_PASSWORD
+#   Secret   ANDROID_KEY_ALIAS
+#   Secret   ANDROID_KEY_PASSWORD
+name: Applications du personnel
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["app-v*"]
+    branches: [applications]
+    paths: ["mobile/**", "desktop/**", ".github/workflows/applications.yml"]
+
+permissions:
+  contents: write
+
+env:
+  ORODIS_URL: ${{ vars.ORODIS_URL || 'https://delicesdorodis.ci' }}
+  VERSION_NAME: ${{ startsWith(github.ref, 'refs/tags/app-v') && github.ref_name || format('1.0.{0}', github.run_number) }}
+
+jobs:
+  android:
+    name: Android (APK)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    env:
+      ORODIS_VERSION_CODE: ${{ github.run_number }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+
+      - name: Installer Capacitor
+        run: npm ci
+
+      - name: Copier la configuration dans le projet Android
+        run: npx cap sync android
+
+      - name: Préparer la clé de signature
+        id: keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/orodis.keystore"
+            echo "path=$RUNNER_TEMP/orodis.keystore" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::Pas de clé de signature dans les secrets : APK de test (debug). Il faudra désinstaller l'application avant chaque mise à jour."
+          fi
+
+      - name: Compiler l'APK
+        working-directory: mobile/android
+        env:
+          ORODIS_KEYSTORE_PATH: ${{ steps.keystore.outputs.path }}
+          ORODIS_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ORODIS_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ORODIS_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          chmod +x gradlew
+          export ORODIS_VERSION_NAME="${VERSION_NAME#app-v}"
+          VERSION_NAME="$ORODIS_VERSION_NAME"
+          mkdir -p "$RUNNER_TEMP/apk"
+          if [ -n "$ORODIS_KEYSTORE_PATH" ]; then
+            ./gradlew --no-daemon assembleRelease
+            cp app/build/outputs/apk/release/app-release.apk "$RUNNER_TEMP/apk/orodis-gestion-$VERSION_NAME.apk"
+          else
+            ./gradlew --no-daemon assembleDebug
+            cp app/build/outputs/apk/debug/app-debug.apk "$RUNNER_TEMP/apk/orodis-gestion-$VERSION_NAME-test.apk"
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: orodis-gestion-android
+          path: ${{ runner.temp }}/apk/*.apk
+          if-no-files-found: error
+
+  windows:
+    name: Windows (installateur)
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: desktop
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: desktop/src-tauri
+
+      - name: Installer Tauri
+        run: npm ci
+
+      - name: Adresse du site et numéro de version
+        run: |
+          echo "window.ORODIS_URL = \"$ORODIS_URL\";" > www/config.js
+          VERSION="${VERSION_NAME#app-v}"
+          node -e "const f='src-tauri/tauri.conf.json';const c=require('./'+f);c.version=process.argv[1];require('fs').writeFileSync(f,JSON.stringify(c,null,2)+'\n')" "$VERSION"
+
+      - name: Compiler l'installateur
+        run: npx tauri build
+
+      - name: Rassembler l'installateur
+        run: |
+          mkdir -p "$RUNNER_TEMP/exe"
+          cp src-tauri/target/release/bundle/nsis/*.exe "$RUNNER_TEMP/exe/"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: orodis-gestion-windows
+          path: ${{ runner.temp }}/exe/*.exe
+          if-no-files-found: error
+
+  release:
+    name: Publication
+    if: startsWith(github.ref, 'refs/tags/app-v')
+    needs: [android, windows]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: fichiers
+          merge-multiple: true
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          name: Orodis Gestion ${{ github.ref_name }}
+          files: fichiers/*
+          body: |
+            Applications de l'espace du personnel.
+            - Android : fichier .apk à installer sur les téléphones et tablettes du restaurant.
+            - Windows : installateur .exe pour le poste de caisse et l'écran cuisine.

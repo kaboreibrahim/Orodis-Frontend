@@ -1,0 +1,14 @@
+{
+  "name": "orodis-gestion-bureau",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Application Windows de l'espace du personnel des Délices d'Orodis : ouvre /gestion du site en ligne.",
+  "scripts": {
+    "icones": "tauri icon assets/icone.png",
+    "dev": "tauri dev",
+    "build": "tauri build"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "2.12.4"
+  }
+}

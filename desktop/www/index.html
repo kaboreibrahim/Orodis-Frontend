@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Orodis Gestion</title>
+<script src="config.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    display: flex; align-items: center; justify-content: center; padding: 24px;
+    background: #241014; color: #FBF5EE;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { width: 100%; max-width: 380px; display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; }
+  img { width: 140px; height: auto; }
+  h1 { margin: 8px 0 0; font-family: Georgia, serif; font-size: 28px; line-height: 1.15; }
+  h1 em { color: #EBE320; }
+  p { margin: 0; color: #D9C3C6; font-size: 15px; line-height: 1.5; }
+  button {
+    margin-top: 8px; width: 100%; height: 52px; border: 0; border-radius: 999px;
+    background: #810C1B; color: #fff; font: inherit; font-weight: 700; font-size: 16px; cursor: pointer;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+  }
+  button:disabled { opacity: 0.6; }
+  small { color: #BFA6AA; font-size: 13px; }
+</style>
+</head>
+<body>
+<main>
+  <img src="logo-blanc.png" alt="Les Délices d’Orodis">
+  <h1 id="title">Connexion…</h1>
+  <p id="text">Ouverture de l’espace du personnel.</p>
+  <button type="button" id="retry" hidden>Réessayer</button>
+  <small id="auto" hidden>Nouvel essai automatique dans <span id="count">15</span> s</small>
+</main>
+<script>
+  // Au démarrage, on vérifie que le site répond avant de l'ouvrir ; sinon on affiche « Pas de connexion »
+  // et on réessaie toutes les 15 s ou dès que la connexion revient.
+  var SITE = String(window.ORODIS_URL || "https://delicesdorodis.ci").replace(/\/$/, "");
+  var title = document.getElementById("title");
+  var text = document.getElementById("text");
+  var button = document.getElementById("retry");
+  var auto = document.getElementById("auto");
+  var count = document.getElementById("count");
+  var timer = null;
+
+  function offline() {
+    title.innerHTML = "Pas de <em>connexion</em>";
+    text.textContent = "L’espace du personnel a besoin d’internet. Vérifiez le réseau, puis réessayez.";
+    button.hidden = false;
+    button.disabled = false;
+    button.textContent = "Réessayer";
+    auto.hidden = false;
+    var seconds = 15;
+    count.textContent = String(seconds);
+    clearInterval(timer);
+    timer = setInterval(function () {
+      seconds -= 1;
+      if (seconds <= 0) open();
+      else count.textContent = String(seconds);
+    }, 1000);
+  }
+
+  function open() {
+    clearInterval(timer);
+    button.disabled = true;
+    button.textContent = "Connexion…";
+    var controller = new AbortController();
+    var abort = setTimeout(function () { controller.abort(); }, 10000);
+    // no-cors : on veut seulement savoir si le serveur répond.
+    fetch(SITE + "/gestion/connexion", { mode: "no-cors", cache: "no-store", signal: controller.signal })
+      .then(function () { window.location.replace(SITE + "/gestion"); })
+      .catch(offline)
+      .finally(function () { clearTimeout(abort); });
+  }
+
+  button.addEventListener("click", open);
+  window.addEventListener("online", open);
+  open();
+</script>
+</body>
+</html>
