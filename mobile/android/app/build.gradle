@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 // Signature de l'APK : la clé vient des secrets GitHub (voir mobile/README.md).
 // Sans clé, `assembleRelease` produit un APK non signé ; utilisez alors `assembleDebug` pour un essai.
 def keystorePath = System.getenv("ORODIS_KEYSTORE_PATH")
-def hasKeystore = keystorePath != null && file(keystorePath).exists()
+def hasKeystore = keystorePath != null && !keystorePath.isEmpty() && file(keystorePath).exists()
 
 android {
     namespace = "ci.delicesdorodis.gestion"
