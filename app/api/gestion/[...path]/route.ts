@@ -7,7 +7,7 @@ import { readAccessToken } from "@/lib/api/staff";
 export const dynamic = "force-dynamic";
 
 /** Seules les ressources du personnel passent par ce relais. */
-const ALLOWED = new Set(["orders", "requests", "sessions", "dishes", "receipts", "tables", "zones", "reservations", "quotes", "events"]);
+const ALLOWED = new Set(["orders", "requests", "sessions", "dishes", "receipts", "tables", "zones", "reservations", "quotes", "events", "dashboard", "payments", "menu"]);
 
 type Context = { params: Promise<{ path: string[] }> };
 
@@ -21,7 +21,12 @@ async function relay(request: Request, { params }: Context) {
 
   const last = path.at(-1)!;
   const target = `/manage/${path.join("/")}${/\.(pdf|png)$/.test(last) ? "" : "/"}${new URL(request.url).search}`;
-  const body = request.method === "GET" || request.method === "HEAD" ? undefined : await request.text();
+  // Les photos arrivent en multipart : on les transmet telles quelles, avec leur en-tête (il porte la frontière).
+  const contentType = request.headers.get("content-type") ?? "";
+  const multipart = contentType.startsWith("multipart/form-data");
+  const hasBody = request.method !== "GET" && request.method !== "HEAD";
+  const body = !hasBody ? undefined : multipart ? await request.arrayBuffer() : await request.text();
+  const sent = multipart ? (body as ArrayBuffer).byteLength > 0 : Boolean(body);
 
   let upstream: Response;
   try {
@@ -31,9 +36,9 @@ async function relay(request: Request, { params }: Context) {
       headers: {
         Accept: request.headers.get("accept") ?? "application/json",
         Authorization: `Bearer ${token}`,
-        ...(body ? { "Content-Type": "application/json" } : {}),
+        ...(sent ? { "Content-Type": multipart ? contentType : "application/json" } : {}),
       },
-      body: body || undefined,
+      body: sent ? body : undefined,
     });
   } catch (error) {
     console.error(error);
@@ -52,4 +57,4 @@ async function relay(request: Request, { params }: Context) {
   });
 }
 
-export { relay as GET, relay as POST, relay as PATCH };
+export { relay as GET, relay as POST, relay as PATCH, relay as PUT, relay as DELETE };

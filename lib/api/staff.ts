@@ -17,6 +17,14 @@ export type StaffSession = Schemas["OpenSessionSummary"];
 export type StaffReceipt = Schemas["StaffReceipt"];
 export type StaffTable = Schemas["Table"];
 export type StaffZone = Schemas["Zone"];
+export type StaffDashboard = Schemas["Dashboard"];
+export type DashboardPeriod = StaffDashboard["period"];
+export type StaffPayments = Schemas["Payments"];
+export type ReceiptRow = Schemas["ReceiptRow"];
+export type ManageCategory = Schemas["ManageCategory"];
+export type ManageSubCategory = Schemas["ManageSubCategory"];
+export type ManageDish = Schemas["ManageDish"];
+export type ManageOptionGroup = Schemas["ManageOptionGroup"];
 export type StaffRole = "manager" | "cashier" | "waiter" | "kitchen";
 
 export async function readAccessToken(): Promise<string | undefined> {

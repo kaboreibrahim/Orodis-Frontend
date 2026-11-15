@@ -2,7 +2,9 @@
 
 // Barre latérale de l'espace du personnel (maquette phase3/Gestion) : fond encre, entrée active en bordeaux.
 // Seules les entrées déjà livrées sont affichées (docs/phase3.md, « Côté restaurant »).
-import { ChefHat, List, LogOut, type LucideIcon, QrCode } from "lucide-react";
+// Le fond bordeaux de l'entrée active glisse d'une entrée à l'autre (layoutId).
+import { ChefHat, LayoutDashboard, List, LogOut, type LucideIcon, QrCode, UtensilsCrossed, Wallet } from "lucide-react";
+import { MotionConfig, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -11,9 +13,12 @@ import { logout } from "@/app/actions/staff";
 type NavItem = { label: string; href: string; icon: LucideIcon; roles: readonly string[] };
 
 const NAV: NavItem[] = [
+  { label: "Vue d’ensemble", href: "/gestion/tableau-de-bord", icon: LayoutDashboard, roles: ["manager"] },
   { label: "Commandes", href: "/gestion", icon: List, roles: ["manager", "cashier", "waiter"] },
   { label: "Écran cuisine", href: "/gestion/cuisine", icon: ChefHat, roles: ["manager", "cashier", "waiter", "kitchen"] },
+  { label: "Carte & menus", href: "/gestion/carte", icon: UtensilsCrossed, roles: ["manager"] },
   { label: "Tables & QR codes", href: "/gestion/tables", icon: QrCode, roles: ["manager"] },
+  { label: "Paiements", href: "/gestion/paiements", icon: Wallet, roles: ["manager", "cashier"] },
 ];
 
 type Props = { name: string; role: string; roleLabel: string };
@@ -21,6 +26,7 @@ type Props = { name: string; role: string; roleLabel: string };
 export function StaffSidebar({ name, role, roleLabel }: Props) {
   const pathname = usePathname();
   return (
+    <MotionConfig reducedMotion="user">
     <nav
       aria-label="Navigation du personnel"
       className="flex w-full shrink-0 flex-col gap-1 bg-encre px-3.5 py-5 text-white md:sticky md:top-0 md:h-dvh md:w-[240px]"
@@ -40,12 +46,20 @@ export function StaffSidebar({ name, role, roleLabel }: Props) {
             key={href}
             href={href}
             aria-current={active ? "page" : undefined}
-            className={`flex min-h-11 items-center gap-3 rounded-xl px-3 text-[15px] ${
-              active ? "bg-bordeaux font-bold text-white" : "font-medium text-texte-nav hover:bg-white/5"
+            className={`relative flex min-h-11 items-center gap-3 rounded-xl px-3 text-[15px] transition-colors ${
+              active ? "font-bold text-white" : "font-medium text-texte-nav hover:bg-white/5"
             }`}
           >
-            <Icon size={18} strokeWidth={2} aria-hidden="true" />
-            {label}
+            {active && (
+              <motion.span
+                layoutId="entree-active"
+                className="absolute inset-0 rounded-xl bg-bordeaux"
+                transition={{ type: "spring", stiffness: 420, damping: 36 }}
+                aria-hidden="true"
+              />
+            )}
+            <Icon size={18} strokeWidth={2} className="relative" aria-hidden="true" />
+            <span className="relative">{label}</span>
           </Link>
         );
       })}
@@ -70,5 +84,6 @@ export function StaffSidebar({ name, role, roleLabel }: Props) {
         </form>
       </div>
     </nav>
+    </MotionConfig>
   );
 }

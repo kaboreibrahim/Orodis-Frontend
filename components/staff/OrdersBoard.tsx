@@ -1,9 +1,12 @@
 "use client";
 
-// Gestion des commandes (maquette phase3/Gestion) : indicateurs du jour, filtres, tableau, panneau de détail
-// (avancement, annulation, encaissement, reçus) et alertes « appel serveur » / « addition » en tête.
+// Gestion des commandes (maquette phase3/Gestion) : indicateurs du jour (cliquables pour filtrer), filtres,
+// liste des commandes avec l'action suivante sur chaque ligne, fiche de la commande (avancement, annulation,
+// encaissement, reçus) et alertes « appel serveur » / « addition » en tête.
 // Temps réel par polling (useStaffEvents) ; à l’ouverture et après chaque coupure, tout est rechargé par REST.
-import { BellRing, Printer, ReceiptText, Search, Volume2, VolumeX } from "lucide-react";
+import { BellRing, Clock, Printer, QrCode, ReceiptText, Search, Volume2, VolumeX, X } from "lucide-react";
+import { AnimatePresence, MotionConfig, motion } from "motion/react";
+import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { StaffOrder, StaffRequest, StaffSession, StaffUser } from "@/lib/api/staff";
 import { capitalize, formatDate, formatPrice, formatTime } from "@/lib/format";
@@ -23,6 +26,7 @@ import {
   who,
 } from "./labels";
 import { PayDialog, type PayTarget } from "./PayDialog";
+import { CountUp, EASE, Reveal, RevealTitle, stagger } from "./reveal";
 import { type StaffEvent, useStaffEvents } from "./useStaffEvents";
 import { useStaffSound } from "./useStaffSound";
 
@@ -31,7 +35,21 @@ const NEW_ORDER = "/sons/nouvelle-commande.mp3";
 const CALL = "/sons/appel-serveur.mp3";
 const TIMESTAMP: Record<string, keyof StaffOrder> = { preparing: "accepted_at", ready: "ready_at", served: "served_at" };
 
-type Filter = "all" | "active" | "unpaid" | "table" | "counter";
+const ACTIVE = ["received", "preparing", "ready"];
+const LATE_MINUTES = 20; // au-delà, la durée d'une commande en cours passe en rouge
+const SPRING = { type: "spring", stiffness: 420, damping: 34 } as const;
+
+type Filter = "all" | "active" | "unpaid" | "table" | "counter" | "received" | "preparing" | "ready";
+
+/** « à l’instant », « 12 min », « 1 h 05 ». */
+function elapsed(iso: string, now: number): { text: string; minutes: number } {
+  const minutes = Math.max(0, Math.floor((now - Date.parse(iso)) / 60_000));
+  const text = minutes === 0 ? "à l’instant" : minutes < 60 ? `${minutes} min` : `${Math.floor(minutes / 60)} h ${String(minutes % 60).padStart(2, "0")}`;
+  return { text, minutes };
+}
+
+/** « 2× Kedjenou de poulet, 1× Alloco » : les plats d'une commande sur une ligne. */
+const summary = (order: StaffOrder) => order.items.map((item) => `${item.quantity}× ${item.dish_name}`).join(", ");
 
 type Props = {
   user: StaffUser;
@@ -57,21 +75,34 @@ export function OrdersBoard({ user, today, initialOrders, initialRequests, initi
   const [sessions, setSessions] = useState(initialSessions);
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
-  const [selectedId, setSelectedId] = useState<number | null>(initialOrders[0]?.id ?? null);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [fresh, setFresh] = useState<number[]>([]); // commandes arrivées pendant que l'écran est ouvert : surlignées quelques secondes
   const [pending, setPending] = useState(false);
   const [cancelling, setCancelling] = useState(false);
   const [reason, setReason] = useState("");
   const [payTarget, setPayTarget] = useState<PayTarget | null>(null);
   const [toast, setToast] = useState<string | null>(null);
-  const [now, setNow] = useState(() => Date.now());
+  const [now, setNow] = useState<number | null>(null); // lu après le montage : l'heure du serveur et celle du navigateur diffèrent
+  const sheet = useRef<HTMLElement>(null);
   const toastTimer = useRef<number | undefined>(undefined);
   const { soundOn, toggleSound, play } = useStaffSound(SOUND_KEY);
   const canPay = CAN_PAY.includes(user.role);
 
   useEffect(() => {
+    setNow(Date.now());
     const timer = window.setInterval(() => setNow(Date.now()), 30_000);
     return () => window.clearInterval(timer);
   }, []);
+
+  // Sur téléphone, la fiche s'affiche sous la liste : on l'amène à l'écran quand une commande est choisie.
+  useEffect(() => {
+    if (selectedId === null) return;
+    const timer = window.setTimeout(() => {
+      const box = sheet.current?.getBoundingClientRect();
+      if (box && (box.top > window.innerHeight - 120 || box.bottom < 0)) sheet.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 450);
+    return () => window.clearTimeout(timer);
+  }, [selectedId]);
 
   function flash(text: string) {
     setToast(text);
@@ -110,6 +141,8 @@ export function OrdersBoard({ user, today, initialOrders, initialRequests, initi
       setOrders((list) => [order, ...list.filter((o) => o.id !== order.id)]);
       play(NEW_ORDER);
       flash(`Nouvelle commande n° ${order.number} · ${who(order)}`);
+      setFresh((list) => [...list, order.id]);
+      window.setTimeout(() => setFresh((list) => list.filter((id) => id !== order.id)), 6000);
       getJson<StaffSession[]>("/api/gestion/sessions").then(setSessions).catch(() => undefined);
     } else if (event.type === "order.status") {
       const field = TIMESTAMP[String(data.status)];
@@ -136,7 +169,7 @@ export function OrdersBoard({ user, today, initialOrders, initialRequests, initi
   const counts = useMemo(
     () => ({
       all: orders.length,
-      active: orders.filter((o) => ["received", "preparing", "ready"].includes(o.status ?? "")).length,
+      active: orders.filter((o) => ACTIVE.includes(o.status ?? "")).length,
       unpaid: orders.filter(isUnpaid).length,
       table: orders.filter((o) => o.channel === "table").length,
       counter: orders.filter((o) => o.channel === "counter").length,
@@ -147,7 +180,8 @@ export function OrdersBoard({ user, today, initialOrders, initialRequests, initi
   const shown = useMemo(() => {
     const q = query.trim().toLowerCase().replace(/^n°\s*/, "");
     return orders.filter((o) => {
-      if (filter === "active" && !["received", "preparing", "ready"].includes(o.status ?? "")) return false;
+      if (filter === "active" && !ACTIVE.includes(o.status ?? "")) return false;
+      if (ACTIVE.includes(filter) && o.status !== filter) return false;
       if (filter === "unpaid" && !isUnpaid(o)) return false;
       if ((filter === "table" || filter === "counter") && o.channel !== filter) return false;
       if (!q) return true;
@@ -159,12 +193,13 @@ export function OrdersBoard({ user, today, initialOrders, initialRequests, initi
     const paidTotal = orders.filter(isPaid).reduce((s, o) => s + (o.total ?? 0), 0);
     const unpaidTotal = orders.filter(isUnpaid).reduce((s, o) => s + (o.total ?? 0), 0);
     const by = (status: string) => orders.filter((o) => o.status === status).length;
+    const plural = (n: number, one: string, many: string) => `${n} ${n > 1 ? many : one}`;
     return [
-      { label: "Nouvelles", value: String(by("received")), bar: "border-t-jaune" },
-      { label: "En préparation", value: String(by("preparing")), bar: "border-t-en-preparation" },
-      { label: "Prêtes", value: String(by("ready")), bar: "border-t-whatsapp" },
-      { label: "À encaisser", value: formatPrice(unpaidTotal), bar: "border-t-a-encaisser" },
-      { label: "Encaissé aujourd’hui", value: formatPrice(paidTotal), bar: "border-t-bordeaux" },
+      { key: "received" as Filter, label: "Nouvelles", value: by("received"), money: false, dot: "bg-jaune", hint: "à lancer en cuisine" },
+      { key: "preparing" as Filter, label: "En préparation", value: by("preparing"), money: false, dot: "bg-en-preparation", hint: "en cuisine" },
+      { key: "ready" as Filter, label: "Prêtes", value: by("ready"), money: false, dot: "bg-whatsapp", hint: "à servir" },
+      { key: "unpaid" as Filter, label: "À encaisser", value: unpaidTotal, money: true, dot: "bg-a-encaisser", hint: plural(orders.filter(isUnpaid).length, "commande", "commandes") },
+      { key: null, label: "Encaissé aujourd’hui", value: paidTotal, money: true, dot: "", hint: plural(orders.filter(isPaid).length, "commande payée", "commandes payées") },
     ];
   }, [orders]);
 
@@ -251,16 +286,16 @@ export function OrdersBoard({ user, today, initialOrders, initialRequests, initi
   ];
 
   return (
-    <>
+    <MotionConfig reducedMotion="user">
       {/* En-tête */}
-      <div className="flex flex-wrap items-center justify-between gap-x-5 gap-y-3">
+      <div className="flex flex-wrap items-end justify-between gap-x-5 gap-y-3">
         <div>
-          <h1 className="text-[32px]">Commandes</h1>
+          <RevealTitle text="Commandes" className="text-[32px]" />
           <p className="text-sm text-ticket-doux">{capitalize(formatDate(`${today}T12:00:00Z`))}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2.5">
-          <label className="flex h-11 min-w-[240px] items-center gap-2 rounded-full border border-bordure bg-white px-3.5">
-            <Search size={18} className="text-ticket-doux" aria-hidden="true" />
+          <label className="flex h-11 min-w-[220px] flex-1 items-center gap-2 rounded-full border border-bordure bg-white px-3.5 sm:flex-none">
+            <Search size={18} className="shrink-0 text-ticket-doux" aria-hidden="true" />
             <span className="sr-only">Rechercher</span>
             <input
               type="search"
@@ -287,165 +322,245 @@ export function OrdersBoard({ user, today, initialOrders, initialRequests, initi
               online ? "bg-pastille-ok text-texte-ok" : "bg-rose text-bordeaux"
             }`}
           >
-            <span className={`size-[9px] rounded-full ${online ? "bg-whatsapp" : "bg-retard"}`} aria-hidden="true" />
-            {online ? "Service ouvert" : "Hors ligne · reconnexion…"}
+            <span className="relative flex size-[9px]" aria-hidden="true">
+              {online && <span className="absolute inset-0 animate-ping rounded-full bg-whatsapp opacity-60 motion-reduce:hidden" />}
+              <span className={`relative size-[9px] rounded-full ${online ? "bg-whatsapp" : "bg-retard"}`} />
+            </span>
+            {online ? "En direct" : "Hors ligne · reconnexion…"}
           </span>
         </div>
       </div>
 
       {/* Alertes : appels serveur et additions demandées */}
-      {requests.length > 0 && (
-        <ul className="flex flex-col gap-2" aria-label="Demandes des tables">
+      <ul className="flex flex-col gap-2 empty:hidden" aria-label="Demandes des tables">
+        <AnimatePresence initial={false}>
           {requests.map((r) => {
             const bill = r.kind === "bill";
-            const minutes = Math.max(0, Math.floor((now - Date.parse(r.created_at)) / 60_000));
             return (
-              <li
+              <motion.li
+                layout
                 key={r.id}
+                initial={{ opacity: 0, y: -12, filter: "blur(8px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                exit={{ opacity: 0, x: 40 }}
+                transition={{ duration: 0.35, ease: EASE }}
                 className={`flex flex-wrap items-center justify-between gap-3 rounded-2xl border-l-[5px] bg-white px-4 py-3 shadow-pilule ${
                   bill ? "border-a-encaisser" : "border-bordeaux"
                 }`}
               >
                 <span className="flex items-center gap-3">
-                  {bill ? <ReceiptText size={22} className="text-a-encaisser" aria-hidden="true" /> : <BellRing size={22} className="text-bordeaux" aria-hidden="true" />}
+                  <span className={`flex size-10 shrink-0 items-center justify-center rounded-full ${bill ? "bg-pastille-encaisser text-texte-attente" : "bg-rose text-bordeaux"}`}>
+                    {bill ? <ReceiptText size={20} aria-hidden="true" /> : <BellRing size={20} aria-hidden="true" />}
+                  </span>
                   <span>
                     <strong>Table {r.table_number}</strong> {bill ? "demande l’addition" : "appelle un serveur"}
-                    <span className="ml-2 text-sm text-ticket-doux">{minutes === 0 ? "à l’instant" : `il y a ${minutes} min`}</span>
+                    <span className="block text-[13px] text-ticket-doux">{now ? (elapsed(r.created_at, now).minutes === 0 ? "à l’instant" : `il y a ${elapsed(r.created_at, now).text}`) : ""}</span>
                   </span>
                 </span>
                 <span className="flex gap-2">
                   {bill && canPay && (
-                    <button type="button" onClick={() => openSessionPayment(r.session, r.table_number)} className="h-10 rounded-full bg-bordeaux px-4 text-sm font-bold text-white">
+                    <button type="button" onClick={() => openSessionPayment(r.session, r.table_number)} className="h-11 rounded-full bg-bordeaux px-4 text-sm font-bold text-white">
                       Encaisser
                     </button>
                   )}
-                  <button type="button" onClick={() => markDone(r)} className="h-10 rounded-full border-[1.5px] border-bordure px-4 text-sm font-bold">
+                  <button type="button" onClick={() => markDone(r)} className="h-11 rounded-full border-[1.5px] border-bordure px-4 text-sm font-bold">
                     C’est fait
                   </button>
                 </span>
-              </li>
+              </motion.li>
             );
           })}
-        </ul>
-      )}
+        </AnimatePresence>
+      </ul>
 
-      {/* Indicateurs */}
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-3">
-        {kpis.map((k) => (
-          <div key={k.label} className={`rounded-[18px] border border-t-4 border-bordure bg-white px-4 py-3.5 ${k.bar}`}>
-            <div className="text-[13px] font-bold text-ticket-doux">{k.label}</div>
-            <div className="mt-0.5 font-display text-[28px] font-bold whitespace-nowrap">{k.value}</div>
-          </div>
-        ))}
-      </div>
+      {/* Indicateurs : un clic filtre la liste */}
+      <motion.div variants={stagger} initial="hidden" animate="shown" className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-[18px] xl:grid-cols-5">
+        {kpis.map((k) => {
+          const on = k.key !== null && filter === k.key;
+          const body = (
+            <>
+              <span className={`flex items-center gap-2 text-sm font-medium ${k.key === null ? "text-texte-nav" : "text-ticket-doux"}`}>
+                {k.dot && <span className={`size-2.5 rounded-full ${k.dot}`} aria-hidden="true" />}
+                {k.label}
+              </span>
+              <CountUp value={k.value} format={k.money ? formatPrice : String} className="font-display text-[28px] font-bold leading-none whitespace-nowrap" />
+              <span className={`text-[13px] ${k.key === null ? "text-texte-nav" : "text-ticket-doux"}`}>{k.hint}</span>
+            </>
+          );
+          return k.key === null ? (
+            <Reveal key={k.label} className="col-span-2 flex flex-col gap-1.5 rounded-[22px] bg-bordeaux p-4 text-white shadow-relief sm:col-span-1 sm:p-5">
+              {body}
+            </Reveal>
+          ) : (
+            <Reveal key={k.label}>
+              <button
+                type="button"
+                aria-pressed={on}
+                onClick={() => setFilter(on ? "all" : (k.key as Filter))}
+                className={`flex h-full w-full flex-col gap-1.5 rounded-[22px] border bg-white p-4 text-left transition-shadow sm:p-5 ${
+                  on ? "border-encre shadow-[0_0_0_2px_var(--color-encre)]" : "border-bordure hover:shadow-pilule"
+                }`}
+              >
+                {body}
+              </button>
+            </Reveal>
+          );
+        })}
+      </motion.div>
 
       {/* Filtres */}
-      <div role="tablist" aria-label="Filtrer les commandes" className="flex flex-wrap gap-2">
+      <div role="group" aria-label="Filtrer les commandes" className="flex max-w-full gap-1 self-start overflow-x-auto rounded-[26px] bg-encre p-1">
         {filters.map((f) => {
           const on = filter === f.key;
           return (
             <button
               key={f.key}
               type="button"
-              role="tab"
-              aria-selected={on}
+              aria-pressed={on}
               onClick={() => setFilter(f.key)}
-              className={`inline-flex h-[42px] items-center rounded-full border-[1.5px] px-4 text-sm font-bold ${
-                on ? "border-encre bg-encre text-white" : "border-bordure bg-white"
-              }`}
+              className={`relative inline-flex h-11 shrink-0 items-center rounded-full px-4 text-sm font-bold whitespace-nowrap transition-colors ${on ? "text-encre" : "text-texte-nav hover:text-white"}`}
             >
-              {f.label}
-              <span className={`ml-2 rounded-full px-2 text-xs ${on ? "bg-white/20" : "bg-sable"}`}>{counts[f.key]}</span>
+              {on && <motion.span layoutId="filtre-commandes" className="absolute inset-0 rounded-full bg-creme" transition={SPRING} aria-hidden="true" />}
+              <span className="relative">
+                {f.label} <span className="ml-1 font-medium opacity-70">{counts[f.key as keyof typeof counts]}</span>
+              </span>
             </button>
           );
         })}
       </div>
 
       <div className="flex flex-wrap items-start gap-[18px]">
-        {/* Tableau */}
-        <div className="min-w-0 flex-[999_1_520px] overflow-x-auto rounded-[20px] border border-bordure bg-white">
-          <table className="w-full min-w-[700px] border-collapse text-sm">
-            <thead>
-              <tr className="text-left text-xs tracking-[0.06em] text-ticket-doux uppercase">
-                <th className="px-4 py-3.5 font-bold">Commande</th>
-                <th className="px-2.5 py-3.5 font-bold">Canal</th>
-                <th className="px-2.5 py-3.5 font-bold">Client / table</th>
-                <th className="px-2.5 py-3.5 text-right font-bold">Montant</th>
-                <th className="px-2.5 py-3.5 font-bold">Paiement</th>
-                <th className="px-2.5 py-3.5 font-bold">Statut</th>
-                <th className="py-3.5 pr-4 pl-2.5 font-bold">Heure</th>
-              </tr>
-            </thead>
-            <tbody>
-              {shown.map((o) => {
-                const on = o.id === selectedId;
-                const pay = payment(o);
-                const status = STATUS[o.status ?? "received"];
-                const channel = CHANNEL[o.channel ?? "table"];
-                return (
-                  <tr key={o.id} className={`border-t border-filet-ligne ${on ? "bg-ligne-active shadow-[inset_4px_0_0_var(--color-bordeaux)]" : ""}`}>
-                    <td className="px-4 py-3">
-                      <button
-                        type="button"
-                        onClick={() => setSelectedId(o.id)}
-                        aria-pressed={on}
-                        className="min-h-10 text-left text-[15px] font-bold text-bordeaux underline underline-offset-[3px]"
-                      >
-                        n° {o.number}
-                      </button>
-                    </td>
-                    <td className="px-2.5 py-3">
-                      <span className={`${pill} ${channel.style}`}>{channel.label}</span>
-                    </td>
-                    <td className="px-2.5 py-3">{who(o)}</td>
-                    <td className="px-2.5 py-3 text-right font-bold whitespace-nowrap">{formatPrice(o.total ?? 0)}</td>
-                    <td className="px-2.5 py-3">
-                      <span className={`${pill} ${pay.style}`}>{pay.label}</span>
-                    </td>
-                    <td className="px-2.5 py-3">
-                      <span className={`${pill} ${status.style}`}>{status.label}</span>
-                    </td>
-                    <td className="py-3 pr-4 pl-2.5 whitespace-nowrap text-ticket-doux">{formatTime(o.created_at)}</td>
-                  </tr>
-                );
-              })}
-              {shown.length === 0 && (
-                <tr>
-                  <td colSpan={7} className="px-4 py-10 text-center text-ticket-doux">
-                    {orders.length === 0 ? "Aucune commande aujourd’hui pour le moment." : "Aucune commande ne correspond."}
-                  </td>
-                </tr>
+        {/* Liste des commandes */}
+        <section aria-label="Commandes du jour" className="min-w-0 flex-[999_1_520px]">
+          {shown.length === 0 ? (
+            <div className="flex flex-col items-center gap-3 rounded-[22px] border border-bordure bg-white px-5 py-12 text-center">
+              <span className="flex size-14 items-center justify-center rounded-full bg-sable text-ticket-doux">
+                <QrCode size={26} aria-hidden="true" />
+              </span>
+              {orders.length === 0 ? (
+                <>
+                  <p className="font-display text-xl font-bold">Aucune commande pour le moment</p>
+                  <p className="max-w-[380px] text-sm text-ticket-doux">
+                    Les commandes passées depuis les QR codes des tables arrivent ici toutes seules, avec un signal sonore.
+                  </p>
+                  {user.role === "manager" && (
+                    <Link href="/gestion/tables" className="flex h-11 items-center rounded-full border-[1.5px] border-encre px-5 text-sm font-bold">
+                      Voir les tables et leurs QR codes
+                    </Link>
+                  )}
+                </>
+              ) : (
+                <>
+                  <p className="font-display text-xl font-bold">Aucune commande ne correspond</p>
+                  <button type="button" onClick={() => (setFilter("all"), setQuery(""))} className="h-11 rounded-full border-[1.5px] border-encre px-5 text-sm font-bold">
+                    Tout afficher
+                  </button>
+                </>
               )}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Détail */}
-        <aside aria-label="Détail de la commande" className="flex max-w-[380px] min-w-[280px] flex-[1_1_320px] flex-col gap-3.5 rounded-[20px] border border-bordure bg-white p-5">
-          {selected ? (
-            <OrderDetail
-              order={selected}
-              role={user.role}
-              pending={pending}
-              cancelling={cancelling}
-              reason={reason}
-              onReason={setReason}
-              onStartCancel={() => setCancelling(true)}
-              onStopCancel={() => setCancelling(false)}
-              onAdvance={() => advance(selected)}
-              onCancel={() => cancel(selected)}
-              onPay={() => openPayment(selected)}
-              unpaidForTable={
-                selected.session != null
-                  ? orders.filter((o) => o.session === selected.session && isUnpaid(o)).reduce((s, o) => s + (o.total ?? 0), 0)
-                  : null
-              }
-              sessionOpen={selected.session != null && sessions.some((s) => s.id === selected.session)}
-            />
+            </div>
           ) : (
-            <p className="py-8 text-center text-ticket-doux">Choisissez une commande dans la liste.</p>
+            <ul className="flex flex-col gap-2.5">
+              <AnimatePresence mode="popLayout" initial={false}>
+                {shown.map((o) => {
+                  const on = o.id === selectedId;
+                  const pay = payment(o);
+                  const status = o.status ?? "received";
+                  const next = NEXT[status];
+                  const canAdvance = next && (next.roles.includes(user.role) || user.role === "manager");
+                  const running = ACTIVE.includes(status);
+                  const wait = now && running ? elapsed(o.created_at, now) : null;
+                  return (
+                    <motion.li
+                      layout
+                      key={o.id}
+                      initial={{ opacity: 0, y: -14, filter: "blur(8px)" }}
+                      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                      exit={{ opacity: 0, filter: "blur(6px)" }}
+                      transition={{ duration: 0.35, ease: EASE }}
+                      className={`flex flex-wrap items-center gap-x-3 gap-y-2 rounded-[18px] border bg-white p-2.5 transition-shadow ${
+                        on ? "border-bordeaux shadow-[0_0_0_2px_var(--color-bordeaux)]" : fresh.includes(o.id) ? "border-jaune shadow-[0_0_0_3px_var(--color-jaune)]" : "border-bordure hover:shadow-pilule"
+                      } ${status === "cancelled" ? "opacity-70" : ""}`}
+                    >
+                      <button type="button" onClick={() => setSelectedId(on ? null : o.id)} aria-pressed={on} className="flex min-h-14 min-w-[240px] flex-1 items-center gap-3 rounded-xl px-1.5 text-left">
+                        <span className="flex w-[68px] shrink-0 flex-col">
+                          <span className="font-display text-[22px] font-bold leading-none text-bordeaux">n° {o.number}</span>
+                          <span className="mt-1 text-xs text-ticket-doux tabular-nums">{formatTime(o.created_at)}</span>
+                        </span>
+                        <span className="min-w-0 flex-1">
+                          <span className="flex flex-wrap items-center gap-1.5">
+                            <span className="font-bold">{who(o)}</span>
+                            <span className={`${pill} ${STATUS[status].style}`}>{STATUS[status].label}</span>
+                          </span>
+                          <span className="mt-0.5 block truncate text-[13px] text-ticket-doux">{summary(o)}</span>
+                        </span>
+                      </button>
+                      <span className="ml-auto flex flex-wrap items-center justify-end gap-x-3 gap-y-1.5 pr-1.5">
+                        {wait && (
+                          <span className={`inline-flex items-center gap-1 text-[13px] ${wait.minutes >= LATE_MINUTES ? "font-bold text-retard" : "text-ticket-doux"}`}>
+                            <Clock size={14} aria-hidden="true" />
+                            {wait.text}
+                          </span>
+                        )}
+                        <span className="flex flex-col items-end">
+                          <span className="font-bold tabular-nums whitespace-nowrap">{formatPrice(o.total ?? 0)}</span>
+                          <span className={`${pill} ${pay.style}`}>{pay.label}</span>
+                        </span>
+                        {canAdvance && (
+                          <button type="button" onClick={() => advance(o)} disabled={pending} className="h-11 rounded-full bg-encre px-4 text-[13px] font-bold whitespace-nowrap text-white disabled:opacity-60">
+                            {next.label}
+                          </button>
+                        )}
+                      </span>
+                    </motion.li>
+                  );
+                })}
+              </AnimatePresence>
+            </ul>
           )}
-        </aside>
+        </section>
+
+        {/* Fiche de la commande */}
+        <AnimatePresence mode="wait">
+          {selected ? (
+            <motion.aside
+              key={selected.id}
+              ref={sheet}
+              aria-label={`Commande n° ${selected.number}`}
+              initial={{ opacity: 0, x: 18, filter: "blur(10px)" }}
+              animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, filter: "blur(8px)" }}
+              transition={{ duration: 0.35, ease: EASE }}
+              className="flex max-w-full min-w-[280px] flex-[1_1_320px] scroll-mt-4 flex-col gap-3.5 rounded-[22px] border border-bordure bg-white p-5 xl:max-w-[380px]"
+            >
+              <OrderDetail
+                order={selected}
+                role={user.role}
+                pending={pending}
+                cancelling={cancelling}
+                reason={reason}
+                onReason={setReason}
+                onStartCancel={() => setCancelling(true)}
+                onStopCancel={() => setCancelling(false)}
+                onAdvance={() => advance(selected)}
+                onCancel={() => cancel(selected)}
+                onPay={() => openPayment(selected)}
+                onClose={() => setSelectedId(null)}
+                unpaidForTable={
+                  selected.session != null
+                    ? orders.filter((o) => o.session === selected.session && isUnpaid(o)).reduce((s, o) => s + (o.total ?? 0), 0)
+                    : null
+                }
+                sessionOpen={selected.session != null && sessions.some((s) => s.id === selected.session)}
+              />
+            </motion.aside>
+          ) : (
+            orders.length > 0 && (
+              <motion.aside key="vide" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="hidden min-w-[280px] flex-[1_1_320px] rounded-[22px] border-[1.5px] border-dashed border-bordure p-6 text-center text-sm text-ticket-doux xl:block xl:max-w-[380px]">
+                Choisissez une commande pour voir son détail, l’encaisser ou imprimer son reçu.
+              </motion.aside>
+            )
+          )}
+        </AnimatePresence>
       </div>
 
       {payTarget && (
@@ -459,12 +574,20 @@ export function OrdersBoard({ user, today, initialOrders, initialRequests, initi
         />
       )}
 
-      {toast && (
-        <div role="status" className="fixed bottom-5 left-1/2 z-40 max-w-[90vw] -translate-x-1/2 rounded-full bg-encre px-5 py-3 text-sm font-bold text-white shadow-carte">
-          {toast}
-        </div>
-      )}
-    </>
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            role="status"
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 14 }}
+            className="fixed bottom-5 left-1/2 z-40 max-w-[90vw] -translate-x-1/2 rounded-[22px] bg-encre px-5 py-3 text-center text-sm font-bold text-white shadow-carte"
+          >
+            {toast}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </MotionConfig>
   );
 }
 
@@ -480,6 +603,7 @@ type DetailProps = {
   onAdvance: () => void;
   onCancel: () => void;
   onPay: () => void;
+  onClose: () => void;
   unpaidForTable: number | null;
   sessionOpen: boolean;
 };
@@ -499,13 +623,18 @@ function OrderDetail(props: DetailProps) {
     <>
       <div className="flex items-start justify-between gap-2.5">
         <div>
-          <div className="font-display text-[26px] font-bold">n° {order.number}</div>
+          <h2 className="text-[26px] leading-tight">n° {order.number}</h2>
           <div className="text-sm text-ticket-doux">
             {who(order)} · {formatTime(order.created_at)}
             {order.created_by ? ` · saisie par ${order.created_by}` : ""}
           </div>
         </div>
-        <span className={`${pill} ${channel.style}`}>{channel.label}</span>
+        <span className="flex items-center gap-1">
+          <span className={`${pill} ${channel.style}`}>{channel.label}</span>
+          <button type="button" onClick={props.onClose} aria-label="Fermer la fiche" className="flex size-11 shrink-0 items-center justify-center rounded-full hover:bg-sable">
+            <X size={20} aria-hidden="true" />
+          </button>
+        </span>
       </div>
 
       {cancelled ? (
@@ -516,7 +645,9 @@ function OrderDetail(props: DetailProps) {
         <ol className="flex gap-1">
           {FLOW.map((step, i) => (
             <li key={step} className="flex flex-1 flex-col gap-1.5">
-              <span className={`h-1.5 rounded-full ${i <= reached ? "bg-bordeaux" : "bg-bordure"}`} />
+              <span className="h-1.5 overflow-hidden rounded-full bg-bordure">
+                <motion.span className="block h-full rounded-full bg-bordeaux" initial={false} animate={{ width: i <= reached ? "100%" : "0%" }} transition={{ duration: 0.45, delay: i * 0.06, ease: EASE }} />
+              </span>
               <span className={`text-[11.5px] font-bold ${i <= reached ? "text-encre" : "text-etape-inactive"}`}>{STATUS[step].label}</span>
             </li>
           ))}

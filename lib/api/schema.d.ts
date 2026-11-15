@@ -101,6 +101,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/manage/dashboard/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Tableau de bord du gérant
+         * @description Vue d'ensemble du gérant : chiffres de la période, 7 derniers jours, état de la salle.
+         */
+        get: operations["api_v1_manage_dashboard_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/manage/dishes/": {
         parameters: {
             query?: never;
@@ -157,6 +177,196 @@ export interface paths {
         put?: never;
         post?: never;
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/manage/menu/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Toute la carte, éléments masqués compris (gérant) */
+        get: operations["api_v1_manage_menu_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/manage/menu/categories/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Créer, modifier, supprimer. La lecture de la carte se fait d'un coup par ManageMenuView. */
+        post: operations["api_v1_manage_menu_categories_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/manage/menu/categories/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** @description Créer, modifier, supprimer. La lecture de la carte se fait d'un coup par ManageMenuView. */
+        put: operations["api_v1_manage_menu_categories_update"];
+        post?: never;
+        /** @description Créer, modifier, supprimer. La lecture de la carte se fait d'un coup par ManageMenuView. */
+        delete: operations["api_v1_manage_menu_categories_destroy"];
+        options?: never;
+        head?: never;
+        /** @description Créer, modifier, supprimer. La lecture de la carte se fait d'un coup par ManageMenuView. */
+        patch: operations["api_v1_manage_menu_categories_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/manage/menu/dishes/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Créer, modifier, supprimer. La lecture de la carte se fait d'un coup par ManageMenuView. */
+        post: operations["api_v1_manage_menu_dishes_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/manage/menu/dishes/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** @description Créer, modifier, supprimer. La lecture de la carte se fait d'un coup par ManageMenuView. */
+        put: operations["api_v1_manage_menu_dishes_update"];
+        post?: never;
+        /** @description Créer, modifier, supprimer. La lecture de la carte se fait d'un coup par ManageMenuView. */
+        delete: operations["api_v1_manage_menu_dishes_destroy"];
+        options?: never;
+        head?: never;
+        /** @description Créer, modifier, supprimer. La lecture de la carte se fait d'un coup par ManageMenuView. */
+        patch: operations["api_v1_manage_menu_dishes_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/manage/menu/dishes/{id}/photo/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Envoyer la photo
+         * @description Créer, modifier, supprimer. La lecture de la carte se fait d'un coup par ManageMenuView.
+         */
+        put: operations["api_v1_manage_menu_dishes_photo_update"];
+        post?: never;
+        /**
+         * Retirer la photo
+         * @description Créer, modifier, supprimer. La lecture de la carte se fait d'un coup par ManageMenuView.
+         */
+        delete: operations["api_v1_manage_menu_dishes_photo_destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/manage/menu/reorder/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Changer l'ordre d'affichage */
+        post: operations["api_v1_manage_menu_reorder_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/manage/menu/subcategories/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Créer, modifier, supprimer. La lecture de la carte se fait d'un coup par ManageMenuView. */
+        post: operations["api_v1_manage_menu_subcategories_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/manage/menu/subcategories/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** @description Créer, modifier, supprimer. La lecture de la carte se fait d'un coup par ManageMenuView. */
+        put: operations["api_v1_manage_menu_subcategories_update"];
+        post?: never;
+        /** @description Créer, modifier, supprimer. La lecture de la carte se fait d'un coup par ManageMenuView. */
+        delete: operations["api_v1_manage_menu_subcategories_destroy"];
+        options?: never;
+        head?: never;
+        /** @description Créer, modifier, supprimer. La lecture de la carte se fait d'un coup par ManageMenuView. */
+        patch: operations["api_v1_manage_menu_subcategories_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/manage/menu/subcategories/{id}/photo/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Envoyer la photo
+         * @description Créer, modifier, supprimer. La lecture de la carte se fait d'un coup par ManageMenuView.
+         */
+        put: operations["api_v1_manage_menu_subcategories_photo_update"];
+        post?: never;
+        /**
+         * Retirer la photo
+         * @description Créer, modifier, supprimer. La lecture de la carte se fait d'un coup par ManageMenuView.
+         */
+        delete: operations["api_v1_manage_menu_subcategories_photo_destroy"];
         options?: never;
         head?: never;
         patch?: never;
@@ -264,6 +474,26 @@ export interface paths {
          *     Les droits de chaque transition sont vérifiés par les services (advance, cancel).
          */
         post: operations["api_v1_manage_orders_pay_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/manage/payments/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Paiements du jour (caisse, gérant)
+         * @description Paiements d'une journée : reçus, totaux par moyen de paiement, reste à encaisser.
+         */
+        get: operations["api_v1_manage_payments_retrieve"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -576,6 +806,23 @@ export interface paths {
         put?: never;
         /** Nouveau QR : l'ancien chevalet ne fonctionne plus */
         post: operations["api_v1_manage_tables_regenerate_qr_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/manage/tables/bulk/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Créer plusieurs tables d'un coup (tout ou rien) */
+        post: operations["api_v1_manage_tables_bulk_create"];
         delete?: never;
         options?: never;
         head?: never;
@@ -943,6 +1190,21 @@ export interface components {
         Confirm: {
             table_id?: number | null;
         };
+        Dashboard: {
+            period: components["schemas"]["PeriodEnum"];
+            /** Format: date */
+            start: string;
+            /** Format: date */
+            end: string;
+            current: components["schemas"]["Sales"];
+            /** @description Période précédente de même durée. */
+            previous: components["schemas"]["Sales"];
+            by_method: components["schemas"]["MethodTotal"][];
+            /** @description Les 7 derniers jours, du plus ancien à aujourd'hui. */
+            trend: components["schemas"]["TrendDay"][];
+            top_dishes: components["schemas"]["TopDish"][];
+            live: components["schemas"]["Live"];
+        };
         Dish: {
             readonly id: number;
             slug?: string;
@@ -1023,8 +1285,119 @@ export interface components {
          * @enum {string}
          */
         KindEnum: "waiter" | "bill";
+        /**
+         * @description * `category` - category
+         *     * `subcategory` - subcategory
+         *     * `dish` - dish
+         * @enum {string}
+         */
+        LevelEnum: "category" | "subcategory" | "dish";
+        Live: {
+            tables_total: number;
+            tables_open: number;
+            active_orders: number;
+            open_requests: number;
+            /** @description Commandes non payées, hors annulations (FCFA). */
+            to_collect: number;
+            unavailable_dishes: string[];
+        };
         Logout: {
             refresh: string;
+        };
+        ManageCategory: {
+            readonly id: number;
+            readonly slug: string;
+            /** Nom */
+            name: string;
+            /**
+             * Icône
+             * @description Emoji ou nom d'icône utilisé par le site.
+             */
+            icon?: string;
+            /** Active */
+            is_active?: boolean;
+            /** Ordre */
+            readonly position: number;
+            readonly subcategories: components["schemas"]["ManageSubCategory"][];
+        };
+        /**
+         * @description Plat complet pour l'écran « Carte & menus ». La photo s'envoie à part (…/photo/).
+         *     option_groups, s'il est fourni, remplace tous les groupes du plat : ceux qui manquent sont supprimés.
+         */
+        ManageDish: {
+            readonly id: number;
+            readonly slug: string;
+            /** Nom */
+            name: string;
+            description?: string;
+            /** Prix (FCFA) */
+            price: number;
+            /** Format: uri */
+            readonly photo: string;
+            /** Sous-catégorie */
+            subcategory: number;
+            /**
+             * Disponible
+             * @description Décocher pour une rupture de stock.
+             */
+            is_available?: boolean;
+            /**
+             * Mis en avant
+             * @description Affiché sur la page d'accueil.
+             */
+            is_featured?: boolean;
+            /** Temps de préparation (min) */
+            prep_minutes?: number;
+            /** Ordre */
+            readonly position: number;
+            option_groups?: components["schemas"]["ManageOptionGroup"][];
+        };
+        ManageOption: {
+            /** @description Absent pour une nouvelle option. */
+            id?: number;
+            /**
+             * Nom
+             * @description Ex. Foutou, Attiéké.
+             */
+            name: string;
+            /** Supplément (FCFA) */
+            price_delta?: number;
+            /** Choisi par défaut */
+            is_default?: boolean;
+            /** Disponible */
+            is_available?: boolean;
+        };
+        ManageOptionGroup: {
+            /** @description Absent pour un nouveau groupe. */
+            id?: number;
+            /**
+             * Nom
+             * @description Ex. Accompagnement, Piment.
+             */
+            name: string;
+            /**
+             * Choix minimum
+             * @description 0 = facultatif.
+             */
+            min_choices?: number;
+            /** Choix maximum */
+            max_choices?: number;
+            options: components["schemas"]["ManageOption"][];
+        };
+        ManageSubCategory: {
+            readonly id: number;
+            readonly slug: string;
+            /** Nom */
+            name: string;
+            /** Catégorie */
+            category: number;
+            /** Format: uri */
+            readonly photo: string;
+            /** Active */
+            is_active?: boolean;
+            /** Ordre */
+            readonly position: number;
+            readonly dishes: components["schemas"]["ManageDish"][];
         };
         Me: {
             id: number;
@@ -1032,6 +1405,12 @@ export interface components {
             readonly name: string;
             role: string;
             role_display: string;
+        };
+        MethodTotal: {
+            method: string;
+            label: string;
+            total: number;
+            count: number;
         };
         OpenSession: {
             qr_token: string;
@@ -1186,6 +1565,69 @@ export interface components {
              */
             is_available?: boolean;
         };
+        PatchedManageCategory: {
+            readonly id?: number;
+            readonly slug?: string;
+            /** Nom */
+            name?: string;
+            /**
+             * Icône
+             * @description Emoji ou nom d'icône utilisé par le site.
+             */
+            icon?: string;
+            /** Active */
+            is_active?: boolean;
+            /** Ordre */
+            readonly position?: number;
+            readonly subcategories?: components["schemas"]["ManageSubCategory"][];
+        };
+        /**
+         * @description Plat complet pour l'écran « Carte & menus ». La photo s'envoie à part (…/photo/).
+         *     option_groups, s'il est fourni, remplace tous les groupes du plat : ceux qui manquent sont supprimés.
+         */
+        PatchedManageDish: {
+            readonly id?: number;
+            readonly slug?: string;
+            /** Nom */
+            name?: string;
+            description?: string;
+            /** Prix (FCFA) */
+            price?: number;
+            /** Format: uri */
+            readonly photo?: string;
+            /** Sous-catégorie */
+            subcategory?: number;
+            /**
+             * Disponible
+             * @description Décocher pour une rupture de stock.
+             */
+            is_available?: boolean;
+            /**
+             * Mis en avant
+             * @description Affiché sur la page d'accueil.
+             */
+            is_featured?: boolean;
+            /** Temps de préparation (min) */
+            prep_minutes?: number;
+            /** Ordre */
+            readonly position?: number;
+            option_groups?: components["schemas"]["ManageOptionGroup"][];
+        };
+        PatchedManageSubCategory: {
+            readonly id?: number;
+            readonly slug?: string;
+            /** Nom */
+            name?: string;
+            /** Catégorie */
+            category?: number;
+            /** Format: uri */
+            readonly photo?: string;
+            /** Active */
+            is_active?: boolean;
+            /** Ordre */
+            readonly position?: number;
+            readonly dishes?: components["schemas"]["ManageDish"][];
+        };
         PatchedQuoteStaff: {
             readonly id?: number;
             /** Référence */
@@ -1286,6 +1728,32 @@ export interface components {
          * @enum {string}
          */
         PaymentTimingEnum: "now" | "end";
+        Payments: {
+            /** Format: date */
+            date: string;
+            /** @description Encaissé ce jour-là (FCFA). */
+            revenue: number;
+            receipts_count: number;
+            /** @description Les quatre moyens de paiement, même à zéro. */
+            by_method: components["schemas"]["MethodTotal"][];
+            /** @description Commandes non payées à l'instant, toutes dates confondues. */
+            to_collect: components["schemas"]["ToCollect"];
+            receipts: components["schemas"]["ReceiptRow"][];
+        };
+        /**
+         * @description * `today` - today
+         *     * `week` - week
+         *     * `month` - month
+         * @enum {string}
+         */
+        PeriodEnum: "today" | "week" | "month";
+        Photo: {
+            /**
+             * Format: uri
+             * @description JPEG, PNG ou WebP, 5 Mo au plus ; convertie en WebP.
+             */
+            photo: string;
+        };
         PlaceOrder: {
             items: components["schemas"]["OrderLineInput"][];
             /** @default end */
@@ -1492,8 +1960,34 @@ export interface components {
             total?: number;
             readonly items: components["schemas"]["OrderItem"][];
         };
+        /** @description Ligne de la liste des paiements ; le détail (commandes, lignes) se lit sur /manage/receipts/{number}/. */
+        ReceiptRow: {
+            /** Numéro */
+            readonly number: number;
+            readonly reference: string;
+            /** Total (FCFA) */
+            total: number;
+            /** Moyen de paiement */
+            method: components["schemas"]["PaymentMethodEnum"];
+            readonly method_display: string;
+            /** Référence de transaction */
+            transaction_ref?: string;
+            /**
+             * Payé le
+             * Format: date-time
+             */
+            paid_at: string;
+            readonly table_number: number | null;
+            readonly cashier: string;
+            readonly orders_count: number;
+        };
         Refuse: {
             reason: string;
+        };
+        Reorder: {
+            level: components["schemas"]["LevelEnum"];
+            /** @description Tous les éléments du même parent, dans le nouvel ordre. */
+            ids: number[];
         };
         ReservationCreate: {
             /** Format: date */
@@ -1575,6 +2069,16 @@ export interface components {
          * @enum {string}
          */
         ReservationStatusEnum: "pending" | "confirmed" | "refused" | "cancelled" | "no_show" | "completed";
+        Sales: {
+            /** @description Encaissé sur la période (FCFA). */
+            revenue: number;
+            receipts_count: number;
+            /** @description Commandes passées, hors annulations. */
+            orders_count: number;
+            cancelled_count: number;
+            /** @description Encaissé ÷ nombre de reçus (FCFA). */
+            average_ticket: number;
+        };
         ServiceRequest: {
             readonly id: number;
             /** Type */
@@ -1874,6 +2378,18 @@ export interface components {
             /** @description Numéro du reçu une fois la commande payée ; null avant. */
             readonly receipt_number: number;
         };
+        /** @description Création d'un lot de tables : numéros first, first+1… dans la même zone. */
+        TableRange: {
+            /** @description Numéro de la première table. */
+            first: number;
+            /** @description Nombre de tables à créer. */
+            count: number;
+            zone: number;
+            /** @default 4 */
+            seats: number;
+            /** @default true */
+            is_active: boolean;
+        };
         /**
          * @description * `open` - Ouverte
          *     * `bill_requested` - Addition demandée
@@ -1881,6 +2397,10 @@ export interface components {
          * @enum {string}
          */
         TableSessionStatusEnum: "open" | "bill_requested" | "closed";
+        ToCollect: {
+            total: number;
+            tables: components["schemas"]["UnpaidTable"][];
+        };
         TokenObtainPair: {
             username: string;
             password: string;
@@ -1890,6 +2410,24 @@ export interface components {
         TokenRefresh: {
             readonly access: string;
             refresh: string;
+        };
+        TopDish: {
+            dish_id: number;
+            dish_name: string;
+            quantity: number;
+            revenue: number;
+        };
+        TrendDay: {
+            /** Format: date */
+            date: string;
+            revenue: number;
+            orders_count: number;
+        };
+        UnpaidTable: {
+            /** @description Vide pour les commandes au comptoir. */
+            table_number: number | null;
+            total: number;
+            orders_count: number;
         };
         Zone: {
             readonly id: number;
@@ -2047,6 +2585,28 @@ export interface operations {
             };
         };
     };
+    api_v1_manage_dashboard_retrieve: {
+        parameters: {
+            query?: {
+                /** @description today (défaut), week (7 jours) ou month (30 jours). */
+                period?: "month" | "today" | "week";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Dashboard"];
+                };
+            };
+        };
+    };
     api_v1_manage_dishes_list: {
         parameters: {
             query?: never;
@@ -2112,6 +2672,449 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["Events"];
                 };
+            };
+        };
+    };
+    api_v1_manage_menu_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ManageCategory"][];
+                };
+            };
+        };
+    };
+    api_v1_manage_menu_categories_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ManageCategory"];
+                "application/x-www-form-urlencoded": components["schemas"]["ManageCategory"];
+                "multipart/form-data": components["schemas"]["ManageCategory"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ManageCategory"];
+                };
+            };
+        };
+    };
+    api_v1_manage_menu_categories_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this catégorie. */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ManageCategory"];
+                "application/x-www-form-urlencoded": components["schemas"]["ManageCategory"];
+                "multipart/form-data": components["schemas"]["ManageCategory"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ManageCategory"];
+                };
+            };
+        };
+    };
+    api_v1_manage_menu_categories_destroy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this catégorie. */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No response body */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    api_v1_manage_menu_categories_partial_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this catégorie. */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchedManageCategory"];
+                "application/x-www-form-urlencoded": components["schemas"]["PatchedManageCategory"];
+                "multipart/form-data": components["schemas"]["PatchedManageCategory"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ManageCategory"];
+                };
+            };
+        };
+    };
+    api_v1_manage_menu_dishes_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ManageDish"];
+                "application/x-www-form-urlencoded": components["schemas"]["ManageDish"];
+                "multipart/form-data": components["schemas"]["ManageDish"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ManageDish"];
+                };
+            };
+        };
+    };
+    api_v1_manage_menu_dishes_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this plat. */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ManageDish"];
+                "application/x-www-form-urlencoded": components["schemas"]["ManageDish"];
+                "multipart/form-data": components["schemas"]["ManageDish"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ManageDish"];
+                };
+            };
+        };
+    };
+    api_v1_manage_menu_dishes_destroy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this plat. */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No response body */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    api_v1_manage_menu_dishes_partial_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this plat. */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchedManageDish"];
+                "application/x-www-form-urlencoded": components["schemas"]["PatchedManageDish"];
+                "multipart/form-data": components["schemas"]["PatchedManageDish"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ManageDish"];
+                };
+            };
+        };
+    };
+    api_v1_manage_menu_dishes_photo_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this plat. */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Photo"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ManageDish"];
+                };
+            };
+        };
+    };
+    api_v1_manage_menu_dishes_photo_destroy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this plat. */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No response body */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    api_v1_manage_menu_reorder_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Reorder"];
+                "application/x-www-form-urlencoded": components["schemas"]["Reorder"];
+                "multipart/form-data": components["schemas"]["Reorder"];
+            };
+        };
+        responses: {
+            /** @description No response body */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    api_v1_manage_menu_subcategories_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ManageSubCategory"];
+                "application/x-www-form-urlencoded": components["schemas"]["ManageSubCategory"];
+                "multipart/form-data": components["schemas"]["ManageSubCategory"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ManageSubCategory"];
+                };
+            };
+        };
+    };
+    api_v1_manage_menu_subcategories_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this sous-catégorie. */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ManageSubCategory"];
+                "application/x-www-form-urlencoded": components["schemas"]["ManageSubCategory"];
+                "multipart/form-data": components["schemas"]["ManageSubCategory"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ManageSubCategory"];
+                };
+            };
+        };
+    };
+    api_v1_manage_menu_subcategories_destroy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this sous-catégorie. */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No response body */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    api_v1_manage_menu_subcategories_partial_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this sous-catégorie. */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchedManageSubCategory"];
+                "application/x-www-form-urlencoded": components["schemas"]["PatchedManageSubCategory"];
+                "multipart/form-data": components["schemas"]["PatchedManageSubCategory"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ManageSubCategory"];
+                };
+            };
+        };
+    };
+    api_v1_manage_menu_subcategories_photo_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this sous-catégorie. */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Photo"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ManageSubCategory"];
+                };
+            };
+        };
+    };
+    api_v1_manage_menu_subcategories_photo_destroy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this sous-catégorie. */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No response body */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
@@ -2269,6 +3272,28 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Receipt"];
+                };
+            };
+        };
+    };
+    api_v1_manage_payments_retrieve: {
+        parameters: {
+            query?: {
+                /** @description Jour voulu (AAAA-MM-JJ), aujourd'hui par défaut. */
+                date?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Payments"];
                 };
             };
         };
@@ -2876,6 +3901,35 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Table"];
+                };
+            };
+        };
+    };
+    api_v1_manage_tables_bulk_create: {
+        parameters: {
+            query?: {
+                is_active?: boolean;
+                number?: number;
+                zone?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TableRange"];
+                "application/x-www-form-urlencoded": components["schemas"]["TableRange"];
+                "multipart/form-data": components["schemas"]["TableRange"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Table"][];
                 };
             };
         };
