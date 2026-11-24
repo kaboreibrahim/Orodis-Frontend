@@ -17,12 +17,14 @@ type MenuExplorerProps = {
   dishHrefBase?: string;
   /** App de table : mesures de la maquette phase3/Carte (390 px), tout tient sur un écran de téléphone. */
   compact?: boolean;
+  /** Niveau du titre de la catégorie : h2 sur /carte (sous le h1), h3 dans une section de l'accueil. */
+  headingLevel?: "h2" | "h3";
 };
 
 /** Le deuxième plat au centre : il reste une voisine de chaque côté. */
 const firstItem = (dishes: Dish[]) => Math.min(1, dishes.length - 1);
 
-export function MenuExplorer({ categories, whatsapp, dishHrefBase, compact = false }: MenuExplorerProps) {
+export function MenuExplorer({ categories, whatsapp, dishHrefBase, compact = false, headingLevel: Heading = "h3" }: MenuExplorerProps) {
   const router = useRouter();
   const [cat, setCat] = useState(0);
   const [sub, setSub] = useState(0);
@@ -59,9 +61,9 @@ export function MenuExplorer({ categories, whatsapp, dishHrefBase, compact = fal
       <CategoryRing categories={categories} active={cat} onChange={pickCategory} compact={compact} />
 
       <div className={`mx-auto max-w-[1200px] px-5 ${compact ? "mt-0" : "mt-3"}`}>
-        <h3 className={`text-center text-bordeaux ${compact ? "mb-2 text-xl" : "mb-3.5 text-[clamp(24px,2.6vw,34px)]"}`}>
+        <Heading className={`text-center text-bordeaux ${compact ? "mb-2 text-xl" : "mb-3.5 text-[clamp(24px,2.6vw,34px)]"}`}>
           {category.name}
-        </h3>
+        </Heading>
         <CoverFlow
           key={`sub-${category.id}`}
           items={category.subcategories}

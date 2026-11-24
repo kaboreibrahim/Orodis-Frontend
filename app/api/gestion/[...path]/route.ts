@@ -7,7 +7,7 @@ import { readAccessToken } from "@/lib/api/staff";
 export const dynamic = "force-dynamic";
 
 /** Seules les ressources du personnel passent par ce relais. */
-const ALLOWED = new Set(["orders", "requests", "sessions", "dishes", "receipts", "tables", "zones", "reservations", "quotes", "events", "dashboard", "payments", "menu"]);
+const ALLOWED = new Set(["orders", "requests", "sessions", "dishes", "receipts", "tables", "zones", "reservations", "quotes", "events", "dashboard", "payments", "menu", "staff", "reports", "push"]);
 
 type Context = { params: Promise<{ path: string[] }> };
 

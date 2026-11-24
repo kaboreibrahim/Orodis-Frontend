@@ -28,7 +28,7 @@ import {
 import { PayDialog, type PayTarget } from "./PayDialog";
 import { CountUp, EASE, Reveal, RevealTitle, stagger } from "./reveal";
 import { type StaffEvent, useStaffEvents } from "./useStaffEvents";
-import { useStaffSound } from "./useStaffSound";
+import { useRepeatingSound, useStaffSound } from "./useStaffSound";
 
 const SOUND_KEY = "orodis-gestion-son";
 const NEW_ORDER = "/sons/nouvelle-commande.mp3";
@@ -164,6 +164,10 @@ export function OrdersBoard({ user, today, initialOrders, initialRequests, initi
   }
 
   const { online } = useStaffEvents(onEvent, reloadAll);
+  // Sonneries répétées jusqu'à la réponse : table qui appelle ou demande l'addition (jusqu’à « C’est fait »),
+  // commande pas encore lancée en préparation.
+  useRepeatingSound(play, CALL, requests.length > 0);
+  useRepeatingSound(play, NEW_ORDER, orders.some((o) => o.status === "received"));
 
   // --- Données affichées -------------------------------------------------------------------
   const counts = useMemo(

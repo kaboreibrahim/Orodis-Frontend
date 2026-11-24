@@ -3,15 +3,16 @@
 // Écran cuisine (maquette phase3/Cuisine) : 3 colonnes Nouvelles → En préparation → Prêtes, un gros bouton
 // par ticket, minuteur depuis la commande (ticket en rouge au-delà de 15 min), son à chaque nouvelle commande,
 // ruptures de stock en un clic. Temps réel par polling (useStaffEvents) ; à l’ouverture et après chaque coupure, tout est rechargé par REST.
-import { ArrowLeft, Ban, LogOut, Volume2, VolumeX, X } from "lucide-react";
+import { ArrowLeft, Ban, Volume2, VolumeX, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { logout } from "@/app/actions/staff";
 import type { StaffDish, StaffOrder, StaffUser } from "@/lib/api/staff";
 import { formatTime } from "@/lib/format";
+import { AppControls } from "./AppControls";
+import { LogoutButton } from "./LogoutButton";
 import { type StaffEvent, useStaffEvents } from "./useStaffEvents";
-import { useStaffSound } from "./useStaffSound";
+import { useRepeatingSound, useStaffSound } from "./useStaffSound";
 
 const ACTIVE = ["received", "preparing", "ready"] as const;
 type ActiveStatus = (typeof ACTIVE)[number];
@@ -109,6 +110,9 @@ export function KitchenBoard({ user, initialOrders, initialDishes }: Props) {
   }
 
   const { online } = useStaffEvents(onEvent, reload);
+  // La sonnerie reprend toutes les 3 s tant qu'une commande n'est pas commencée.
+  const waiting = orders.filter((o) => o.status === "received").length;
+  useRepeatingSound(play, BELL, waiting > 0);
 
   async function advance(order: StaffOrder) {
     setFresh((ids) => {
@@ -201,6 +205,7 @@ export function KitchenBoard({ user, initialOrders, initialDishes }: Props) {
             {soundOn ? <Volume2 size={18} aria-hidden="true" /> : <VolumeX size={18} aria-hidden="true" />}
             {soundOn ? "Son activé" : "Activer le son"}
           </button>
+          {isKitchen && <AppControls variant="cuisine" />}
           {dishes && (
             <button
               type="button"
@@ -222,11 +227,7 @@ export function KitchenBoard({ user, initialOrders, initialDishes }: Props) {
             {formatTime(new Date(now))}
           </div>
           {isKitchen && (
-            <form action={logout}>
-              <button type="submit" aria-label="Se déconnecter" title="Se déconnecter" className="flex size-11 items-center justify-center rounded-full text-cuisine-texte hover:bg-white/10">
-                <LogOut size={20} aria-hidden="true" />
-              </button>
-            </form>
+            <LogoutButton size={20} className="flex size-11 items-center justify-center rounded-full text-cuisine-texte hover:bg-white/10" />
           )}
         </div>
       </header>

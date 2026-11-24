@@ -3,11 +3,15 @@
 // Encaissement (docs/phase3.md, « Paiement ») : la caisse confirme avoir reçu le paiement, puis le reçu est émis.
 // Table : toute l'addition restante (POST /manage/sessions/{id}/pay/) ; comptoir : la commande (POST /manage/orders/{id}/pay/).
 // Mobile Money : la référence de la transaction est obligatoire. Espèces : calcul de la monnaie à rendre.
+// Une fois payé, le ticket sort de l'imprimante à l'écran (ReceiptPrintout), puis les boutons du reçu apparaissent.
 import { Check, Printer, X } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { AnimatePresence, MotionConfig, motion } from "motion/react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { StaffOrder, StaffReceipt } from "@/lib/api/staff";
 import { formatPrice } from "@/lib/format";
 import { METHODS, type PaymentMethod } from "./labels";
+import { ReceiptPrintout } from "./ReceiptPrintout";
+import { EASE } from "./reveal";
 
 export type PayTarget =
   | { kind: "session"; sessionId: number; tableNumber: number | null; orders: StaffOrder[] }
@@ -25,6 +29,8 @@ export function PayDialog({ target, onClose, onPaid }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const [receipt, setReceipt] = useState<StaffReceipt | null>(null);
+  const [printed, setPrinted] = useState(false);
+  const onPrinted = useCallback(() => setPrinted(true), []);
 
   const title =
     target.kind === "session" ? `Addition · Table ${target.tableNumber ?? ""}` : `Commande n° ${target.order.number} · comptoir`;
@@ -73,6 +79,7 @@ export function PayDialog({ target, onClose, onPaid }: Props) {
   }
 
   return (
+    <MotionConfig reducedMotion="user">
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-encre/50 p-4" onClick={() => !pending && onClose()}>
       <div
         role="dialog"
@@ -84,7 +91,7 @@ export function PayDialog({ target, onClose, onPaid }: Props) {
         <div className="flex items-start justify-between gap-3">
           <div>
             <h2 id="encaissement-titre" className="text-[24px]">
-              {receipt ? "Paiement enregistré" : "Encaisser"}
+              {receipt ? (printed ? "Paiement enregistré" : "Impression du ticket…") : "Encaisser"}
             </h2>
             <p className="text-sm text-texte-doux">{title}</p>
           </div>
@@ -95,39 +102,57 @@ export function PayDialog({ target, onClose, onPaid }: Props) {
 
         {receipt ? (
           <>
-            <div className="flex items-center gap-3 rounded-2xl bg-pastille-ok p-4 text-texte-ok">
-              <span className="flex size-9 items-center justify-center rounded-full bg-whatsapp text-white">
-                <Check size={20} strokeWidth={3} aria-hidden="true" />
-              </span>
-              <div>
-                <div className="font-bold">Reçu {receipt.reference}</div>
-                <div className="text-sm">
-                  {formatPrice(receipt.total)} · {receipt.method_display}
-                </div>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <a
-                href={`/gestion/recus/${receipt.number}/ticket`}
-                target="_blank"
-                rel="noopener"
-                className="flex h-12 items-center justify-center gap-2 rounded-full bg-bordeaux font-bold text-white"
-              >
-                <Printer size={18} aria-hidden="true" />
-                Imprimer le ticket
-              </a>
-              <a
-                href={`/api/gestion/receipts/${receipt.number}.pdf`}
-                target="_blank"
-                rel="noopener"
-                className="flex h-12 items-center justify-center rounded-full border-[1.5px] border-encre font-bold"
-              >
-                Reçu PDF
-              </a>
-            </div>
-            <button type="button" onClick={onClose} className="h-11 rounded-full border-[1.5px] border-bordure font-bold text-ticket-doux">
-              Fermer
-            </button>
+            <ReceiptPrintout receipt={receipt} onPrinted={onPrinted} />
+            <AnimatePresence>
+              {printed && (
+                <motion.div
+                  className="flex flex-col gap-3"
+                  initial={{ opacity: 0, y: 12, filter: "blur(6px)" }}
+                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  transition={{ duration: 0.4, ease: EASE }}
+                >
+                  <div role="status" className="flex items-center gap-3 rounded-2xl bg-pastille-ok p-4 text-texte-ok">
+                    <motion.span
+                      className="flex size-9 shrink-0 items-center justify-center rounded-full bg-whatsapp text-white"
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ type: "spring", stiffness: 500, damping: 18, delay: 0.1 }}
+                    >
+                      <Check size={20} strokeWidth={3} aria-hidden="true" />
+                    </motion.span>
+                    <div>
+                      <div className="font-bold">Reçu {receipt.reference}</div>
+                      <div className="text-sm">
+                        {formatPrice(receipt.total)} · {receipt.method_display}
+                        {change ? ` · à rendre ${formatPrice(change)}` : ""}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <a
+                      href={`/gestion/recus/${receipt.number}/ticket`}
+                      target="_blank"
+                      rel="noopener"
+                      className="flex h-12 items-center justify-center gap-2 rounded-full bg-bordeaux font-bold text-white"
+                    >
+                      <Printer size={18} aria-hidden="true" />
+                      Imprimer le ticket
+                    </a>
+                    <a
+                      href={`/api/gestion/receipts/${receipt.number}.pdf`}
+                      target="_blank"
+                      rel="noopener"
+                      className="flex h-12 items-center justify-center rounded-full border-[1.5px] border-encre font-bold"
+                    >
+                      Reçu PDF
+                    </a>
+                  </div>
+                  <button type="button" onClick={onClose} className="h-11 rounded-full border-[1.5px] border-bordure font-bold text-ticket-doux">
+                    Fermer
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </>
         ) : (
           <form onSubmit={submit} className="flex flex-col gap-4" noValidate>
@@ -206,5 +231,6 @@ export function PayDialog({ target, onClose, onPaid }: Props) {
         )}
       </div>
     </div>
+    </MotionConfig>
   );
 }

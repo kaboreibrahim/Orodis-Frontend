@@ -5,7 +5,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ApiError, api } from "@/lib/api/client";
-import { homeFor, type StaffUser } from "@/lib/api/staff";
+import { homeFor, PASSWORD_PATH, type StaffUser, staffApi } from "@/lib/api/staff";
 import {
   ACCESS_COOKIE,
   ACCESS_MAX_AGE,
@@ -77,4 +77,35 @@ export async function logout(): Promise<void> {
   jar.delete(ACCESS_COOKIE);
   jar.delete(REFRESH_COOKIE);
   redirect(LOGIN_PATH);
+}
+
+
+export type PasswordState = { error?: string; fields?: Partial<Record<"current_password" | "new_password" | "confirm", string>>; done?: boolean };
+
+/** Le membre connecté choisit son mot de passe. Après un mot de passe provisoire, il rejoint ensuite son écran. */
+export async function changePassword(_previous: PasswordState, form: FormData): Promise<PasswordState> {
+  const current = String(form.get("current_password") ?? "");
+  const next = String(form.get("new_password") ?? "");
+  const confirm = String(form.get("confirm") ?? "");
+  if (!current) return { fields: { current_password: "Saisissez votre mot de passe actuel." } };
+  if (next.length < 8) return { fields: { new_password: "8 caractères au moins." } };
+  if (next !== confirm) return { fields: { confirm: "Les deux mots de passe ne sont pas identiques." } };
+
+  let user: StaffUser;
+  try {
+    user = await staffApi<StaffUser>("/auth/password/", { method: "POST", body: JSON.stringify({ current_password: current, new_password: next }) });
+  } catch (error) {
+    if (!(error instanceof ApiError)) throw error;
+    if (error.status === 401) redirect(`${LOGIN_PATH}?suite=${encodeURIComponent(PASSWORD_PATH)}`);
+    if (error.status === 429) return { error: "Trop d’essais. Patientez une minute avant de réessayer." };
+    const data = (error.data ?? {}) as Record<string, string[] | string>;
+    const first = (key: string) => (Array.isArray(data[key]) ? (data[key] as string[]).join(" ") : (data[key] as string | undefined));
+    if (data.current_password || data.new_password) {
+      return { fields: { current_password: first("current_password"), new_password: first("new_password") } };
+    }
+    if (data.non_field_errors) return { fields: { new_password: first("non_field_errors") } };
+    console.error(error);
+    return { error: "Le mot de passe n’a pas pu être changé. Réessayez dans un instant." };
+  }
+  redirect(homeFor(user.role));
 }

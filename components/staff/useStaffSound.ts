@@ -47,3 +47,22 @@ export function useStaffSound(storageKey: string) {
 
   return { soundOn, toggleSound, play };
 }
+
+/** Sonnerie répétée tant qu'une alerte attend une réponse (commande à lancer, table qui appelle).
+ *  « active » vient de l'état de l'écran : elle s'arrête d'elle-même dès qu'une personne répond,
+ *  sur cet appareil ou sur un autre (le changement arrive par le temps réel). */
+export function useRepeatingSound(
+  play: (src: string) => void,
+  src: string,
+  active: boolean,
+  everyMs = REPEAT_EVERY_MS,
+) {
+  useEffect(() => {
+    if (!active) return;
+    const timer = window.setInterval(() => play(src), everyMs);
+    return () => window.clearInterval(timer);
+  }, [active, everyMs, play, src]);
+}
+
+/** Intervalle entre deux sonneries : le premier bip part à l'arrivée de l'alerte, puis toutes les 3 s. */
+export const REPEAT_EVERY_MS = 3_000;

@@ -10,11 +10,14 @@ type DishImageProps = {
   priority?: boolean;
   /** Taille de l'initiale du visuel de remplacement. */
   initialClassName?: string;
+  /** Texte alternatif : le nom du plat quand la photo est le contenu principal (fiche) ;
+   *  vide sur les cartes, où le nom est écrit juste à côté. */
+  alt?: string;
 };
 
-export function DishImage({ dish, sizes, priority = false, initialClassName = "text-2xl" }: DishImageProps) {
+export function DishImage({ dish, sizes, priority = false, initialClassName = "text-2xl", alt = "" }: DishImageProps) {
   if (dish.photo) {
-    return <Image src={dish.photo} alt="" fill sizes={sizes} priority={priority} draggable={false} className="object-cover" />;
+    return <Image src={dish.photo} alt={alt} fill sizes={sizes} priority={priority} draggable={false} className="object-cover" />;
   }
   return (
     <span

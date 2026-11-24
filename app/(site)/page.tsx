@@ -1,4 +1,5 @@
 // Accueil : toutes les sections de docs/maquettes/Main.dc.html.
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Bento } from "@/components/home/Bento";
 import { CateringTeaser } from "@/components/home/CateringTeaser";
@@ -16,8 +17,20 @@ import { MenuExplorer } from "@/components/menu/MenuExplorer";
 import { FadeUp } from "@/components/motion/FadeUp";
 import { getFeaturedDishes, getMenu } from "@/lib/api/menu";
 import { getSettings } from "@/lib/api/settings";
+import { summarizeHours } from "@/lib/format";
+import { homeDescription, LOCATION, pageMetadata, SITE_NAME } from "@/lib/seo";
 
 export const revalidate = 600;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSettings();
+  return pageMetadata({
+    title: `${SITE_NAME} · Restaurant et traiteur à ${LOCATION.city}`,
+    absoluteTitle: true,
+    description: homeDescription(summarizeHours(settings.opening_hours).join(", ")),
+    path: "/",
+  });
+}
 
 export default async function HomePage() {
   const [settings, featured, menu] = await Promise.all([getSettings(), getFeaturedDishes(), getMenu()]);

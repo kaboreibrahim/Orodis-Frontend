@@ -6,13 +6,16 @@ import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 import { getSettings } from "@/lib/api/settings";
 import { dailyHours, formatPhone } from "@/lib/format";
 import { telLink, whatsappLink } from "@/lib/whatsapp";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd, LOCATION, pageMetadata } from "@/lib/seo";
 
 export const revalidate = 600;
 
-export const metadata: Metadata = {
-  title: "Nous trouver",
-  description: "Adresse, plan d’accès, horaires et contacts du restaurant Les Délices d’Orodis.",
-};
+export const metadata: Metadata = pageMetadata({
+  title: `Adresse et horaires à ${LOCATION.city}`,
+  description: `Les Délices d’Orodis, ${LOCATION.landmark}, ${LOCATION.city} : plan d’accès, horaires d’ouverture, téléphone et WhatsApp du restaurant.`,
+  path: "/nous-trouver",
+});
 
 export default async function NousTrouverPage() {
   const settings = await getSettings();
@@ -57,6 +60,7 @@ export default async function NousTrouverPage() {
           <p className="mt-2 text-texte-doux">Pour réserver une table, le plus simple reste la réservation en ligne : le restaurant vous confirme par WhatsApp.</p>
         </div>
       </section>
+      <JsonLd items={[breadcrumbJsonLd([["Nous trouver", "/nous-trouver"]])]} />
     </main>
   );
 }

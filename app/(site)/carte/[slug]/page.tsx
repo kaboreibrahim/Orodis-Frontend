@@ -6,10 +6,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DishImage } from "@/components/menu/DishImage";
 import { DishOptions } from "@/components/menu/DishOptions";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 import { getDish, getDishSlugs, getMenu } from "@/lib/api/menu";
 import { getSettings } from "@/lib/api/settings";
 import { formatPrice } from "@/lib/format";
+import { breadcrumbJsonLd, dishJsonLd, LOCATION, pageMetadata } from "@/lib/seo";
 import { whatsappLink } from "@/lib/whatsapp";
 
 export const revalidate = 600;
@@ -23,12 +25,14 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: DishPageProps): Promise<Metadata> {
   const dish = await getDish((await params).slug);
-  if (!dish) return { title: "Plat introuvable" };
-  return {
-    title: dish.name,
-    description: `${dish.name}, ${formatPrice(dish.price)}${dish.description ? ` : ${dish.description}` : ""}`,
-    openGraph: dish.photo ? { images: [dish.photo] } : undefined,
-  };
+  if (!dish) return { title: "Plat introuvable", robots: { index: false } };
+  const about = dish.description ? ` ${dish.description.replace(/\.?\s*$/, ".")}` : "";
+  return pageMetadata({
+    title: `${dish.name}, ${formatPrice(dish.price)}`,
+    description: `${dish.name} à ${formatPrice(dish.price)}.${about} À déguster aux Délices d’Orodis, ${LOCATION.city}, sur place ou à emporter.`,
+    path: `/carte/${dish.slug}`,
+    image: dish.photo,
+  });
 }
 
 export default async function DishPage({ params }: DishPageProps) {
@@ -47,7 +51,7 @@ export default async function DishPage({ params }: DishPageProps) {
 
       <article className="mt-4 flex flex-wrap gap-x-12 gap-y-8">
         <div className="relative aspect-[4/3] min-w-0 flex-[1_1_420px] overflow-hidden rounded-[26px] bg-rose">
-          <DishImage dish={dish} sizes="(min-width: 1100px) 560px, 100vw" priority initialClassName="text-[140px]" />
+          <DishImage dish={dish} alt={dish.name} sizes="(min-width: 1100px) 560px, 100vw" priority initialClassName="text-[140px]" />
         </div>
 
         <div className="flex min-w-0 flex-[1_1_380px] flex-col gap-4">
@@ -81,6 +85,7 @@ export default async function DishPage({ params }: DishPageProps) {
           </div>
         </div>
       </article>
+      <JsonLd items={[dishJsonLd(dish), breadcrumbJsonLd([["La carte", "/carte"], [dish.name, `/carte/${dish.slug}`]])]} />
     </main>
   );
 }

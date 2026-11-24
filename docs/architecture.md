@@ -186,8 +186,8 @@ La Server Action `createQuote` envoie la demande, puis l'écran de confirmation 
 ### Variables d'environnement (.env.example)
 
 ```
-API_URL=https://api.delicesdorodis.ci/api/v1
-NEXT_PUBLIC_SITE_URL=https://delicesdorodis.ci
+API_URL=https://api.delicesdorodis.com/api/v1
+NEXT_PUBLIC_SITE_URL=https://delicesdorodis.com
 REVALIDATE_SECRET=
 NEXT_PUBLIC_WHATSAPP=2250702578159
 NEXT_PUBLIC_GOOGLE_MAPS_EMBED=

@@ -1,11 +1,12 @@
-// Plan du site : pages publiques et fiche de chaque plat.
+// Plan du site : pages publiques indexables et fiche de chaque plat.
+// Les mentions légales (noindex) n'y figurent pas : une page du plan doit pouvoir être indexée.
 import type { MetadataRoute } from "next";
 import { getDishSlugs } from "@/lib/api/menu";
 import { siteUrl } from "@/lib/seo";
 
 export const revalidate = 600;
 
-const routes = ["", "/carte", "/reserver", "/traiteur", "/nous-trouver", "/mentions-legales"];
+const routes = ["", "/carte", "/reserver", "/traiteur", "/nous-trouver"];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const slugs = await getDishSlugs().catch(() => []);

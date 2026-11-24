@@ -1,17 +1,20 @@
 // Carte complète : anneau des catégories, CouvertureFlow des sous-catégories et des plats.
 import type { Metadata } from "next";
 import { MenuExplorer } from "@/components/menu/MenuExplorer";
+import { MenuIndex } from "@/components/menu/MenuIndex";
 import { NoCubeBadge } from "@/components/menu/NoCubeBadge";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { getMenu } from "@/lib/api/menu";
 import { getSettings } from "@/lib/api/settings";
+import { breadcrumbJsonLd, LOCATION, menuJsonLd, pageMetadata } from "@/lib/seo";
 
 export const revalidate = 600;
 
-export const metadata: Metadata = {
-  title: "La carte",
-  description:
-    "Plats ivoiriens et européens, grillades, sauces, desserts et boissons : toute la carte des Délices d’Orodis, avec les prix.",
-};
+export const metadata: Metadata = pageMetadata({
+  title: "La carte et les prix",
+  description: `Plats ivoiriens et européens, grillades, sauces, desserts et boissons : toute la carte des Délices d’Orodis à ${LOCATION.city}, avec les prix.`,
+  path: "/carte",
+});
 
 export default async function CartePage() {
   const [menu, settings] = await Promise.all([getMenu(), getSettings()]);
@@ -26,8 +29,10 @@ export default async function CartePage() {
         <NoCubeBadge className="mt-2" />
       </section>
       <div className="mt-2">
-        <MenuExplorer categories={menu} whatsapp={settings.whatsapp} />
+        <MenuExplorer categories={menu} whatsapp={settings.whatsapp} headingLevel="h2" />
       </div>
+      <MenuIndex menu={menu} />
+      <JsonLd items={[menuJsonLd(menu), breadcrumbJsonLd([["La carte", "/carte"]])]} />
     </main>
   );
 }

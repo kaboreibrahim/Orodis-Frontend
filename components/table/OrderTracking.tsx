@@ -11,6 +11,7 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import { callService } from "@/app/actions/table";
 import type { TableOrder } from "@/lib/api/table";
 import { formatPrice, formatTime } from "@/lib/format";
+import { NotifyMe } from "./NotifyMe";
 import { OfflinePill } from "./OfflinePill";
 import { StatusToast } from "./StatusToast";
 import { TableHeader } from "./TableHeader";
@@ -147,6 +148,8 @@ export function OrderTracking({ qr, tableNumber, order: initialOrder, sessionClo
             </div>
           )}
         </div>
+
+        {!cancelled && !sessionClosed && order.status !== "served" && <NotifyMe qr={qr} />}
 
         {/* Reçu, une fois payé */}
         {order.receipt_number && (

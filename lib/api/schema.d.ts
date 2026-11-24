@@ -33,6 +33,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/auth/password/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Changer mon mot de passe
+         * @description Le membre connecté change son mot de passe (obligatoire après un mot de passe provisoire).
+         */
+        post: operations["api_v1_auth_password_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/auth/token/": {
         parameters: {
             query?: never;
@@ -110,7 +130,7 @@ export interface paths {
         };
         /**
          * Tableau de bord du gérant
-         * @description Vue d'ensemble du gérant : chiffres de la période, 7 derniers jours, état de la salle.
+         * @description Vue d'ensemble du gérant : chiffres de la période, courbe, affluence, catégories, état de la salle.
          */
         get: operations["api_v1_manage_dashboard_retrieve"];
         put?: never;
@@ -500,6 +520,58 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/manage/push/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Notifications du personnel : ce navigateur reçoit les alertes du rôle de la personne connectée. */
+        get: operations["api_v1_manage_push_retrieve"];
+        put?: never;
+        /** @description Notifications du personnel : ce navigateur reçoit les alertes du rôle de la personne connectée. */
+        post: operations["api_v1_manage_push_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/manage/push/remove/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Désactive les notifications sur ce navigateur (bouton, ou déconnexion). */
+        post: operations["api_v1_manage_push_remove_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/manage/push/test/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Envoie une notification d'essai aux navigateurs de la personne connectée. */
+        post: operations["api_v1_manage_push_test_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/manage/quotes/": {
         parameters: {
             query?: never;
@@ -559,6 +631,66 @@ export interface paths {
         };
         /** Reçu (PDF A4) */
         get: operations["api_v1_manage_receipts_.pdf_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/manage/reports/activity.pdf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Rapport d'activité (PDF)
+         * @description Rapport d'activité de la période (mêmes paramètres que le tableau de bord).
+         */
+        get: operations["api_v1_manage_reports_activity.pdf_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/manage/reports/closing.pdf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Clôture de caisse (PDF)
+         * @description Clôture de caisse d'une journée : encaissé par moyen, reçus, annulations, comptage et signatures.
+         */
+        get: operations["api_v1_manage_reports_closing.pdf_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/manage/reports/sales.pdf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Liste des ventes (PDF)
+         * @description Liste détaillée des ventes : chaque reçu de la période et ses plats.
+         */
+        get: operations["api_v1_manage_reports_sales.pdf_retrieve"];
         put?: never;
         post?: never;
         delete?: never;
@@ -740,6 +872,72 @@ export interface paths {
         put?: never;
         /** Encaisser l'addition (caisse, gérant) */
         post: operations["api_v1_manage_sessions_pay_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/manage/staff/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * @description Comptes du personnel (gérant). Pas de suppression : un compte qui a servi reste dans l'historique
+         *     des commandes et des reçus ; on le désactive.
+         */
+        get: operations["api_v1_manage_staff_list"];
+        put?: never;
+        /**
+         * Créer un compte
+         * @description Comptes du personnel (gérant). Pas de suppression : un compte qui a servi reste dans l'historique
+         *     des commandes et des reçus ; on le désactive.
+         */
+        post: operations["api_v1_manage_staff_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/manage/staff/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * @description Comptes du personnel (gérant). Pas de suppression : un compte qui a servi reste dans l'historique
+         *     des commandes et des reçus ; on le désactive.
+         */
+        patch: operations["api_v1_manage_staff_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/manage/staff/{id}/reset-password/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Donner un mot de passe provisoire
+         * @description Comptes du personnel (gérant). Pas de suppression : un compte qui a servi reste dans l'historique
+         *     des commandes et des reçus ; on le désactive.
+         */
+        post: operations["api_v1_manage_staff_reset_password_create"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1047,6 +1245,41 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/table/push/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Téléphone d'une table : prévenu quand sa commande avance et quand l'addition est réglée. */
+        get: operations["api_v1_table_push_retrieve"];
+        put?: never;
+        /** @description Téléphone d'une table : prévenu quand sa commande avance et quand l'addition est réglée. */
+        post: operations["api_v1_table_push_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/table/push/remove/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Le client ne veut plus être prévenu. */
+        post: operations["api_v1_table_push_remove_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/table/receipts/{number}/": {
         parameters: {
             query?: never;
@@ -1181,6 +1414,17 @@ export interface components {
             icon?: string;
             readonly subcategories: components["schemas"]["SubCategory"][];
         };
+        CategorySales: {
+            name: string;
+            quantity: number;
+            /** @description Montant commandé (FCFA), hors annulations. */
+            revenue: number;
+            /**
+             * Format: double
+             * @description Part du montant commandé, en %.
+             */
+            share: number;
+        };
         /**
          * @description * `table` - À table (QR)
          *     * `counter` - Comptoir
@@ -1196,12 +1440,23 @@ export interface components {
             start: string;
             /** Format: date */
             end: string;
+            days: number;
             current: components["schemas"]["Sales"];
             /** @description Période précédente de même durée. */
             previous: components["schemas"]["Sales"];
             by_method: components["schemas"]["MethodTotal"][];
-            /** @description Les 7 derniers jours, du plus ancien à aujourd'hui. */
+            /**
+             * @description day : un point par jour ; week : par semaine (lundi).
+             *
+             *     * `day` - day
+             *     * `week` - week
+             */
+            trend_unit: components["schemas"]["TrendUnitEnum"];
+            /** @description La période jour par jour (7 jours au moins), ou semaine par semaine au-delà de 62 jours. */
             trend: components["schemas"]["TrendDay"][];
+            /** @description Les 24 heures de la journée, cumulées sur la période. */
+            by_hour: components["schemas"]["Hour"][];
+            by_category: components["schemas"]["CategorySales"][];
             top_dishes: components["schemas"]["TopDish"][];
             live: components["schemas"]["Live"];
         };
@@ -1278,6 +1533,13 @@ export interface components {
             /** @description À renvoyer dans ?after= au prochain appel. */
             cursor: number;
             events: components["schemas"]["Event"][];
+        };
+        Hour: {
+            /** @description Heure de la journée, 0 à 23 (heure d'Abidjan). */
+            hour: number;
+            orders_count: number;
+            /** @description Montant commandé pendant cette heure (FCFA). */
+            amount: number;
         };
         /**
          * @description * `waiter` - Appel serveur
@@ -1405,6 +1667,7 @@ export interface components {
             readonly name: string;
             role: string;
             role_display: string;
+            must_change_password: boolean;
         };
         MethodTotal: {
             method: string;
@@ -1555,6 +1818,10 @@ export interface components {
             previous?: string | null;
             results: components["schemas"]["StaffOrder"][];
         };
+        PasswordChange: {
+            current_password: string;
+            new_password: string;
+        };
         PatchedDishAvailability: {
             readonly id?: number;
             /** Nom */
@@ -1683,6 +1950,47 @@ export interface components {
              */
             readonly updated_at?: string;
         };
+        /**
+         * @description Compte du personnel vu par le gérant. Le mot de passe ne se lit jamais : il est seulement remis
+         *     une fois, en clair, dans la réponse de création ou de réinitialisation (temporary_password).
+         */
+        PatchedStaffMember: {
+            readonly id?: number;
+            /** @description Identifiant de connexion, mis en minuscules. */
+            username?: string;
+            /** Prénom */
+            first_name?: string;
+            /** Nom */
+            last_name?: string;
+            readonly name?: string;
+            /** Téléphone */
+            phone?: string;
+            /** Rôle */
+            role?: components["schemas"]["RoleEnum"];
+            readonly role_display?: string;
+            /**
+             * Actif
+             * @description Précise si l’utilisateur doit être considéré comme actif. Décochez ceci plutôt que de supprimer le compte.
+             */
+            is_active?: boolean;
+            /** @description Compte propriétaire (superutilisateur) : modifiable par lui seul. */
+            readonly is_owner?: boolean;
+            /**
+             * Doit changer son mot de passe
+             * @description Mis à vrai quand le gérant crée le compte ou donne un mot de passe provisoire.
+             */
+            readonly must_change_password?: boolean;
+            /**
+             * Dernière connexion
+             * Format: date-time
+             */
+            readonly last_login?: string | null;
+            /**
+             * Date d’inscription
+             * Format: date-time
+             */
+            readonly date_joined?: string;
+        };
         PatchedTable: {
             readonly id?: number;
             /** Numéro */
@@ -1744,9 +2052,10 @@ export interface components {
          * @description * `today` - today
          *     * `week` - week
          *     * `month` - month
+         *     * `custom` - custom
          * @enum {string}
          */
-        PeriodEnum: "today" | "week" | "month";
+        PeriodEnum: "today" | "week" | "month" | "custom";
         Photo: {
             /**
              * Format: uri
@@ -1836,6 +2145,27 @@ export interface components {
             reservation_max_party?: number;
             /** Nombre minimum d'invités pour un devis */
             catering_min_guests?: number;
+        };
+        PushConfig: {
+            /** @description Clé publique VAPID, à passer à pushManager.subscribe(). */
+            public_key: string;
+            /** @description Faux tant que les clés VAPID ne sont pas dans le .env de l'API. */
+            enabled: boolean;
+        };
+        PushEndpoint: {
+            /** Format: uri */
+            endpoint: string;
+        };
+        PushKeys: {
+            p256dh: string;
+            auth: string;
+        };
+        /** @description Le résultat de PushSubscription.toJSON() dans le navigateur. */
+        PushSubscription: {
+            /** Format: uri */
+            endpoint: string;
+            keys: components["schemas"]["PushKeys"];
+            expirationTime?: number | null;
         };
         QuoteCreate: {
             event_type: components["schemas"]["EventTypeEnum"];
@@ -2069,6 +2399,14 @@ export interface components {
          * @enum {string}
          */
         ReservationStatusEnum: "pending" | "confirmed" | "refused" | "cancelled" | "no_show" | "completed";
+        /**
+         * @description * `manager` - Gérant
+         *     * `cashier` - Caisse
+         *     * `waiter` - Serveur
+         *     * `kitchen` - Cuisine
+         * @enum {string}
+         */
+        RoleEnum: "manager" | "cashier" | "waiter" | "kitchen";
         Sales: {
             /** @description Encaissé sur la période (FCFA). */
             revenue: number;
@@ -2118,6 +2456,89 @@ export interface components {
             time: string;
             available: boolean;
         };
+        /**
+         * @description Compte du personnel vu par le gérant. Le mot de passe ne se lit jamais : il est seulement remis
+         *     une fois, en clair, dans la réponse de création ou de réinitialisation (temporary_password).
+         */
+        StaffCreate: {
+            readonly id: number;
+            /** @description Identifiant de connexion, mis en minuscules. */
+            username: string;
+            /** Prénom */
+            first_name: string;
+            /** Nom */
+            last_name?: string;
+            readonly name: string;
+            /** Téléphone */
+            phone?: string;
+            /** Rôle */
+            role?: components["schemas"]["RoleEnum"];
+            readonly role_display: string;
+            /**
+             * Actif
+             * @description Précise si l’utilisateur doit être considéré comme actif. Décochez ceci plutôt que de supprimer le compte.
+             */
+            is_active?: boolean;
+            /** @description Compte propriétaire (superutilisateur) : modifiable par lui seul. */
+            readonly is_owner: boolean;
+            /**
+             * Doit changer son mot de passe
+             * @description Mis à vrai quand le gérant crée le compte ou donne un mot de passe provisoire.
+             */
+            readonly must_change_password: boolean;
+            /**
+             * Dernière connexion
+             * Format: date-time
+             */
+            readonly last_login: string | null;
+            /**
+             * Date d’inscription
+             * Format: date-time
+             */
+            readonly date_joined: string;
+            /** @description Facultatif : sans mot de passe, un mot de passe provisoire est généré. */
+            password?: string;
+        };
+        /** @description Réponse de création ou de réinitialisation : le compte et, une seule fois, son mot de passe provisoire. */
+        StaffCredentials: {
+            readonly id: number;
+            /** @description Identifiant de connexion, mis en minuscules. */
+            username: string;
+            /** Prénom */
+            first_name?: string;
+            /** Nom */
+            last_name?: string;
+            readonly name: string;
+            /** Téléphone */
+            phone?: string;
+            /** Rôle */
+            role?: components["schemas"]["RoleEnum"];
+            readonly role_display: string;
+            /**
+             * Actif
+             * @description Précise si l’utilisateur doit être considéré comme actif. Décochez ceci plutôt que de supprimer le compte.
+             */
+            is_active?: boolean;
+            /** @description Compte propriétaire (superutilisateur) : modifiable par lui seul. */
+            readonly is_owner: boolean;
+            /**
+             * Doit changer son mot de passe
+             * @description Mis à vrai quand le gérant crée le compte ou donne un mot de passe provisoire.
+             */
+            readonly must_change_password: boolean;
+            /**
+             * Dernière connexion
+             * Format: date-time
+             */
+            readonly last_login: string | null;
+            /**
+             * Date d’inscription
+             * Format: date-time
+             */
+            readonly date_joined: string;
+            /** @description À transmettre à la personne ; il ne sera plus jamais affiché. */
+            readonly temporary_password: string | null;
+        };
         /** @description Plat vu par le personnel (écran cuisine, ruptures) : disponible ou non, avec sa place dans la carte. */
         StaffDish: {
             readonly id: number;
@@ -2130,6 +2551,47 @@ export interface components {
              * @description Décocher pour une rupture de stock.
              */
             is_available?: boolean;
+        };
+        /**
+         * @description Compte du personnel vu par le gérant. Le mot de passe ne se lit jamais : il est seulement remis
+         *     une fois, en clair, dans la réponse de création ou de réinitialisation (temporary_password).
+         */
+        StaffMember: {
+            readonly id: number;
+            /** @description Identifiant de connexion, mis en minuscules. */
+            username: string;
+            /** Prénom */
+            first_name?: string;
+            /** Nom */
+            last_name?: string;
+            readonly name: string;
+            /** Téléphone */
+            phone?: string;
+            /** Rôle */
+            role?: components["schemas"]["RoleEnum"];
+            readonly role_display: string;
+            /**
+             * Actif
+             * @description Précise si l’utilisateur doit être considéré comme actif. Décochez ceci plutôt que de supprimer le compte.
+             */
+            is_active?: boolean;
+            /** @description Compte propriétaire (superutilisateur) : modifiable par lui seul. */
+            readonly is_owner: boolean;
+            /**
+             * Doit changer son mot de passe
+             * @description Mis à vrai quand le gérant crée le compte ou donne un mot de passe provisoire.
+             */
+            readonly must_change_password: boolean;
+            /**
+             * Dernière connexion
+             * Format: date-time
+             */
+            readonly last_login: string | null;
+            /**
+             * Date d’inscription
+             * Format: date-time
+             */
+            readonly date_joined: string;
         };
         /** @description Commande vue par le personnel : table, lignes détaillées, qui l'a saisie et qui l'a fait avancer. */
         StaffOrder: {
@@ -2423,6 +2885,12 @@ export interface components {
             revenue: number;
             orders_count: number;
         };
+        /**
+         * @description * `day` - day
+         *     * `week` - week
+         * @enum {string}
+         */
+        TrendUnitEnum: "day" | "week";
         UnpaidTable: {
             /** @description Vide pour les commandes au comptoir. */
             table_number: number | null;
@@ -2480,6 +2948,31 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Me"];
+                };
+            };
+        };
+    };
+    api_v1_auth_password_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PasswordChange"];
+                "application/x-www-form-urlencoded": components["schemas"]["PasswordChange"];
+                "multipart/form-data": components["schemas"]["PasswordChange"];
+            };
+        };
         responses: {
             200: {
                 headers: {
@@ -2588,8 +3081,12 @@ export interface operations {
     api_v1_manage_dashboard_retrieve: {
         parameters: {
             query?: {
+                /** @description Dates libres : dernier jour compris (AAAA-MM-JJ). */
+                end?: string;
                 /** @description today (défaut), week (7 jours) ou month (30 jours). */
                 period?: "month" | "today" | "week";
+                /** @description Dates libres : premier jour (AAAA-MM-JJ), avec end ; remplace period. */
+                start?: string;
             };
             header?: never;
             path?: never;
@@ -3298,6 +3795,92 @@ export interface operations {
             };
         };
     };
+    api_v1_manage_push_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PushConfig"];
+                };
+            };
+        };
+    };
+    api_v1_manage_push_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PushSubscription"];
+                "application/x-www-form-urlencoded": components["schemas"]["PushSubscription"];
+                "multipart/form-data": components["schemas"]["PushSubscription"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PushConfig"];
+                };
+            };
+        };
+    };
+    api_v1_manage_push_remove_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PushEndpoint"];
+                "application/x-www-form-urlencoded": components["schemas"]["PushEndpoint"];
+                "multipart/form-data": components["schemas"]["PushEndpoint"];
+            };
+        };
+        responses: {
+            /** @description No response body */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    api_v1_manage_push_test_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No response body */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     api_v1_manage_quotes_list: {
         parameters: {
             query?: {
@@ -3406,6 +3989,80 @@ export interface operations {
             path: {
                 number: number;
             };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/pdf": string;
+                };
+            };
+        };
+    };
+    "api_v1_manage_reports_activity.pdf_retrieve": {
+        parameters: {
+            query?: {
+                /** @description Dates libres : dernier jour compris (AAAA-MM-JJ). */
+                end?: string;
+                /** @description today (défaut), week (7 jours) ou month (30 jours). */
+                period?: "month" | "today" | "week";
+                /** @description Dates libres : premier jour (AAAA-MM-JJ), avec end ; remplace period. */
+                start?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/pdf": string;
+                };
+            };
+        };
+    };
+    "api_v1_manage_reports_closing.pdf_retrieve": {
+        parameters: {
+            query?: {
+                /** @description Jour voulu (AAAA-MM-JJ), aujourd'hui par défaut. */
+                date?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/pdf": string;
+                };
+            };
+        };
+    };
+    "api_v1_manage_reports_sales.pdf_retrieve": {
+        parameters: {
+            query?: {
+                /** @description Dates libres : dernier jour compris (AAAA-MM-JJ). */
+                end?: string;
+                /** @description today (défaut), week (7 jours) ou month (30 jours). */
+                period?: "month" | "today" | "week";
+                /** @description Dates libres : premier jour (AAAA-MM-JJ), avec end ; remplace period. */
+                start?: string;
+            };
+            header?: never;
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
@@ -3711,6 +4368,100 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Receipt"];
+                };
+            };
+        };
+    };
+    api_v1_manage_staff_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffMember"][];
+                };
+            };
+        };
+    };
+    api_v1_manage_staff_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StaffCreate"];
+                "application/x-www-form-urlencoded": components["schemas"]["StaffCreate"];
+                "multipart/form-data": components["schemas"]["StaffCreate"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffCredentials"];
+                };
+            };
+        };
+    };
+    api_v1_manage_staff_partial_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this membre du personnel. */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchedStaffMember"];
+                "application/x-www-form-urlencoded": components["schemas"]["PatchedStaffMember"];
+                "multipart/form-data": components["schemas"]["PatchedStaffMember"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffMember"];
+                };
+            };
+        };
+    };
+    api_v1_manage_staff_reset_password_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this membre du personnel. */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffCredentials"];
                 };
             };
         };
@@ -4291,6 +5042,74 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["TableOrder"];
                 };
+            };
+        };
+    };
+    api_v1_table_push_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PushConfig"];
+                };
+            };
+        };
+    };
+    api_v1_table_push_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PushSubscription"];
+                "application/x-www-form-urlencoded": components["schemas"]["PushSubscription"];
+                "multipart/form-data": components["schemas"]["PushSubscription"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PushConfig"];
+                };
+            };
+        };
+    };
+    api_v1_table_push_remove_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PushEndpoint"];
+                "application/x-www-form-urlencoded": components["schemas"]["PushEndpoint"];
+                "multipart/form-data": components["schemas"]["PushEndpoint"];
+            };
+        };
+        responses: {
+            /** @description No response body */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

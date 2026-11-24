@@ -3,7 +3,7 @@ import { DM_Sans, Fraunces } from "next/font/google";
 import { getSettings } from "@/lib/api/settings";
 import { summarizeHours } from "@/lib/format";
 import { INTRO_SCRIPT } from "@/lib/intro";
-import { jsonLdScript, restaurantJsonLd, siteUrl } from "@/lib/seo";
+import { homeDescription, LOCATION, SITE_NAME, siteUrl } from "@/lib/seo";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -21,19 +21,21 @@ const dmSans = DM_Sans({
   display: "swap",
 });
 
+// Valeurs par défaut de tout le site ; chaque page publique précise les siennes (lib/seo.ts, pageMetadata).
 // Description tirée des horaires saisis dans l'admin, pour ne jamais annoncer des horaires faux.
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSettings();
-  const hours = summarizeHours(settings.opening_hours).join(", ");
   return {
     metadataBase: new URL(siteUrl),
     title: {
-      default: "Les Délices d'Orodis · Restaurant, pâtisserie et traiteur",
-      template: "%s · Les Délices d'Orodis",
+      default: `${SITE_NAME} · Restaurant et traiteur à ${LOCATION.city}`,
+      template: `%s · ${SITE_NAME}`,
     },
-    description: `Spécialités africaines et européennes, pâtisserie maison et traiteur.${
-      hours ? ` ${hours}.` : ""
-    } Sur place, à emporter ou en livraison.`,
+    description: homeDescription(summarizeHours(settings.opening_hours).join(", ")),
+    applicationName: SITE_NAME,
+    formatDetection: { telephone: false, email: false, address: false },
+    openGraph: { type: "website", locale: "fr_CI", siteName: SITE_NAME },
+    twitter: { card: "summary_large_image" },
   };
 }
 
@@ -42,9 +44,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const settings = await getSettings();
-
-  // En-tête et pied de page : app/(site)/layout.tsx ; l'app de table (/t/…) a sa propre mise en page.
+  // En-tête, pied de page et JSON-LD du restaurant : app/(site)/layout.tsx ; l'app de table (/t/…) a sa propre mise en page.
   return (
     // suppressHydrationWarning : le script du <head> pose data-intro avant l'hydratation.
     <html
@@ -56,10 +56,7 @@ export default async function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: INTRO_SCRIPT }} />
       </head>
-      <body>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(restaurantJsonLd(settings)) }} />
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

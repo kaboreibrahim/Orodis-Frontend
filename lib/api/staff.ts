@@ -25,7 +25,12 @@ export type ManageCategory = Schemas["ManageCategory"];
 export type ManageSubCategory = Schemas["ManageSubCategory"];
 export type ManageDish = Schemas["ManageDish"];
 export type ManageOptionGroup = Schemas["ManageOptionGroup"];
+export type StaffMember = Schemas["StaffMember"];
+export type StaffCredentials = Schemas["StaffCredentials"];
 export type StaffRole = "manager" | "cashier" | "waiter" | "kitchen";
+
+/** Page où l'on choisit son mot de passe ; obligatoire après un mot de passe provisoire donné par le gérant. */
+export const PASSWORD_PATH = "/gestion/mot-de-passe";
 
 export async function readAccessToken(): Promise<string | undefined> {
   return (await cookies()).get(ACCESS_COOKIE)?.value;
@@ -52,11 +57,13 @@ export const getStaffUser = cache(async (): Promise<StaffUser | null> => {
   }
 });
 
-/** Page du personnel : renvoie vers la connexion sans session, et vers l'écran cuisine
- *  si le rôle n'a pas accès à la page (la cuisine ne voit que /gestion/cuisine). */
+/** Page du personnel : renvoie vers la connexion sans session, vers le choix du mot de passe tant que le compte
+ *  a un mot de passe provisoire, et vers l'écran cuisine si le rôle n'a pas accès à la page
+ *  (la cuisine ne voit que /gestion/cuisine). */
 export async function requireStaff(roles?: readonly StaffRole[], from = "/gestion"): Promise<StaffUser> {
   const user = await getStaffUser();
   if (!user) redirect(`${LOGIN_PATH}?suite=${encodeURIComponent(from)}`);
+  if (user.must_change_password && from !== PASSWORD_PATH) redirect(PASSWORD_PATH);
   if (roles && !roles.includes(user.role as StaffRole)) redirect("/gestion/cuisine");
   return user;
 }

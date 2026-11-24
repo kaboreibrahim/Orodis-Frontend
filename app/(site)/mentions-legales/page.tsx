@@ -3,14 +3,16 @@
 import type { Metadata } from "next";
 import { getSettings } from "@/lib/api/settings";
 import { formatPhone } from "@/lib/format";
+import { pageMetadata } from "@/lib/seo";
 
 export const revalidate = 600;
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Mentions légales",
   description: "Éditeur, hébergeur et protection des données personnelles du site Les Délices d’Orodis.",
-  robots: { index: false },
-};
+  path: "/mentions-legales",
+  index: false,
+});
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (

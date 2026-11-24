@@ -11,13 +11,16 @@ import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 import { getSettings } from "@/lib/api/settings";
 import { formatPhone, summarizeHours } from "@/lib/format";
 import { whatsappLink } from "@/lib/whatsapp";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd, LOCATION, pageMetadata } from "@/lib/seo";
 
 export const revalidate = 600;
 
-export const metadata: Metadata = {
-  title: "Réserver une table",
-  description: "Réservez votre table en une minute aux Délices d’Orodis : choisissez la date, l’heure et le nombre de personnes, le restaurant vous confirme par WhatsApp.",
-};
+export const metadata: Metadata = pageMetadata({
+  title: `Réserver une table à ${LOCATION.city}`,
+  description: `Réservez votre table en une minute aux Délices d’Orodis, à ${LOCATION.city} : choisissez la date, l’heure et le nombre de personnes, le restaurant vous confirme par WhatsApp.`,
+  path: "/reserver",
+});
 
 export default async function ReserverPage() {
   const settings = await getSettings();
@@ -80,6 +83,7 @@ export default async function ReserverPage() {
           <ReservationWizardFromUrl {...wizard} />
         </Suspense>
       </div>
+      <JsonLd items={[breadcrumbJsonLd([["Réserver une table", "/reserver"]])]} />
     </main>
   );
 }

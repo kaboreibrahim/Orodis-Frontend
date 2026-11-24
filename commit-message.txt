@@ -1,0 +1,19 @@
+Espace du personnel : tableau de bord, paiements, carte, tables, personnel, PWA et notifications
+
+- Tableau de bord : choix de période et de dates, affluence par heure,
+  ventes par catégorie, téléchargement des rapports PDF
+- Nouveaux écrans : Paiements, Carte & menus (éditeur de plat), création
+  de tables, Personnel (comptes et rôles), changement de mot de passe
+- Pages Tables & QR codes et Commandes refaites
+- Ticket de caisse animé à l'encaissement
+- Relais /api/gestion : routes dashboard, payments, menu, staff, reports
+  et transmission des PDF
+- Types de l'API régénérés
+- Application mobile : dépendances allégées, Gradle 8.14.3-bin avec délai
+  de 120 s ; accès au serveur de dev depuis le réseau local
+- Espace du personnel installable (PWA) : manifeste, icônes, service worker,
+  page hors ligne ; notifications push (bouton, essai, déconnexion)
+- Suivi de commande : « Me prévenir quand c’est prêt »
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_016efViy2qoXUrkRPXUnmuEm

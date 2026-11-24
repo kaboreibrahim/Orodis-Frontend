@@ -17,14 +17,18 @@ import { getSettings } from "@/lib/api/settings";
 import { formatPhone } from "@/lib/format";
 import { EVENT_TYPES } from "@/lib/schemas";
 import { telLink, whatsappLink } from "@/lib/whatsapp";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd, cateringJsonLd, LOCATION, pageMetadata } from "@/lib/seo";
 
 export const revalidate = 600;
 
-export const metadata: Metadata = {
-  title: "Traiteur et événements",
-  description:
-    "Mariages, anniversaires, baptêmes, séminaires, cocktails et dîners de gala : Les Délices d’Orodis prépare, livre et sert. Demandez un devis gratuit.",
-};
+const DESCRIPTION = `Traiteur à ${LOCATION.city} pour mariages, anniversaires, baptêmes, séminaires, cocktails et dîners de gala : Les Délices d’Orodis prépare, livre et sert. Demandez un devis gratuit.`;
+
+export const metadata: Metadata = pageMetadata({
+  title: `Traiteur pour mariages et événements à ${LOCATION.city}`,
+  description: DESCRIPTION,
+  path: "/traiteur",
+});
 
 const STEPS = [
   { title: "Votre demande", text: "Date, nombre d’invités, lieu et envies, via le formulaire ou WhatsApp." },
@@ -167,6 +171,7 @@ export default async function TraiteurPage() {
           </div>
         </section>
       </FormulaChoiceProvider>
+      <JsonLd items={[cateringJsonLd(DESCRIPTION), breadcrumbJsonLd([["Traiteur et événements", "/traiteur"]])]} />
     </main>
   );
 }

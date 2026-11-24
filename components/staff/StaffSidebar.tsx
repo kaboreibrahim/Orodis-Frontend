@@ -3,12 +3,13 @@
 // Barre latérale de l'espace du personnel (maquette phase3/Gestion) : fond encre, entrée active en bordeaux.
 // Seules les entrées déjà livrées sont affichées (docs/phase3.md, « Côté restaurant »).
 // Le fond bordeaux de l'entrée active glisse d'une entrée à l'autre (layoutId).
-import { ChefHat, LayoutDashboard, List, LogOut, type LucideIcon, QrCode, UtensilsCrossed, Wallet } from "lucide-react";
+import { ChefHat, KeyRound, LayoutDashboard, List, type LucideIcon, QrCode, Users, UtensilsCrossed, Wallet } from "lucide-react";
 import { MotionConfig, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { logout } from "@/app/actions/staff";
+import { AppControls } from "./AppControls";
+import { LogoutButton } from "./LogoutButton";
 
 type NavItem = { label: string; href: string; icon: LucideIcon; roles: readonly string[] };
 
@@ -19,6 +20,7 @@ const NAV: NavItem[] = [
   { label: "Carte & menus", href: "/gestion/carte", icon: UtensilsCrossed, roles: ["manager"] },
   { label: "Tables & QR codes", href: "/gestion/tables", icon: QrCode, roles: ["manager"] },
   { label: "Paiements", href: "/gestion/paiements", icon: Wallet, roles: ["manager", "cashier"] },
+  { label: "Personnel", href: "/gestion/personnel", icon: Users, roles: ["manager"] },
 ];
 
 type Props = { name: string; role: string; roleLabel: string };
@@ -64,7 +66,10 @@ export function StaffSidebar({ name, role, roleLabel }: Props) {
         );
       })}
       <div className="flex-1" />
-      <div className="mt-4 flex items-center gap-2.5 border-t border-bordure-encre px-2 pt-3">
+      <div className="mt-4">
+        <AppControls />
+      </div>
+      <div className="mt-2 flex items-center gap-2.5 border-t border-bordure-encre px-2 pt-3">
         <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-bordeaux font-bold" aria-hidden="true">
           {name.charAt(0).toUpperCase()}
         </span>
@@ -72,16 +77,15 @@ export function StaffSidebar({ name, role, roleLabel }: Props) {
           <div className="truncate text-sm font-bold">{name}</div>
           <div className="text-xs text-texte-sur-encre">{roleLabel}</div>
         </div>
-        <form action={logout}>
-          <button
-            type="submit"
-            aria-label="Se déconnecter"
-            title="Se déconnecter"
-            className="flex size-11 items-center justify-center rounded-full text-texte-nav hover:bg-white/10"
-          >
-            <LogOut size={18} aria-hidden="true" />
-          </button>
-        </form>
+        <Link
+          href="/gestion/mot-de-passe"
+          aria-label="Changer mon mot de passe"
+          title="Changer mon mot de passe"
+          className="flex size-11 items-center justify-center rounded-full text-texte-nav hover:bg-white/10"
+        >
+          <KeyRound size={18} aria-hidden="true" />
+        </Link>
+        <LogoutButton className="flex size-11 items-center justify-center rounded-full text-texte-nav hover:bg-white/10" />
       </div>
     </nav>
     </MotionConfig>
